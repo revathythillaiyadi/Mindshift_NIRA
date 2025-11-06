@@ -23,6 +23,7 @@ const REGIONS = [
 export default function SignUp() {
   const [step, setStep] = useState(1);
   const [error, setError] = useState('');
+  const [breachedPasswordError, setBreachedPasswordError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -47,6 +48,7 @@ export default function SignUp() {
   };
 
   const validateStep1 = () => {
+    setBreachedPasswordError(false);
     if (!formData.fullName.trim()) {
       setError('Please enter your full name.');
       return false;
@@ -96,6 +98,7 @@ export default function SignUp() {
 
   const handleNext = () => {
     setError('');
+    setBreachedPasswordError(false);
     if (step === 1 && validateStep1()) {
       setStep(2);
     } else if (step === 2 && validateStep2()) {
@@ -110,6 +113,7 @@ export default function SignUp() {
 
   const handleSubmit = async () => {
     setError('');
+    setBreachedPasswordError(false);
 
     if (!agreedToTerms) {
       setError('Please agree to the Terms of Service and Privacy Policy.');
@@ -121,7 +125,17 @@ export default function SignUp() {
     const { error } = await signUpWithProfile(formData);
 
     if (error) {
-      setError(error.message || 'Failed to create account. Please try again.');
+      const errorMessage = error.message || '';
+      if (errorMessage.toLowerCase().includes('password') &&
+          (errorMessage.toLowerCase().includes('breach') ||
+           errorMessage.toLowerCase().includes('leaked') ||
+           errorMessage.toLowerCase().includes('compromised') ||
+           errorMessage.toLowerCase().includes('pwned'))) {
+        setBreachedPasswordError(true);
+        setStep(1);
+      } else {
+        setError(errorMessage || 'Failed to create account. Please try again.');
+      }
       setLoading(false);
     } else {
       setSuccess(true);
@@ -285,6 +299,14 @@ export default function SignUp() {
                     required
                   />
                 </div>
+                {breachedPasswordError && (
+                  <div className="mt-3 p-3 bg-orange-50 dark:bg-orange-900/20 border-2 border-orange-500 dark:border-orange-600 rounded-lg flex items-start gap-2">
+                    <span className="text-orange-600 dark:text-orange-400 text-lg leading-none mt-0.5">⚠️</span>
+                    <p className="text-orange-800 dark:text-orange-200 text-sm font-medium leading-relaxed">
+                      This password has been found in public data breaches and cannot be used for your security. Please choose a strong, unique password.
+                    </p>
+                  </div>
+                )}
                 {passwordStrength && (
                   <div className="mt-2">
                     <div className="flex items-center justify-between mb-1">
@@ -326,7 +348,8 @@ export default function SignUp() {
               <button
                 type="button"
                 onClick={handleNext}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                disabled={breachedPasswordError}
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Continue
               </button>
