@@ -151,7 +151,7 @@ export default function HowItWorks() {
 
           <path
             ref={pathRef}
-            d="M 200 50 Q 150 120, 180 180 Q 210 240, 350 280 Q 490 320, 600 380 Q 710 440, 750 520 Q 790 600, 700 680 Q 610 760, 520 800 Q 430 840, 450 900 Q 470 960, 500 980"
+            d="M 200 50 Q 150 120, 180 180 Q 210 240, 350 280 Q 490 320, 600 380 Q 710 440, 750 520 Q 790 600, 720 660 Q 650 720, 580 750 Q 510 780, 460 840 Q 410 900, 480 940 Q 550 980, 500 1000"
             fill="none"
             stroke="url(#pathGradient)"
             strokeWidth="3"
@@ -162,7 +162,7 @@ export default function HowItWorks() {
           />
 
           <path
-            d="M 200 50 Q 150 120, 180 180 Q 210 240, 350 280 Q 490 320, 600 380 Q 710 440, 750 520 Q 790 600, 700 680 Q 610 760, 520 800 Q 430 840, 450 900 Q 470 960, 500 980"
+            d="M 200 50 Q 150 120, 180 180 Q 210 240, 350 280 Q 490 320, 600 380 Q 710 440, 750 520 Q 790 600, 720 660 Q 650 720, 580 750 Q 510 780, 460 840 Q 410 900, 480 940 Q 550 980, 500 1000"
             fill="none"
             stroke="url(#pathGradient)"
             strokeWidth="4"
@@ -255,8 +255,36 @@ export default function HowItWorks() {
                 className="flex justify-center items-center relative"
                 style={{ minHeight: '25vh' }}
               >
+                <svg
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0"
+                  width="200"
+                  height="100"
+                  style={{
+                    opacity: hasBeenActive ? 0.4 : 0.1,
+                    transition: 'opacity 0.7s ease-out',
+                  }}
+                >
+                  <line
+                    x1={position.isLeft ? '150' : '50'}
+                    y1="50"
+                    x2="100"
+                    y2="50"
+                    stroke="url(#pathGradient)"
+                    strokeWidth="2"
+                    strokeDasharray="5 5"
+                    className="transition-all duration-700"
+                  />
+                  <circle
+                    cx="100"
+                    cy="50"
+                    r="4"
+                    fill={hasBeenActive ? '#6b8a6b' : '#d1ddd1'}
+                    className="transition-all duration-500"
+                  />
+                </svg>
+
                 <div
-                  className="transition-all duration-700 ease-out"
+                  className="transition-all duration-700 ease-out relative z-10"
                   style={{
                     transform: `translateX(${position.isLeft ? '-50%' : '50%'}) scale(${isActive ? 1 : hasBeenActive ? 0.95 : 0.85})`,
                     opacity: hasBeenActive ? 1 : 0.3,
