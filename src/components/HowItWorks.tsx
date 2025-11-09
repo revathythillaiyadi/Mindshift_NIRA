@@ -96,23 +96,26 @@ export default function HowItWorks() {
             </filter>
           </defs>
 
-          {[...Array(12)].map((_, i) => {
-            const radius = 5 + i * 7;
+          {ringPositions.map((ring, i) => {
             const wobble = i * 0.15;
+            const isVisible = i <= activeStep;
             return (
               <circle
                 key={i}
                 cx="50"
                 cy="50"
-                r={radius}
+                r={ring.r}
                 fill="none"
                 stroke="#475b47"
                 strokeWidth={i % 2 === 0 ? "0.3" : "0.2"}
-                opacity={0.4 - i * 0.02}
+                opacity={isVisible ? 0.4 - i * 0.02 : 0}
                 filter="url(#roughen)"
+                className="transition-all duration-1000 ease-out"
                 style={{
                   strokeDasharray: `${wobble} ${wobble * 0.5}`,
                   strokeLinecap: 'round',
+                  transform: isVisible ? 'scale(1)' : 'scale(0.5)',
+                  transformOrigin: 'center',
                 }}
               />
             );
