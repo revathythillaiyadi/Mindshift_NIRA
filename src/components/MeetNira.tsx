@@ -23,40 +23,43 @@ export default function MeetNira() {
   }, [visibleMessages, messages.length]);
 
   return (
-    <section className="py-24 px-6 bg-cream relative overflow-hidden">
+    <section className="py-24 px-6 bg-gradient-to-b from-mint-50/20 via-warm-white to-sage-50/30 relative overflow-hidden">
       <div className="absolute top-1/4 right-16 w-20 h-20 opacity-35 animate-float">
         <MoodIcon mood="creative" />
       </div>
 
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-16 space-y-4 animate-fade-in">
-          <h2 className="text-display-sm font-light text-warm-black">
-            Meet NIRA, Your Companion
+          <h2 className="text-4xl md:text-5xl font-bold text-soft-gray">
+            meet nira, your companion
           </h2>
-          <p className="text-lg text-gentle-gray max-w-2xl mx-auto">
-            A gentle presence, here to hold space for you
+          <p className="text-xl text-forest/70 max-w-2xl mx-auto font-serif italic">
+            a gentle presence, here to hold space for you
+          </p>
+          <p className="text-sm text-forest/50 lowercase">
+            your calm corner awaits
           </p>
         </div>
 
         <div className="max-w-2xl mx-auto">
           <div className="relative">
-            <div className="relative z-10 bg-white/90 backdrop-blur-sm rounded-lg shadow-md border border-gray-200/50 overflow-hidden">
-              <div className="bg-warm-black p-6 flex items-center justify-between">
+            <div className="relative z-10 bg-white/70 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border border-lavender-100/30 overflow-hidden">
+              <div className="bg-forest p-6 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg animate-pulse-gentle">
                     <Bot className="w-8 h-8 text-forest" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="text-white font-normal text-base">NIRA</h3>
+                    <h3 className="text-white font-semibold text-lg tracking-wide">nira</h3>
                     <div className="flex items-center gap-2">
                       <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse"></div>
-                      <span className="text-white/90 text-sm">Here with you</span>
+                      <span className="text-white/90 text-sm lowercase">here with you</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="p-8 space-y-6 h-[450px] overflow-y-auto bg-white">
+              <div className="p-8 space-y-6 h-[450px] overflow-y-auto bg-gradient-to-b from-lavender-50/20 via-warm-white/50 to-paleblue-50/20">
                 {messages.slice(0, visibleMessages).map((message, index) => (
                   <div
                     key={index}
@@ -64,46 +67,46 @@ export default function MeetNira() {
                   >
                     <div className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm ${
                       message.type === 'bot'
-                        ? 'bg-gray-200'
-                        : 'bg-gray-300'
+                        ? 'bg-gradient-to-br from-sage-300/60 to-mint-300/60 backdrop-blur-sm'
+                        : 'bg-gradient-to-br from-mint-300/70 to-sage-300/60 backdrop-blur-sm'
                     }`}>
                       {message.type === 'bot' ? (
-                        <Bot className="w-6 h-6 text-warm-black" strokeWidth={1.5} />
+                        <Bot className="w-6 h-6 text-sage-700" strokeWidth={1.5} />
                       ) : (
-                        <User className="w-6 h-6 text-warm-black" strokeWidth={1.5} />
+                        <User className="w-6 h-6 text-sage-700" strokeWidth={1.5} />
                       )}
                     </div>
                     <div className={`max-w-[75%] ${message.type === 'user' ? 'items-end' : 'items-start'} flex flex-col`}>
-                      <div className={`px-6 py-4 rounded-2xl ${
+                      <div className={`px-6 py-4 rounded-[1.5rem] ${
                         message.type === 'bot'
-                          ? 'bg-gray-100 text-soft-gray'
-                          : 'bg-warm-black text-white'
+                          ? 'bg-white/80 backdrop-blur-sm text-soft-gray shadow-sm border border-lavender-100/40'
+                          : 'bg-gradient-to-br from-mint-200/60 to-sage-200/50 backdrop-blur-sm text-soft-gray'
                       }`}>
-                        <p className="text-sm leading-relaxed">{message.text}</p>
+                        <p className="text-sm leading-relaxed lowercase">{message.text}</p>
                       </div>
-                      <span className="text-xs text-gentle-gray/40 mt-2 px-2">
-                        Just now
+                      <span className="text-xs text-gentle-gray/40 mt-2 px-2 lowercase italic">
+                        just now
                       </span>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="p-6 bg-white border-t border-gray-200">
+              <div className="p-6 bg-white/60 backdrop-blur-md border-t border-lavender-100/40">
                 <div className="flex items-center gap-3">
-                  <button className="p-3 hover:bg-gray-100 rounded-full transition-all" title="voice input">
-                    <Mic className="w-5 h-5 text-gentle-gray" strokeWidth={1.5} />
+                  <button className="p-3 hover:bg-sage-50/60 rounded-full transition-all" title="voice input">
+                    <Mic className="w-5 h-5 text-sage-500/70" strokeWidth={1.5} />
                   </button>
-                  <button className="p-3 hover:bg-gray-100 rounded-full transition-all" title="add emoji">
-                    <Smile className="w-5 h-5 text-gentle-gray" strokeWidth={1.5} />
+                  <button className="p-3 hover:bg-sage-50/60 rounded-full transition-all" title="add emoji">
+                    <Smile className="w-5 h-5 text-sage-500/70" strokeWidth={1.5} />
                   </button>
                   <input
                     type="text"
-                    placeholder="Share what's on your mind..."
-                    className="flex-1 px-6 py-3.5 rounded-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-warm-black focus:border-warm-black transition-all text-sm text-soft-gray placeholder:text-gentle-gray/50 bg-white"
+                    placeholder="take your time... share what's on your mind"
+                    className="flex-1 px-6 py-3.5 rounded-[2rem] border border-forest focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest transition-all text-sm text-soft-gray placeholder:text-gentle-gray/50 bg-white lowercase"
                     disabled
                   />
-                  <button className="w-12 h-12 bg-warm-black text-white rounded-full hover:bg-elegant-gray transition-all flex items-center justify-center flex-shrink-0">
+                  <button className="w-12 h-12 bg-gradient-to-r from-sage-400 to-mint-400 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all flex items-center justify-center flex-shrink-0">
                     <ArrowRight className="w-5 h-5" strokeWidth={2} />
                   </button>
                 </div>

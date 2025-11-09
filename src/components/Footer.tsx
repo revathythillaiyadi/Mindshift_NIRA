@@ -2,15 +2,15 @@ import { Brain, Facebook, Twitter, Instagram, Linkedin, Mail } from 'lucide-reac
 
 export default function Footer() {
   return (
-    <footer className="bg-warm-black text-white pt-16 pb-8 px-6">
+    <footer className="bg-forest text-white pt-16 pb-8 px-6">
       <div className="container mx-auto max-w-7xl">
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           <div className="md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <Brain className="w-8 h-8 text-white" strokeWidth={2} />
+              <Brain className="w-10 h-10 text-mint-300" strokeWidth={2} />
               <div className="flex flex-col">
-                <span className="text-xl font-normal">Serenica</span>
-                <span className="text-sm text-gray-400">Your journey to calm</span>
+                <span className="text-2xl font-bold">MindShift</span>
+                <span className="text-sm text-mint-200">Reframe your thoughts, Reshape your world</span>
               </div>
             </div>
             <p className="text-white/80 leading-relaxed mb-6">
@@ -20,35 +20,35 @@ export default function Footer() {
             <div className="flex items-center space-x-4">
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors"
+                className="w-10 h-10 bg-sage-700 hover:bg-sage-600 rounded-full flex items-center justify-center transition-colors"
                 aria-label="Facebook"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors"
+                className="w-10 h-10 bg-sage-700 hover:bg-sage-600 rounded-full flex items-center justify-center transition-colors"
                 aria-label="Twitter"
               >
                 <Twitter className="w-5 h-5" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors"
+                className="w-10 h-10 bg-sage-700 hover:bg-sage-600 rounded-full flex items-center justify-center transition-colors"
                 aria-label="Instagram"
               >
                 <Instagram className="w-5 h-5" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors"
+                className="w-10 h-10 bg-sage-700 hover:bg-sage-600 rounded-full flex items-center justify-center transition-colors"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="w-5 h-5" />
               </a>
               <a
                 href="mailto:support@mindshift.com"
-                className="w-10 h-10 bg-gray-800 hover:bg-gray-700 rounded-full flex items-center justify-center transition-colors"
+                className="w-10 h-10 bg-sage-700 hover:bg-sage-600 rounded-full flex items-center justify-center transition-colors"
                 aria-label="Email"
               >
                 <Mail className="w-5 h-5" />
@@ -57,10 +57,10 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-base font-normal mb-4">Quick Links</h3>
+            <h3 className="text-lg font-bold mb-4">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#about" className="text-gray-400 hover:text-white transition-colors text-sm">
+                <a href="#about" className="text-white/80 hover:text-mint-300 transition-colors">
                   About Us
                 </a>
               </li>
@@ -88,7 +88,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-base font-normal mb-4">Legal</h3>
+            <h3 className="text-lg font-bold mb-4">Legal</h3>
             <ul className="space-y-3">
               <li>
                 <a href="#" className="text-white/80 hover:text-mint-300 transition-colors">
@@ -114,10 +114,10 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-gray-800 text-center text-gray-400 text-sm">
-          <p>&copy; {new Date().getFullYear()} Serenica. All rights reserved.</p>
+        <div className="pt-8 border-t border-sage-600 text-center text-white/70 text-sm">
+          <p>&copy; {new Date().getFullYear()} MindShift. All rights reserved.</p>
           <p className="mt-2">
-            Serenica is not a substitute for professional medical advice, diagnosis, or treatment.
+            MindShift is not a substitute for professional medical advice, diagnosis, or treatment.
           </p>
         </div>
       </div>

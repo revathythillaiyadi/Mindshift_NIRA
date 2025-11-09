@@ -103,7 +103,7 @@ export default function HowItWorks() {
   };
 
   return (
-    <section id="how-it-works" ref={sectionRef} className="relative py-24 px-6 bg-warm-white overflow-hidden">
+    <section id="how-it-works" ref={sectionRef} className="relative py-32 px-6 bg-gradient-to-b from-warm-white via-sage-50/30 to-mint-50/20 overflow-hidden">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 right-16 w-20 h-20 opacity-40 animate-float">
           <MoodIcon mood="happy" style={{ animationDelay: '2s' }} />
@@ -220,12 +220,14 @@ export default function HowItWorks() {
       </div>
 
       <div className="container mx-auto max-w-7xl relative" style={{ zIndex: 1 }}>
-        <div className="text-center mb-20 animate-fade-in">
-          <h2 className="text-display-sm font-light text-warm-black mb-4">
-            Your Path to Growth
-          </h2>
-          <p className="text-lg text-gentle-gray max-w-2xl mx-auto">
-            Each step brings you closer to wellness and peace of mind
+        <div className="text-center mb-24 animate-fade-in">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-forest">
+              Your Path to Growth
+            </h2>
+          </div>
+          <p className="text-xl text-gentle-gray/70 max-w-2xl mx-auto font-serif italic">
+            Like a vine reaching toward the sun, each step winds naturally along your journey toward wellness
           </p>
         </div>
 
@@ -252,39 +254,44 @@ export default function HowItWorks() {
                     }}
                   >
                   <div
-                    className={`bg-white/90 backdrop-blur-sm p-8 rounded-lg shadow-md border transition-all relative w-80 group hover:shadow-lg ${
+                    className={`bg-white/80 backdrop-blur-sm p-8 rounded-[2rem] shadow-xl border-2 transition-all relative w-80 group hover:shadow-2xl hover:-translate-y-1 ${
                       isActive
-                        ? 'border-warm-black/20 shadow-gray-200'
+                        ? 'border-sage-400/60 shadow-sage-200/50'
                         : hasBeenActive
-                        ? 'border-gray-300/40'
-                        : 'border-gray-200/30'
+                        ? 'border-sage-300/30'
+                        : 'border-sage-200/20'
                     }`}
                     style={{
                       animationDelay: `${index * 0.1}s`,
                     }}
                   >
-                    <div className="absolute -top-5 -left-5 w-16 h-16 bg-warm-black rounded-lg flex items-center justify-center shadow-md border-4 border-white group-hover:scale-105 transition-transform">
+                    <div className="absolute -top-5 -left-5 w-16 h-16 bg-gradient-to-br from-sage-500 to-mint-500 rounded-[1.5rem] flex items-center justify-center shadow-lg border-4 border-white group-hover:scale-110 transition-transform">
                       <Icon className="w-8 h-8 text-white" strokeWidth={2.5} />
                     </div>
 
 
                     <div className="flex items-center gap-2 mb-4 pt-6">
-                      <span className="text-xs font-medium text-gentle-gray uppercase tracking-wider">
-                        Step {step.number}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <div className={`w-2 h-2 rounded-full transition-colors ${
+                          isActive ? 'bg-sage-500 animate-pulse' : hasBeenActive ? 'bg-sage-400' : 'bg-sage-200'
+                        }`} />
+                        <span className="text-xs font-bold text-forest/50 uppercase tracking-wider">
+                          Step {step.number}
+                        </span>
+                      </div>
                     </div>
 
-                    <h3 className="text-xl font-normal text-warm-black mb-3 leading-tight">
+                    <h3 className="text-2xl font-bold text-forest mb-4 leading-tight">
                       {step.title}
                     </h3>
 
-                    <p className="text-gentle-gray leading-relaxed text-sm">
+                    <p className="text-gentle-gray/80 leading-relaxed text-base">
                       {step.description}
                     </p>
 
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-200 rounded-b-lg overflow-hidden">
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-sage-400/20 via-mint-400/20 to-sage-400/20 rounded-b-[2rem] overflow-hidden">
                       <div
-                        className="h-full bg-warm-black transition-all duration-700 ease-out"
+                        className="h-full bg-gradient-to-r from-sage-500 to-mint-500 transition-all duration-700 ease-out"
                         style={{ width: isActive ? '100%' : hasBeenActive ? '100%' : '0%' }}
                       />
                     </div>
