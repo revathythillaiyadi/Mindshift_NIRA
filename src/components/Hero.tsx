@@ -25,13 +25,13 @@ export default function Hero() {
           <div className="space-y-6 animate-fade-in">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight">
               <span className="block text-soft-gray mb-3">hey, feeling a little</span>
-              <span className="block bg-gradient-to-r from-sage-400 via-lavender-400 to-blush-300 bg-clip-text text-transparent">
+              <span className="block text-forest">
                 heavy lately?
               </span>
             </h1>
 
             <p className="text-2xl md:text-3xl text-gentle-gray/80 leading-relaxed max-w-3xl mx-auto font-serif italic" style={{ animationDelay: '0.2s' }}>
-              you're not alone. we're here to listen.
+              you're not alone. let's reframe those thoughts and reshape your world.
             </p>
 
             <div className="flex items-center justify-center gap-4 text-soft-gray/60 text-sm font-light pt-2" style={{ animationDelay: '0.4s' }}>
@@ -64,7 +64,7 @@ export default function Hero() {
                     type="submit"
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
-                    className="group px-8 py-4 bg-gradient-to-r from-sage-400 to-mint-400 text-white rounded-[2rem] hover:from-sage-500 hover:to-mint-500 transition-all hover:shadow-lg font-medium flex items-center justify-center gap-2 relative overflow-hidden"
+                    className="group px-8 py-4 bg-forest text-white rounded-[2rem] hover:bg-forest-light transition-all hover:shadow-lg font-medium flex items-center justify-center gap-2 relative overflow-hidden"
                   >
                     <span className={`transition-all duration-300 ${isHovered ? 'transform translate-x-1' : ''}`}>
                       begin

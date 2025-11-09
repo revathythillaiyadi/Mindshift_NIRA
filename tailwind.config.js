@@ -80,6 +80,11 @@ export default {
           800: '#695146',
           900: '#56443b',
         },
+        'forest': {
+          DEFAULT: '#475b47',
+          light: '#567056',
+          dark: '#3c4c3c',
+        },
       },
       fontFamily: {
         'sans': ['Quicksand', 'Nunito', 'system-ui', '-apple-system', 'sans-serif'],
