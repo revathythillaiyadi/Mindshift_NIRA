@@ -151,7 +151,7 @@ export default function HowItWorks() {
 
           <path
             ref={pathRef}
-            d="M 150 100 Q 200 200, 350 250 T 650 400 Q 750 450, 700 600 T 550 800 Q 500 850, 500 900"
+            d="M 200 50 Q 150 120, 180 180 Q 210 240, 350 280 Q 490 320, 600 380 Q 710 440, 750 520 Q 790 600, 700 680 Q 610 760, 520 800 Q 430 840, 450 900 Q 470 960, 500 980"
             fill="none"
             stroke="url(#pathGradient)"
             strokeWidth="3"
@@ -162,7 +162,7 @@ export default function HowItWorks() {
           />
 
           <path
-            d="M 150 100 Q 200 200, 350 250 T 650 400 Q 750 450, 700 600 T 550 800 Q 500 850, 500 900"
+            d="M 200 50 Q 150 120, 180 180 Q 210 240, 350 280 Q 490 320, 600 380 Q 710 440, 750 520 Q 790 600, 700 680 Q 610 760, 520 800 Q 430 840, 450 900 Q 470 960, 500 980"
             fill="none"
             stroke="url(#pathGradient)"
             strokeWidth="4"
