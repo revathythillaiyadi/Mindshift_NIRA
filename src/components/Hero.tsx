@@ -23,10 +23,7 @@ export default function Hero() {
         <div className="absolute inset-0 liquid-glass-overlay"></div>
       </div>
 
-      {/* Floating liquid glass orbs */}
-      <div className="absolute top-20 left-10 w-32 h-32 liquid-glass-orb animate-float" style={{ animationDelay: '0s' }}></div>
-      <div className="absolute bottom-32 right-20 w-40 h-40 liquid-glass-orb animate-float" style={{ animationDelay: '2s' }}></div>
-      <div className="absolute top-1/3 right-1/4 w-24 h-24 liquid-glass-orb animate-float" style={{ animationDelay: '4s' }}></div>
+      
 
       {/* Content */}
       <div className="container mx-auto max-w-5xl relative z-10">
