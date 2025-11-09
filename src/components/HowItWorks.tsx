@@ -306,17 +306,26 @@ export default function HowItWorks() {
                 </div>
 
                 {!isLast && (
-                  <div className="absolute left-1/2 -translate-x-1/2 w-1 h-32 z-0" style={{ top: '60%' }}>
+                  <div className="absolute left-1/2 -translate-x-1/2 w-2 h-40 z-0" style={{ top: '65%' }}>
                     <div
-                      className="w-full h-full bg-gradient-to-b from-sage-400 to-mint-400 transition-all duration-700 rounded-full"
+                      className="w-full h-full bg-gradient-to-b from-sage-500 via-mint-400 to-sage-400 transition-all duration-700 rounded-full shadow-lg"
                       style={{
-                        opacity: hasBeenActive ? 0.5 : 0.15,
-                        transform: `scaleY(${hasBeenActive ? 1 : 0})`,
+                        opacity: hasBeenActive ? 0.7 : 0.2,
+                        transform: `scaleY(${hasBeenActive ? 1 : 0.3})`,
                         transformOrigin: 'top',
                       }}
                     />
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-sage-400" style={{ opacity: hasBeenActive ? 0.8 : 0.2 }} />
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-mint-400" style={{ opacity: hasBeenActive && index < activeStep ? 0.8 : 0.2 }} />
+                    <div
+                      className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-sage-500 shadow-md transition-all duration-500"
+                      style={{ opacity: hasBeenActive ? 1 : 0.3 }}
+                    />
+                    <div
+                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-mint-500 shadow-md transition-all duration-500"
+                      style={{
+                        opacity: hasBeenActive && index < activeStep ? 1 : 0.3,
+                        transform: `scale(${hasBeenActive && index < activeStep ? 1.2 : 1})`,
+                      }}
+                    />
                   </div>
                 )}
               </div>
