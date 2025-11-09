@@ -70,13 +70,24 @@ export default function HowItWorks() {
   }, []);
 
   const ringPositions = [
-    { cx: 50, cy: 50, r: 3, distance: 50 },
-    { cx: 50, cy: 50, r: 10, distance: 120 },
-    { cx: 50, cy: 50, r: 17, distance: 190 },
-    { cx: 50, cy: 50, r: 24, distance: 260 },
-    { cx: 50, cy: 50, r: 31, distance: 330 },
-    { cx: 50, cy: 50, r: 38, distance: 400 },
+    { cx: 50, cy: 50, r: 8, angle: 0 },
+    { cx: 50, cy: 50, r: 15, angle: 60 },
+    { cx: 50, cy: 50, r: 22, angle: 120 },
+    { cx: 50, cy: 50, r: 29, angle: 180 },
+    { cx: 50, cy: 50, r: 36, angle: 240 },
+    { cx: 50, cy: 50, r: 43, angle: 300 },
   ];
+
+  const getCardPosition = (index: number) => {
+    const ring = ringPositions[index];
+    const angleRad = (ring.angle * Math.PI) / 180;
+    const distance = ring.r * 10;
+
+    return {
+      x: Math.cos(angleRad) * distance,
+      y: Math.sin(angleRad) * distance,
+    };
+  };
 
   return (
     <section id="how-it-works" ref={sectionRef} className="relative py-32 px-6 bg-warm-white overflow-hidden">
@@ -106,9 +117,9 @@ export default function HowItWorks() {
                 cy="50"
                 r={ring.r}
                 fill="none"
-                stroke="#475b47"
-                strokeWidth={i % 2 === 0 ? "0.3" : "0.2"}
-                opacity={isVisible ? 0.4 - i * 0.02 : 0}
+                stroke="#4a4a4a"
+                strokeWidth={i % 2 === 0 ? "0.25" : "0.15"}
+                opacity={isVisible ? 0.35 - i * 0.02 : 0}
                 filter="url(#roughen)"
                 className="transition-all duration-1000 ease-out"
                 style={{
@@ -118,44 +129,6 @@ export default function HowItWorks() {
                   transformOrigin: 'center',
                 }}
               />
-            );
-          })}
-        </svg>
-
-        <svg
-          viewBox="0 0 100 100"
-          className="absolute inset-0 w-full h-full"
-        >
-          {ringPositions.map((pos, index) => {
-            const isActive = index === activeStep;
-            const isPassed = index < activeStep;
-
-            return (
-              <g key={index}>
-                <circle
-                  cx={pos.cx}
-                  cy={pos.cy}
-                  r={pos.r}
-                  fill={isActive ? "#475b47" : isPassed ? "#8ba98b" : "transparent"}
-                  className="transition-all duration-700"
-                  style={{
-                    opacity: isActive ? 1 : isPassed ? 0.6 : 0,
-                    filter: isActive ? 'drop-shadow(0 0 8px rgba(71, 91, 71, 0.8))' : 'none',
-                  }}
-                />
-                {isActive && (
-                  <circle
-                    cx={pos.cx}
-                    cy={pos.cy}
-                    r={pos.r + 2}
-                    fill="none"
-                    stroke="#475b47"
-                    strokeWidth="0.5"
-                    opacity="0.6"
-                    className="animate-ping"
-                  />
-                )}
-              </g>
             );
           })}
         </svg>
@@ -174,8 +147,7 @@ export default function HowItWorks() {
         <div className="space-y-[25vh]">
           {steps.map((step, index) => {
             const Icon = step.icon;
-            const isEven = index % 2 === 0;
-            const ringDistance = ringPositions[index].distance;
+            const position = getCardPosition(index);
 
             return (
               <div
@@ -185,9 +157,11 @@ export default function HowItWorks() {
                 style={{ minHeight: '20vh' }}
               >
                 <div
-                  className={`absolute ${isEven ? 'left-0' : 'right-0'}`}
+                  className="absolute"
                   style={{
-                    [isEven ? 'left' : 'right']: `calc(50% - ${ringDistance}px)`,
+                    left: '50%',
+                    top: '50%',
+                    transform: `translate(calc(-50% + ${position.x}px), calc(-50% + ${position.y}px))`,
                   }}
                 >
                   <div className="bg-warm-white p-6 rounded-2xl shadow-xl border-2 border-forest/10 hover:shadow-2xl hover:border-forest/20 transition-all relative w-72">
@@ -208,27 +182,6 @@ export default function HowItWorks() {
                     <p className="text-gentle-gray/80 leading-relaxed text-base">
                       {step.description}
                     </p>
-
-                    <svg
-                      className={`absolute top-1/2 -translate-y-1/2 ${
-                        isEven ? '-right-12' : '-left-12'
-                      } w-12 h-1 hidden lg:block`}
-                      style={{
-                        opacity: activeStep === index ? 1 : 0,
-                        transition: 'opacity 0.7s ease',
-                      }}
-                    >
-                      <line
-                        x1={isEven ? "0" : "12"}
-                        y1="0.5"
-                        x2={isEven ? "12" : "0"}
-                        y2="0.5"
-                        stroke="#475b47"
-                        strokeWidth="2"
-                        strokeDasharray="3 3"
-                        className="animate-pulse-gentle"
-                      />
-                    </svg>
                   </div>
                 </div>
               </div>
