@@ -2,8 +2,7 @@ import { Shield, Phone, Heart } from 'lucide-react';
 
 export default function SafetyGuarantee() {
   return (
-    <section className="py-16 px-6 bg-gradient-to-br from-mint-400/80 via-sage-400/80 to-peach-300/70 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-sunrise-200/20 to-lavender-200/20"></div>
+    <section className="py-16 px-6 bg-forest relative overflow-hidden">
 
       <div className="container mx-auto max-w-6xl relative z-10">
         <div className="text-center mb-12">
@@ -24,7 +23,7 @@ export default function SafetyGuarantee() {
 
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center bg-sage-50/50 p-6 rounded-pebble">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-mint-400 to-sage-400 rounded-full mb-4 shadow-md">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-forest rounded-full mb-4 shadow-md">
                 <Phone className="w-7 h-7 text-white" strokeWidth={2} />
               </div>
               <h3 className="text-warm-gray font-bold text-lg mb-2">24/7 Crisis Access</h3>
@@ -34,7 +33,7 @@ export default function SafetyGuarantee() {
             </div>
 
             <div className="text-center bg-mint-50/50 p-6 rounded-pebble">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-sage-400 to-mint-400 rounded-full mb-4 shadow-md">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-forest rounded-full mb-4 shadow-md">
                 <Shield className="w-7 h-7 text-white" strokeWidth={2} />
               </div>
               <h3 className="text-warm-gray font-bold text-lg mb-2">Protected & Private</h3>
@@ -44,7 +43,7 @@ export default function SafetyGuarantee() {
             </div>
 
             <div className="text-center bg-peach-50/50 p-6 rounded-pebble">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-peach-400 to-sunrise-400 rounded-full mb-4 shadow-md">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-forest rounded-full mb-4 shadow-md">
                 <Heart className="w-7 h-7 text-white" strokeWidth={2} />
               </div>
               <h3 className="text-warm-gray font-bold text-lg mb-2">Professional Support</h3>
@@ -61,14 +60,14 @@ export default function SafetyGuarantee() {
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="tel:988"
-                className="bg-gradient-to-r from-sage-500 to-mint-500 text-white px-8 py-4 rounded-pebble font-bold hover:shadow-lg transition-all inline-flex items-center gap-2"
+                className="bg-forest text-white px-8 py-4 rounded-pebble font-bold hover:bg-forest-light hover:shadow-lg transition-all inline-flex items-center gap-2"
               >
                 <Phone className="w-5 h-5" />
                 Call 988 (US)
               </a>
               <a
                 href="tel:911"
-                className="bg-gradient-to-r from-sunrise-500 to-peach-500 text-white px-8 py-4 rounded-pebble font-bold hover:shadow-lg transition-all inline-flex items-center gap-2"
+                className="bg-forest text-white px-8 py-4 rounded-pebble font-bold hover:bg-forest-light hover:shadow-lg transition-all inline-flex items-center gap-2"
               >
                 <Phone className="w-5 h-5" />
                 Emergency: 911

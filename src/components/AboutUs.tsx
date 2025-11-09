@@ -32,7 +32,7 @@ export default function AboutUs() {
           <div className="space-y-6">
             <div className="bg-sage-50/70 backdrop-blur-sm p-6 rounded-pebble border border-sage-100/50 shadow-md hover:shadow-lg transition-all">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-sage-400 to-mint-400 rounded-pebble flex items-center justify-center flex-shrink-0 shadow-md">
+                <div className="w-14 h-14 bg-forest rounded-pebble flex items-center justify-center flex-shrink-0 shadow-md">
                   <Shield className="w-7 h-7 text-white" strokeWidth={2} />
                 </div>
                 <div>
@@ -46,7 +46,7 @@ export default function AboutUs() {
 
             <div className="bg-mint-50/70 backdrop-blur-sm p-6 rounded-pebble border border-mint-100/50 shadow-md hover:shadow-lg transition-all">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-mint-400 to-sage-500 rounded-pebble flex items-center justify-center flex-shrink-0 shadow-md">
+                <div className="w-14 h-14 bg-forest rounded-pebble flex items-center justify-center flex-shrink-0 shadow-md">
                   <Award className="w-7 h-7 text-white" strokeWidth={2} />
                 </div>
                 <div>
@@ -60,7 +60,7 @@ export default function AboutUs() {
 
             <div className="bg-peach-50/70 backdrop-blur-sm p-6 rounded-pebble border border-peach-100/50 shadow-md hover:shadow-lg transition-all">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-peach-400 to-sunrise-400 rounded-pebble flex items-center justify-center flex-shrink-0 shadow-md">
+                <div className="w-14 h-14 bg-forest rounded-pebble flex items-center justify-center flex-shrink-0 shadow-md">
                   <Users className="w-7 h-7 text-white" strokeWidth={2} />
                 </div>
                 <div>

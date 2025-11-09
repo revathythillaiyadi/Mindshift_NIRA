@@ -22,7 +22,7 @@ export default function MeetNira() {
   }, [visibleMessages, messages.length]);
 
   return (
-    <section className="py-24 px-6 bg-gradient-to-br from-paleblue-50/40 via-warm-white to-lavender-50/30 relative overflow-hidden">
+    <section className="py-24 px-6 bg-warm-white relative overflow-hidden">
       <div className="absolute top-20 right-10 w-32 h-32 opacity-10 animate-float">
         <Heart className="w-full h-full text-blush-300" />
       </div>

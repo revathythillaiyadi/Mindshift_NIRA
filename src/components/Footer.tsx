@@ -2,7 +2,7 @@ import { Brain, Facebook, Twitter, Instagram, Linkedin, Mail } from 'lucide-reac
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-sage-600 via-sage-700 to-mint-700 text-white pt-16 pb-8 px-6">
+    <footer className="bg-forest text-white pt-16 pb-8 px-6">
       <div className="container mx-auto max-w-7xl">
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           <div className="md:col-span-2">

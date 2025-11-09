@@ -33,7 +33,7 @@ const resources = [
 
 export default function Resources() {
   return (
-    <section id="resources" className="py-20 px-6 bg-gradient-to-br from-peach-50/30 via-warm-white to-mint-50/20">
+    <section id="resources" className="py-20 px-6 bg-warm-white">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-forest mb-4">
@@ -75,13 +75,13 @@ export default function Resources() {
               If you're experiencing a mental health crisis, please reach out to a trained professional immediately.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <a href="tel:988" className="bg-forest text-white px-8 py-3 rounded-pebble font-bold hover:bg-forest-light hover:shadow-lg transition-all">
+              <a href="tel:988" className="bg-white text-forest px-8 py-3 rounded-pebble font-bold hover:bg-white/90 hover:shadow-lg transition-all border-2 border-white">
                 Call 988 (US)
               </a>
-              <a href="tel:911" className="bg-forest text-white px-8 py-3 rounded-pebble font-bold hover:bg-forest-light hover:shadow-lg transition-all">
+              <a href="tel:911" className="bg-white text-forest px-8 py-3 rounded-pebble font-bold hover:bg-white/90 hover:shadow-lg transition-all border-2 border-white">
                 Emergency: 911
               </a>
-              <a href="#" className="bg-forest-dark text-white px-8 py-3 rounded-pebble font-bold hover:bg-forest-light transition-all">
+              <a href="#" className="bg-white text-forest px-8 py-3 rounded-pebble font-bold hover:bg-white/90 transition-all border-2 border-white">
                 International Resources
               </a>
             </div>

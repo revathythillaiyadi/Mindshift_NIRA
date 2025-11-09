@@ -44,7 +44,7 @@ export default function FAQs() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faqs" className="py-20 px-6 bg-gradient-to-br from-lavender-50/40 via-warm-white to-sage-50/30">
+    <section id="faqs" className="py-20 px-6 bg-warm-white">
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-warm-gray mb-4">
