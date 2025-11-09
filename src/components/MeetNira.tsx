@@ -67,19 +67,19 @@ export default function MeetNira() {
                     <div className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm ${
                       message.type === 'bot'
                         ? 'bg-gradient-to-br from-sage-300/60 to-mint-300/60 backdrop-blur-sm'
-                        : 'bg-gradient-to-br from-blush-300/70 to-lavender-300/60 backdrop-blur-sm'
+                        : 'bg-gradient-to-br from-mint-300/70 to-sage-300/60 backdrop-blur-sm'
                     }`}>
                       {message.type === 'bot' ? (
                         <Bot className="w-6 h-6 text-sage-700" strokeWidth={1.5} />
                       ) : (
-                        <User className="w-6 h-6 text-blush-700" strokeWidth={1.5} />
+                        <User className="w-6 h-6 text-sage-700" strokeWidth={1.5} />
                       )}
                     </div>
                     <div className={`max-w-[75%] ${message.type === 'user' ? 'items-end' : 'items-start'} flex flex-col`}>
                       <div className={`px-6 py-4 rounded-[1.5rem] ${
                         message.type === 'bot'
                           ? 'bg-white/80 backdrop-blur-sm text-soft-gray shadow-sm border border-lavender-100/40'
-                          : 'bg-gradient-to-br from-blush-200/60 to-lavender-200/50 backdrop-blur-sm text-soft-gray'
+                          : 'bg-gradient-to-br from-mint-200/60 to-sage-200/50 backdrop-blur-sm text-soft-gray'
                       }`}>
                         <p className="text-sm leading-relaxed lowercase">{message.text}</p>
                       </div>
