@@ -11,7 +11,7 @@
 
   body {
     @apply font-body antialiased;
-    background-color: #FAF9F7;
+    background-color: #FBF8F3;
     color: #5A5A5A;
     letter-spacing: 0.01em;
   }
