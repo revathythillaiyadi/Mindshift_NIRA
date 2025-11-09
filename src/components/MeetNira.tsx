@@ -32,7 +32,7 @@ export default function MeetNira() {
           <h2 className="text-4xl md:text-5xl font-bold text-soft-gray">
             meet nira, your companion
           </h2>
-          <p className="text-xl text-gentle-gray/70 max-w-2xl mx-auto font-serif italic">
+          <p className="text-xl text-forest/70 max-w-2xl mx-auto font-serif italic">
             a gentle presence, here to hold space for you
           </p>
           <p className="text-sm text-forest/50 lowercase">
