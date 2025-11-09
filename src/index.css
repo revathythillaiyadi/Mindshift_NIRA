@@ -329,6 +329,20 @@
       background-position: 200% 0;
     }
   }
+
+  .tree-ring {
+    position: relative;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at center, transparent 10%, rgba(45, 95, 79, 0.08) 10%, rgba(45, 95, 79, 0.08) 12%, transparent 12%),
+      radial-gradient(circle at center, transparent 20%, rgba(45, 95, 79, 0.12) 20%, rgba(45, 95, 79, 0.12) 23%, transparent 23%),
+      radial-gradient(circle at center, transparent 30%, rgba(45, 95, 79, 0.09) 30%, rgba(45, 95, 79, 0.09) 33%, transparent 33%),
+      radial-gradient(circle at center, transparent 40%, rgba(45, 95, 79, 0.11) 40%, rgba(45, 95, 79, 0.11) 44%, transparent 44%),
+      radial-gradient(circle at center, transparent 50%, rgba(45, 95, 79, 0.07) 50%, rgba(45, 95, 79, 0.07) 54%, transparent 54%),
+      radial-gradient(circle at center, transparent 60%, rgba(45, 95, 79, 0.10) 60%, rgba(45, 95, 79, 0.10) 65%, transparent 65%),
+      radial-gradient(circle at center, transparent 70%, rgba(45, 95, 79, 0.08) 70%, rgba(45, 95, 79, 0.08) 76%, transparent 76%),
+      radial-gradient(circle at center, transparent 80%, rgba(45, 95, 79, 0.06) 80%, rgba(45, 95, 79, 0.06) 87%, transparent 87%);
+  }
 }
 
 @supports (animation-timeline: view()) {
