@@ -31,7 +31,13 @@ const services = [
 
 export default function Services() {
   return (
-    <section id="services" className="py-20 px-6 section-liquid-blend relative overflow-hidden">
+    <section id="services" className="py-20 px-6 bg-gradient-to-b from-sage-50/30 via-warm-white to-mint-50/20 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute bottom-1/4 left-16 w-20 h-20 opacity-35 animate-float">
+          <MoodIcon mood="energetic" style={{ animationDelay: '1s' }} />
+        </div>
+      </div>
+
       <div className="container mx-auto max-w-7xl relative">
         <div className="text-center mb-16 animate-fade-in">
           <div className="inline-flex items-center gap-2 mb-4">
@@ -50,7 +56,7 @@ export default function Services() {
             return (
               <div
                 key={service.title}
-                className="liquid-glass-card group relative overflow-hidden animate-fade-in"
+                className="bg-white/80 backdrop-blur-sm p-8 rounded-[2rem] shadow-lg border-2 border-sage-100/50 hover:shadow-xl transition-all hover:-translate-y-2 group relative overflow-hidden animate-fade-in"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
 

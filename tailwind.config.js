@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        'warm-white': '#FBF8F3',
+        'warm-white': '#FAF9F7',
         'soft-gray': '#5A5A5A',
         'gentle-gray': '#8B8B8B',
         'sage': {

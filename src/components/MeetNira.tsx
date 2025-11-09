@@ -24,6 +24,10 @@ export default function MeetNira() {
 
   return (
     <section className="py-24 px-6 bg-gradient-to-b from-mint-50/20 via-warm-white to-sage-50/30 relative overflow-hidden">
+      <div className="absolute top-1/4 right-16 w-20 h-20 opacity-35 animate-float">
+        <MoodIcon mood="creative" />
+      </div>
+
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-16 space-y-4 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-soft-gray">
