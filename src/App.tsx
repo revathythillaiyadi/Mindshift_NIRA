@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
+import MeetNira from './components/MeetNira';
 import HowItWorks from './components/HowItWorks';
 import Services from './components/Services';
 import AboutUs from './components/AboutUs';
@@ -26,16 +27,17 @@ function App() {
   }, [isDark]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
+    <div className="min-h-screen bg-warm-white transition-colors">
       <Header isDark={isDark} setIsDark={setIsDark} />
       <main>
         <Hero />
+        <MeetNira />
         <HowItWorks />
         <Services />
+        <SafetyGuarantee />
         <AboutUs />
         <Resources />
         <FAQs />
-        <SafetyGuarantee />
       </main>
       <Footer />
     </div>
