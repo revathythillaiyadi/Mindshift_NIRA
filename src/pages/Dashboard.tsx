@@ -5,16 +5,17 @@ import ChatArea from '../components/dashboard/ChatArea';
 import JournalArea from '../components/dashboard/JournalArea';
 import RightPanel from '../components/dashboard/RightPanel';
 import SettingsPanel from '../components/dashboard/SettingsPanel';
+import { useTheme } from '../contexts/ThemeContext';
 
 type View = 'chat' | 'journal' | 'settings' | 'goals';
 
 export default function Dashboard() {
   const [currentView, setCurrentView] = useState<View>('chat');
   const [selectedRegion, setSelectedRegion] = useState('US');
-  const [darkMode, setDarkMode] = useState(false);
+  const { isDark, toggleTheme } = useTheme();
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'dark' : ''}`}>
+    <div className="min-h-screen">
       <div className="flex h-screen bg-gradient-to-br from-white via-blue-50/30 to-teal-50/20 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors">
         <Sidebar currentView={currentView} onViewChange={setCurrentView} />
 
@@ -22,8 +23,8 @@ export default function Dashboard() {
           <DashboardHeader
             selectedRegion={selectedRegion}
             onRegionChange={setSelectedRegion}
-            darkMode={darkMode}
-            onDarkModeToggle={() => setDarkMode(!darkMode)}
+            darkMode={isDark}
+            onDarkModeToggle={toggleTheme}
           />
 
           <div className="flex-1 flex overflow-hidden">
