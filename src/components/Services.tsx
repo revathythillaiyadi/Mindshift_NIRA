@@ -31,6 +31,15 @@ const services = [
 export default function Services() {
   return (
     <section id="services" className="py-20 px-6 bg-gradient-to-b from-sage-50/30 via-warm-white to-mint-50/20 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute bottom-1/4 -left-20 w-[200px] h-[200px] opacity-25 animate-breathing" style={{ animationDelay: '1s' }}>
+          <div className="tree-ring-complex">
+            <div className="ring ring-1"></div>
+            <div className="ring ring-2"></div>
+            <div className="ring ring-3"></div>
+          </div>
+        </div>
+      </div>
       <div className="container mx-auto max-w-7xl relative">
         <div className="text-center mb-16 animate-fade-in">
           <div className="inline-flex items-center gap-2 mb-4">

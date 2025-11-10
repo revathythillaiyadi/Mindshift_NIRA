@@ -1,5 +1,4 @@
 import { Bot, User, Mic, Smile, ArrowRight } from 'lucide-react';
-import MoodIcon from './MoodIcon';
 import { useState, useEffect } from 'react';
 
 export default function MeetNira() {
@@ -24,8 +23,15 @@ export default function MeetNira() {
 
   return (
     <section className="py-24 px-6 bg-gradient-to-b from-mint-50/20 via-warm-white to-sage-50/30 relative overflow-hidden">
-      <div className="absolute top-1/4 right-16 w-20 h-20 opacity-35 animate-float">
-        <MoodIcon mood="creative" />
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 right-16 w-[220px] h-[220px] opacity-25 animate-breathing" style={{ animationDelay: '2s' }}>
+          <div className="tree-ring-complex">
+            <div className="ring ring-1"></div>
+            <div className="ring ring-2"></div>
+            <div className="ring ring-3"></div>
+            <div className="ring ring-4"></div>
+          </div>
+        </div>
       </div>
 
       <div className="container mx-auto max-w-7xl">

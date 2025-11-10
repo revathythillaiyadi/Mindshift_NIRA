@@ -11,12 +11,30 @@ export default function Hero() {
     <section className="relative min-h-[90vh] flex items-center justify-center px-6 overflow-hidden bg-white">
       {/* Tree Rings Background */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Multiple tree ring patterns */}
-        <div className="absolute top-20 -left-40 w-[600px] h-[600px] tree-ring opacity-30 animate-breathing"></div>
-        <div className="absolute top-0 right-10 w-[400px] h-[400px] tree-ring opacity-25 animate-breathing" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-10 left-1/4 w-[500px] h-[500px] tree-ring opacity-20 animate-breathing" style={{ animationDelay: '4s' }}></div>
-        <div className="absolute bottom-20 right-1/4 w-[350px] h-[350px] tree-ring opacity-25 animate-breathing" style={{ animationDelay: '6s' }}></div>
-        <div className="absolute top-1/3 left-1/2 w-[450px] h-[450px] tree-ring opacity-15 animate-breathing" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-20 -left-20 w-[400px] h-[400px] animate-breathing">
+          <div className="tree-ring-complex">
+            <div className="ring ring-1"></div>
+            <div className="ring ring-2"></div>
+            <div className="ring ring-3"></div>
+            <div className="ring ring-4"></div>
+            <div className="ring ring-5"></div>
+          </div>
+        </div>
+        <div className="absolute -top-10 right-20 w-[300px] h-[300px] animate-breathing" style={{ animationDelay: '2s' }}>
+          <div className="tree-ring-complex">
+            <div className="ring ring-1"></div>
+            <div className="ring ring-2"></div>
+            <div className="ring ring-3"></div>
+            <div className="ring ring-4"></div>
+          </div>
+        </div>
+        <div className="absolute bottom-10 right-1/4 w-[250px] h-[250px] animate-breathing" style={{ animationDelay: '4s' }}>
+          <div className="tree-ring-complex">
+            <div className="ring ring-1"></div>
+            <div className="ring ring-2"></div>
+            <div className="ring ring-3"></div>
+          </div>
+        </div>
       </div>
 
       {/* Content */}
