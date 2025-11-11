@@ -76,10 +76,11 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
         </div>
 
         <div className="space-y-2">
-          {chatHistory.map((chat) => (
+          {chatHistory.map((chat, index) => (
             <div
               key={chat.id}
-              className="group flex items-start gap-2 p-3 rounded-[1rem] hover:bg-sage-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+              className="group flex items-start gap-2 p-3 rounded-[1rem] hover:bg-sage-50 dark:hover:bg-gray-700 transition-all duration-300 cursor-pointer animate-chat-slide-fade hover:translate-x-1 hover:shadow-md"
+              style={{ animationDelay: `${index * 50}ms` }}
             >
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-forest dark:text-gray-200 truncate lowercase">

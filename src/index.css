@@ -330,6 +330,86 @@
     }
   }
 
+  @keyframes streak-glow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(119, 168, 148, 0);
+    }
+    50% {
+      box-shadow: 0 0 20px 5px rgba(119, 168, 148, 0.4), 0 0 30px 10px rgba(119, 168, 148, 0.2);
+    }
+  }
+
+  @keyframes streak-pop {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.08);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes checkmark-draw {
+    0% {
+      stroke-dashoffset: 100;
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+  }
+
+  @keyframes checkmark-circle {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes chat-slide-fade {
+    0% {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-streak-glow {
+    animation: streak-glow 1.5s ease-in-out;
+  }
+
+  .animate-streak-pop {
+    animation: streak-pop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .animate-checkmark-draw {
+    animation: checkmark-draw 0.5s ease-out forwards;
+  }
+
+  .animate-checkmark-circle {
+    animation: checkmark-circle 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  }
+
+  .animate-chat-slide-fade {
+    animation: chat-slide-fade 0.3s ease-out;
+  }
+
   .tree-ring {
     position: relative;
     background: transparent;

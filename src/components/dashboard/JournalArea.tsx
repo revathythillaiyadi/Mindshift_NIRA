@@ -252,7 +252,7 @@ export default function JournalArea() {
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{entry.emoji}</span>
                   <div>
-                    <h3 className="font-semibold text-gray-800 dark:text-white">{entry.title}</h3>
+                    <h3 className="font-semibold text-gray-800 dark:text-white lowercase">{entry.title}</h3>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {entry.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>

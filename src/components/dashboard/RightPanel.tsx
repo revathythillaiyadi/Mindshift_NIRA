@@ -1,5 +1,5 @@
-import { AlertCircle, TrendingUp, Flame, Target, Bell } from 'lucide-react';
-import { useState } from 'react';
+import { AlertCircle, TrendingUp, Flame, Target, Bell, Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 interface RightPanelProps {
   selectedRegion: string;
@@ -50,8 +50,27 @@ const regionalContacts: Record<string, { crisis: string; hotline: string; emerge
 
 export default function RightPanel({ selectedRegion }: RightPanelProps) {
   const [showSOSModal, setShowSOSModal] = useState(false);
+  const [streakCelebration, setStreakCelebration] = useState(false);
+  const [completedGoals, setCompletedGoals] = useState<Set<string>>(new Set());
 
   const contacts = regionalContacts[selectedRegion] || regionalContacts.US;
+
+  const triggerStreakCelebration = () => {
+    setStreakCelebration(true);
+    setTimeout(() => setStreakCelebration(false), 1500);
+  };
+
+  const toggleGoalCompletion = (goalName: string) => {
+    setCompletedGoals(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(goalName)) {
+        newSet.delete(goalName);
+      } else {
+        newSet.add(goalName);
+      }
+      return newSet;
+    });
+  };
 
   const moodData = [
     { date: 'Mon', mood: 7 },
@@ -77,26 +96,29 @@ export default function RightPanel({ selectedRegion }: RightPanelProps) {
             SOS - Get Help Now
           </button>
 
-          <div className="bg-gradient-to-br from-blue-50 to-teal-50 dark:from-gray-700 dark:to-gray-600 rounded-[1rem] p-4 transition-colors">
+          <div
+            className={`bg-gradient-to-br from-sage-50 to-mint-50 dark:from-gray-700 dark:to-gray-600 rounded-[1.5rem] p-4 transition-all cursor-pointer ${streakCelebration ? 'animate-streak-glow animate-streak-pop' : ''}`}
+            onClick={triggerStreakCelebration}
+          >
             <div className="flex items-center gap-2 mb-3">
               <Flame className="w-5 h-5 text-orange-500" />
-              <h3 className="font-semibold text-gray-800 dark:text-white">Current Streak</h3>
+              <h3 className="font-semibold text-gray-800 dark:text-white lowercase">current streak</h3>
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-4xl font-bold bg-gradient-to-r from-sage-600 to-mint-600 bg-clip-text text-transparent">
                 7
               </span>
-              <span className="text-gray-600 dark:text-gray-300">days</span>
+              <span className="text-gray-600 dark:text-gray-300 lowercase">days</span>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-              Keep it up! You're building healthy habits.
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 lowercase">
+              keep it up! you're building healthy habits.
             </p>
           </div>
 
           <div className="bg-white dark:bg-gray-700 rounded-[1rem] p-4 border border-blue-100 dark:border-gray-600 transition-colors">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-sage-600 dark:text-sage-400" />
-              <h3 className="font-semibold text-gray-800 dark:text-white">Mood Tracker</h3>
+              <h3 className="font-semibold text-gray-800 dark:text-white lowercase">mood tracker</h3>
             </div>
             <div className="space-y-2">
               <div className="flex items-end justify-between h-32 gap-1">
@@ -111,43 +133,88 @@ export default function RightPanel({ selectedRegion }: RightPanelProps) {
                 ))}
               </div>
               <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                <span>Last 7 days</span>
-                <span className="text-teal-600 dark:text-teal-400 font-medium">Trending up</span>
+                <span>last 7 days</span>
+                <span className="text-teal-600 dark:text-teal-400 font-medium">trending up</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-700 rounded-[1rem] p-4 border border-blue-100 dark:border-gray-600 transition-colors">
+          <div className="bg-white dark:bg-gray-700 rounded-[1.5rem] p-4 border border-sage-100 dark:border-gray-600 transition-colors shadow-sm">
             <div className="flex items-center gap-2 mb-4">
               <Target className="w-5 h-5 text-sage-600 dark:text-sage-400" />
-              <h3 className="font-semibold text-gray-800 dark:text-white">Goals Progress</h3>
+              <h3 className="font-semibold text-gray-800 dark:text-white lowercase">goals progress</h3>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Daily Check-in</span>
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => toggleGoalCompletion('daily-checkin')}
+                      className="relative w-5 h-5 rounded-full border-2 border-sage-500 dark:border-sage-400 transition-all hover:scale-110"
+                    >
+                      {completedGoals.has('daily-checkin') && (
+                        <div className="absolute inset-0">
+                          <svg className="w-full h-full" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" fill="currentColor" className="text-sage-500 dark:text-sage-400 animate-checkmark-circle" />
+                            <path d="M7 13l3 3 7-7" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="animate-checkmark-draw" strokeDasharray="100" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    <span className="text-sm text-gray-700 dark:text-gray-300 lowercase">daily check-in</span>
+                  </div>
                   <span className="text-sm font-medium text-sage-600 dark:text-sage-400">7/7</span>
                 </div>
-                <div className="h-2 bg-blue-100 dark:bg-gray-600 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-sage-500 to-mint-500 rounded-full" style={{ width: '100%' }} />
+                <div className="h-2 bg-sage-100 dark:bg-gray-600 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-sage-500 to-mint-500 rounded-full transition-all duration-500" style={{ width: '100%' }} />
                 </div>
               </div>
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Journal Entries</span>
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => toggleGoalCompletion('journal-entries')}
+                      className="relative w-5 h-5 rounded-full border-2 border-sage-500 dark:border-sage-400 transition-all hover:scale-110"
+                    >
+                      {completedGoals.has('journal-entries') && (
+                        <div className="absolute inset-0">
+                          <svg className="w-full h-full" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" fill="currentColor" className="text-sage-500 dark:text-sage-400 animate-checkmark-circle" />
+                            <path d="M7 13l3 3 7-7" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="animate-checkmark-draw" strokeDasharray="100" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    <span className="text-sm text-gray-700 dark:text-gray-300 lowercase">journal entries</span>
+                  </div>
                   <span className="text-sm font-medium text-sage-600 dark:text-sage-400">4/10</span>
                 </div>
-                <div className="h-2 bg-blue-100 dark:bg-gray-600 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-sage-500 to-mint-500 rounded-full" style={{ width: '40%' }} />
+                <div className="h-2 bg-sage-100 dark:bg-gray-600 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-sage-500 to-mint-500 rounded-full transition-all duration-500" style={{ width: '40%' }} />
                 </div>
               </div>
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Mindfulness Minutes</span>
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => toggleGoalCompletion('mindfulness')}
+                      className="relative w-5 h-5 rounded-full border-2 border-sage-500 dark:border-sage-400 transition-all hover:scale-110"
+                    >
+                      {completedGoals.has('mindfulness') && (
+                        <div className="absolute inset-0">
+                          <svg className="w-full h-full" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" fill="currentColor" className="text-sage-500 dark:text-sage-400 animate-checkmark-circle" />
+                            <path d="M7 13l3 3 7-7" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="animate-checkmark-draw" strokeDasharray="100" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                    <span className="text-sm text-gray-700 dark:text-gray-300 lowercase">mindfulness minutes</span>
+                  </div>
                   <span className="text-sm font-medium text-sage-600 dark:text-sage-400">45/60</span>
                 </div>
-                <div className="h-2 bg-blue-100 dark:bg-gray-600 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-sage-500 to-mint-500 rounded-full" style={{ width: '75%' }} />
+                <div className="h-2 bg-sage-100 dark:bg-gray-600 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-sage-500 to-mint-500 rounded-full transition-all duration-500" style={{ width: '75%' }} />
                 </div>
               </div>
             </div>
@@ -201,7 +268,7 @@ export default function RightPanel({ selectedRegion }: RightPanelProps) {
               <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
                 <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Emergency Resources</h2>
+              <h2 className="text-2xl font-bold lowercase text-gray-800 dark:text-white">emergency resources</h2>
             </div>
 
             <p className="text-gray-600 dark:text-gray-300 mb-6">

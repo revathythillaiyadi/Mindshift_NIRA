@@ -151,7 +151,7 @@ export default function SettingsPanel() {
               }`}
             >
               <div className="text-left">
-                <h3 className="font-semibold text-gray-800 dark:text-white">{voice.name}</h3>
+                <h3 className="font-semibold text-gray-800 dark:text-white lowercase">{voice.name}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{voice.description}</p>
               </div>
               <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
