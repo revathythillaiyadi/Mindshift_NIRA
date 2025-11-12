@@ -50,7 +50,7 @@ export default function Hero() {
       <div className="container mx-auto max-w-5xl relative z-10">
         <div className="text-center space-y-8 animate-fade-in">
           {/* Headline */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight text-forest dark:text-sage-100 min-h-[1.2em]">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight text-forest dark:text-sage-100 transition-colors min-h-[1.2em]">
             {displayedText}
             <span className="animate-pulse">|</span>
           </h1>
