@@ -101,7 +101,7 @@ export default function RightPanel({ selectedRegion }: RightPanelProps) {
             onClick={triggerStreakCelebration}
           >
             <div className="flex items-center gap-2 mb-3">
-              <Flame className="w-5 h-5 text-orange-500" />
+              <Flame className="w-5 h-5 text-sage-600 dark:text-sage-400" />
               <h3 className="font-semibold text-gray-800 dark:text-white lowercase">current streak</h3>
             </div>
             <div className="flex items-baseline gap-2">
@@ -222,7 +222,7 @@ export default function RightPanel({ selectedRegion }: RightPanelProps) {
 
           <div className="bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 rounded-[1rem] p-4 border border-amber-200 dark:border-amber-800 transition-colors">
             <div className="flex items-start gap-3">
-              <Bell className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-1" />
+              <Bell className="w-5 h-5 text-sage-600 dark:text-sage-400 flex-shrink-0 mt-1" />
               <div>
                 <h3 className="font-semibold text-gray-800 dark:text-white mb-1">Daily Check-in</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
