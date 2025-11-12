@@ -25,10 +25,10 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
   };
 
   const navItems = [
-    { id: 'chat', label: 'chat with nira', icon: MessageSquare },
-    { id: 'journal', label: 'journal', icon: BookOpen },
-    { id: 'goals', label: 'goals & progress', icon: Target },
-    { id: 'settings', label: 'settings', icon: Settings },
+    { id: 'chat', label: 'Chat With Nira', icon: MessageSquare },
+    { id: 'journal', label: 'Journal', icon: BookOpen },
+    { id: 'goals', label: 'Goals & Progress', icon: Target },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   return (
@@ -55,7 +55,7 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
               <button
                 key={item.id}
                 onClick={() => onViewChange(item.id as any)}
-                className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all lowercase relative group ${
+                className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all relative group ${
                   currentView === item.id
                     ? 'bg-sage-100 dark:bg-gray-700 text-forest dark:text-white font-semibold shadow-sm'
                     : 'text-sage-600 dark:text-gray-400 hover:bg-sage-50 dark:hover:bg-gray-700/50 hover:text-forest dark:hover:text-white'
