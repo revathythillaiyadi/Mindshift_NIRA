@@ -10,14 +10,7 @@ interface Message {
 }
 
 export default function ChatArea() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      type: 'bot',
-      text: "Hello! I'm NIRA - Neural Insight and Reframing Assistant. I'm your compassionate companion for mental wellness, here to help you reframe your thoughts and navigate your emotions. How can I help you today?",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [typingMessages, setTypingMessages] = useState<Set<string>>(new Set());
@@ -30,6 +23,43 @@ export default function ChatArea() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    const initialMessageId = '1';
+    const fullText = "Hello! I'm NIRA - Neural Insight and Reframing Assistant. I'm your compassionate companion for mental wellness, here to help you reframe your thoughts and navigate your emotions. How can I help you today?";
+
+    const initialMessage: Message = {
+      id: initialMessageId,
+      type: 'bot',
+      text: '',
+      timestamp: new Date(),
+      isTyping: true,
+    };
+
+    setMessages([initialMessage]);
+    setTypingMessages(new Set([initialMessageId]));
+
+    let currentIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (currentIndex <= fullText.length) {
+        setMessages([{
+          ...initialMessage,
+          text: fullText.slice(0, currentIndex),
+        }]);
+        currentIndex++;
+      } else {
+        clearInterval(typingInterval);
+        setMessages([{
+          ...initialMessage,
+          text: fullText,
+          isTyping: false,
+        }]);
+        setTypingMessages(new Set());
+      }
+    }, 30);
+
+    return () => clearInterval(typingInterval);
+  }, []);
 
   const handleSendMessage = () => {
     if (inputText.trim()) {
