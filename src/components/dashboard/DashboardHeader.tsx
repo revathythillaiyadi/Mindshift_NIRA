@@ -1,4 +1,4 @@
-import { Moon, Sun, User, ChevronDown, LogOut, Settings, UserCircle } from 'lucide-react';
+import { Moon, Sun, User, ChevronDown, LogOut, Settings, UserCircle, BookOpen } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -8,6 +8,7 @@ interface DashboardHeaderProps {
   onRegionChange: (region: string) => void;
   darkMode: boolean;
   onDarkModeToggle: () => void;
+  onJournalClick?: () => void;
 }
 
 const regions = [
@@ -26,6 +27,7 @@ export default function DashboardHeader({
   onRegionChange,
   darkMode,
   onDarkModeToggle,
+  onJournalClick,
 }: DashboardHeaderProps) {
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -63,6 +65,15 @@ export default function DashboardHeader({
         </div>
 
         <div className="flex items-center gap-4">
+          <button
+            onClick={onJournalClick}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-sage-500 to-mint-500 text-white rounded-xl hover:shadow-lg transition-all hover:scale-105 font-medium"
+            title="Open Journal"
+          >
+            <BookOpen className="w-4 h-4" />
+            <span className="text-sm">Journal</span>
+          </button>
+
           <div className="relative" ref={regionMenuRef}>
             <button
               onClick={() => setShowRegionMenu(!showRegionMenu)}

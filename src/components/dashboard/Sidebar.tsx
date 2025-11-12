@@ -25,10 +25,10 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
   };
 
   const navItems = [
-    { id: 'chat', label: 'Chat With NIRA', icon: MessageSquare, color: 'text-sage-600 dark:text-sage-400', hoverBg: 'hover:bg-sage-50 dark:hover:bg-gray-700/50', activeBg: 'bg-sage-50 dark:bg-gray-700/30', activeBar: 'bg-sage-600 dark:bg-sage-400' },
-    { id: 'journal', label: 'Journal', icon: BookOpen, color: 'text-sage-600 dark:text-sage-400', hoverBg: 'hover:bg-sage-50 dark:hover:bg-gray-700/50', activeBg: 'bg-sage-50 dark:bg-gray-700/30', activeBar: 'bg-sage-600 dark:bg-sage-400' },
-    { id: 'goals', label: 'Goals & Progress', icon: Target, color: 'text-sage-600 dark:text-sage-400', hoverBg: 'hover:bg-sage-50 dark:hover:bg-gray-700/50', activeBg: 'bg-sage-50 dark:bg-gray-700/30', activeBar: 'bg-sage-600 dark:bg-sage-400' },
-    { id: 'settings', label: 'Settings', icon: Settings, color: 'text-sage-600 dark:text-sage-400', hoverBg: 'hover:bg-sage-50 dark:hover:bg-gray-700/50', activeBg: 'bg-sage-100 dark:bg-gray-700', activeBar: 'bg-forest dark:bg-sage-400' },
+    { id: 'chat', label: 'Chat With NIRA', icon: MessageSquare, color: 'text-sage-600 dark:text-sage-400', hoverBg: 'hover:bg-sage-50 dark:hover:bg-gray-700/50', activeBg: 'bg-sage-50 dark:bg-gray-700/30', activeBar: 'bg-sage-600 dark:bg-sage-400', badge: null },
+    { id: 'journal', label: 'Journal', icon: BookOpen, color: 'text-sage-600 dark:text-sage-400', hoverBg: 'hover:bg-sage-50 dark:hover:bg-gray-700/50', activeBg: 'bg-sage-50 dark:bg-gray-700/30', activeBar: 'bg-sage-600 dark:bg-sage-400', badge: '1' },
+    { id: 'goals', label: 'Goals & Progress', icon: Target, color: 'text-sage-600 dark:text-sage-400', hoverBg: 'hover:bg-sage-50 dark:hover:bg-gray-700/50', activeBg: 'bg-sage-50 dark:bg-gray-700/30', activeBar: 'bg-sage-600 dark:bg-sage-400', badge: null },
+    { id: 'settings', label: 'Settings', icon: Settings, color: 'text-sage-600 dark:text-sage-400', hoverBg: 'hover:bg-sage-50 dark:hover:bg-gray-700/50', activeBg: 'bg-sage-100 dark:bg-gray-700', activeBar: 'bg-forest dark:bg-sage-400', badge: null },
   ];
 
   return (
@@ -71,7 +71,12 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
                 <span className={`text-base transition-colors duration-300 ${
                   isActive ? item.color : 'text-sage-600 dark:text-gray-400'
                 }`}>{item.label}</span>
-                {isActive && (
+                {item.badge && !isActive && (
+                  <div className="ml-auto w-5 h-5 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-bold animate-pulse">
+                    {item.badge}
+                  </div>
+                )}
+                {isActive && !item.badge && (
                   <div className={`ml-auto w-2 h-2 rounded-full ${item.activeBar} animate-pulse`} />
                 )}
               </button>

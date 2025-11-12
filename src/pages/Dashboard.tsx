@@ -49,6 +49,7 @@ export default function Dashboard() {
             onRegionChange={setSelectedRegion}
             darkMode={isDark}
             onDarkModeToggle={toggleTheme}
+            onJournalClick={() => setCurrentView('journal')}
           />
 
           <div className="flex-1 flex overflow-hidden">

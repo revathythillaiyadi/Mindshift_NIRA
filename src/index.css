@@ -455,6 +455,81 @@
     animation: blob-morph 8s ease-in-out infinite;
   }
 
+  @keyframes confetti-pop {
+    0% {
+      transform: scale(0) rotate(0deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2) rotate(180deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes sparkle-shine {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0.5) rotate(0deg);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.5) rotate(180deg);
+    }
+  }
+
+  @keyframes flame-grow {
+    0%, 100% {
+      transform: scale(1) translateY(0);
+    }
+    50% {
+      transform: scale(1.15) translateY(-3px);
+    }
+  }
+
+  @keyframes tooltip-appear {
+    0% {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes progress-shimmer {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  .animate-confetti-pop {
+    animation: confetti-pop 1.5s ease-out;
+  }
+
+  .animate-sparkle-shine {
+    animation: sparkle-shine 2s ease-in-out infinite;
+  }
+
+  .animate-flame-grow {
+    animation: flame-grow 2s ease-in-out infinite;
+  }
+
+  .animate-tooltip-appear {
+    animation: tooltip-appear 0.3s ease-out;
+  }
+
+  .animate-progress-shimmer {
+    animation: progress-shimmer 2s linear infinite;
+  }
+
   .tree-ring {
     position: relative;
     background: transparent;
