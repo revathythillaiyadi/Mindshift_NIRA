@@ -57,8 +57,8 @@ export default function DashboardHeader({
     <header className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl px-6 py-4 transition-colors relative z-50">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-sage-600 to-mint-600 dark:from-sage-400 dark:to-mint-400 bg-clip-text text-transparent lowercase">
-            mindshift dashboard
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-sage-600 to-mint-600 dark:from-sage-400 dark:to-mint-400 bg-clip-text text-transparent">
+            Mindshift Dashboard
           </h1>
         </div>
 
