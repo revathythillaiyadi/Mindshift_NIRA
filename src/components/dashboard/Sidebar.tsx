@@ -25,10 +25,10 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
   };
 
   const navItems = [
-    { id: 'chat', label: 'Chat With Nira', icon: MessageSquare },
-    { id: 'journal', label: 'Journal', icon: BookOpen },
-    { id: 'goals', label: 'Goals & Progress', icon: Target },
-    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'chat', label: 'Chat With NIRA', icon: MessageSquare, color: 'text-emerald-600 dark:text-emerald-400', hoverBg: 'hover:bg-emerald-50 dark:hover:bg-emerald-900/20', activeBg: 'bg-emerald-50 dark:bg-emerald-900/30', activeBar: 'bg-emerald-600 dark:bg-emerald-400' },
+    { id: 'journal', label: 'Journal', icon: BookOpen, color: 'text-amber-600 dark:text-amber-400', hoverBg: 'hover:bg-amber-50 dark:hover:bg-amber-900/20', activeBg: 'bg-amber-50 dark:bg-amber-900/30', activeBar: 'bg-amber-600 dark:bg-amber-400' },
+    { id: 'goals', label: 'Goals & Progress', icon: Target, color: 'text-blue-600 dark:text-blue-400', hoverBg: 'hover:bg-blue-50 dark:hover:bg-blue-900/20', activeBg: 'bg-blue-50 dark:bg-blue-900/30', activeBar: 'bg-blue-600 dark:bg-blue-400' },
+    { id: 'settings', label: 'Settings', icon: Settings, color: 'text-sage-600 dark:text-sage-400', hoverBg: 'hover:bg-sage-50 dark:hover:bg-gray-700/50', activeBg: 'bg-sage-100 dark:bg-gray-700', activeBar: 'bg-forest dark:bg-sage-400' },
   ];
 
   return (
@@ -51,21 +51,29 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
         <nav className="space-y-2">
           {navItems.map((item) => {
             const Icon = item.icon;
+            const isActive = currentView === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => onViewChange(item.id as any)}
-                className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all relative group ${
-                  currentView === item.id
-                    ? 'bg-sage-100 dark:bg-gray-700 text-forest dark:text-white font-semibold shadow-sm'
-                    : 'text-sage-600 dark:text-gray-400 hover:bg-sage-50 dark:hover:bg-gray-700/50 hover:text-forest dark:hover:text-white'
+                className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-300 relative group ${
+                  isActive
+                    ? `${item.activeBg} font-semibold shadow-sm`
+                    : `${item.hoverBg} hover:shadow-md hover:-translate-y-0.5`
                 }`}
               >
-                {currentView === item.id && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-forest dark:bg-sage-400 rounded-r-full" />
+                {isActive && (
+                  <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 ${item.activeBar} rounded-r-full transition-all duration-300`} />
                 )}
-                <Icon className="w-5 h-5 flex-shrink-0" />
-                <span className="text-base">{item.label}</span>
+                <Icon className={`w-5 h-5 flex-shrink-0 transition-colors duration-300 ${
+                  isActive ? item.color : 'text-sage-500 dark:text-gray-400 group-hover:' + item.color.split(' ')[0]
+                }`} />
+                <span className={`text-base transition-colors duration-300 ${
+                  isActive ? item.color : 'text-sage-600 dark:text-gray-400'
+                }`}>{item.label}</span>
+                {isActive && (
+                  <div className={`ml-auto w-2 h-2 rounded-full ${item.activeBar} animate-pulse`} />
+                )}
               </button>
             );
           })}
