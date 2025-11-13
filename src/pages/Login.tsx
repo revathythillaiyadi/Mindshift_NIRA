@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Brain, Mail, Lock, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import TreeRing from '../components/TreeRing';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -52,27 +53,36 @@ export default function Login() {
 
   if (showForgotPassword) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-blue-50 via-white to-teal-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/3683056/pexels-photo-3683056.jpeg?auto=compress&cs=tinysrgb&w=1920')] bg-cover bg-center opacity-5 blur-sm"></div>
+      <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-mint-50/20 via-warm-white to-sage-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <TreeRing
+            ringCount={8}
+            className="absolute top-20 -left-10 w-[300px] h-[300px] opacity-25"
+          />
+          <TreeRing
+            ringCount={6}
+            className="absolute -bottom-10 -right-10 w-[250px] h-[250px] opacity-25"
+          />
+        </div>
 
         <div className="relative w-full max-w-md">
-          <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 border border-blue-100 dark:border-gray-700">
+          <div className="bg-white/90 dark:bg-gray-800 backdrop-blur-xl rounded-[2.5rem] shadow-2xl p-8 border-2 border-sage-100/50 dark:border-gray-700">
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
+              <div className="w-16 h-16 bg-gradient-to-br from-sage-500 to-mint-500 rounded-[1.5rem] flex items-center justify-center shadow-lg">
                 <Brain className="w-9 h-9 text-white" />
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-blue-900 dark:text-blue-100 text-center mb-2">
-              Reset Password
+            <h2 className="text-3xl font-bold text-forest dark:text-blue-100 text-center mb-2 lowercase">
+              reset password
             </h2>
-            <p className="text-blue-700 dark:text-blue-300 text-center mb-8">
-              Enter your email to receive a password reset link
+            <p className="text-soft-gray dark:text-blue-300 text-center mb-8 lowercase">
+              enter your email to receive a password reset link
             </p>
 
             {resetMessage && (
-              <div className="mb-6 p-4 bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-xl">
-                <p className="text-teal-800 dark:text-teal-200 text-sm text-center">{resetMessage}</p>
+              <div className="mb-6 p-4 bg-mint-50 dark:bg-teal-900/20 border border-mint-200 dark:border-teal-800 rounded-xl">
+                <p className="text-sage-800 dark:text-teal-200 text-sm text-center lowercase">{resetMessage}</p>
               </div>
             )}
 
@@ -85,18 +95,18 @@ export default function Login() {
 
             <form onSubmit={handleForgotPassword} className="space-y-5">
               <div>
-                <label htmlFor="reset-email" className="block text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
-                  Email Address
+                <label htmlFor="reset-email" className="block text-sm font-semibold text-forest dark:text-blue-100 mb-2 lowercase">
+                  email address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-sage-400" />
                   <input
                     id="reset-email"
                     type="email"
                     value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
                     placeholder="your.email@example.com"
-                    className="w-full pl-12 pr-4 py-3 border-2 border-blue-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-gray-400 transition-all"
+                    className="w-full pl-12 pr-4 py-3 border-2 border-sage-200 dark:border-gray-600 rounded-[1.5rem] focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-white dark:bg-gray-700 text-soft-gray dark:text-white placeholder-gentle-gray dark:placeholder-gray-400 transition-all lowercase"
                     required
                   />
                 </div>
@@ -105,17 +115,17 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 bg-gradient-to-r from-sage-500 to-mint-500 hover:from-sage-600 hover:to-mint-600 text-white font-semibold rounded-[1.5rem] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed lowercase"
               >
-                {loading ? 'Sending...' : 'Send Reset Link'}
+                {loading ? 'sending...' : 'send reset link'}
               </button>
 
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(false)}
-                className="w-full text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
+                className="w-full text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-medium transition-colors lowercase"
               >
-                Back to Login
+                back to login
               </button>
             </form>
           </div>
@@ -125,22 +135,31 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-blue-50 via-white to-teal-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/3683056/pexels-photo-3683056.jpeg?auto=compress&cs=tinysrgb&w=1920')] bg-cover bg-center opacity-5 blur-sm"></div>
+    <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-mint-50/20 via-warm-white to-sage-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <TreeRing
+          ringCount={8}
+          className="absolute top-20 -left-10 w-[300px] h-[300px] opacity-25"
+        />
+        <TreeRing
+          ringCount={6}
+          className="absolute -bottom-10 -right-10 w-[250px] h-[250px] opacity-25"
+        />
+      </div>
 
       <div className="relative w-full max-w-md">
-        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 border border-blue-100 dark:border-gray-700">
+        <div className="bg-white/90 dark:bg-gray-800 backdrop-blur-xl rounded-[2.5rem] shadow-2xl p-8 border-2 border-sage-100/50 dark:border-gray-700">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
+            <div className="w-16 h-16 bg-gradient-to-br from-sage-500 to-mint-500 rounded-[1.5rem] flex items-center justify-center shadow-lg">
               <Brain className="w-9 h-9 text-white" />
             </div>
           </div>
 
-          <h2 className="text-3xl font-bold text-blue-900 dark:text-blue-100 text-center mb-2">
-            Welcome Back to MindShift
+          <h2 className="text-3xl font-bold text-forest dark:text-blue-100 text-center mb-2 lowercase">
+            welcome back to mindshift
           </h2>
-          <p className="text-blue-700 dark:text-blue-300 text-center mb-8">
-            Continue your journey to mental wellness
+          <p className="text-soft-gray dark:text-blue-300 text-center mb-8 lowercase">
+            continue your journey to mental wellness
           </p>
 
           {error && (
@@ -152,36 +171,36 @@ export default function Login() {
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
-                Email Address
+              <label htmlFor="email" className="block text-sm font-semibold text-forest dark:text-blue-100 mb-2 lowercase">
+                email address
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-sage-400" />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your.email@example.com"
-                  className="w-full pl-12 pr-4 py-3 border-2 border-blue-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-gray-400 transition-all"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-sage-200 dark:border-gray-600 rounded-[1.5rem] focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-white dark:bg-gray-700 text-soft-gray dark:text-white placeholder-gentle-gray dark:placeholder-gray-400 transition-all lowercase"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
-                Password
+              <label htmlFor="password" className="block text-sm font-semibold text-forest dark:text-blue-100 mb-2 lowercase">
+                password
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-sage-400" />
                 <input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-12 pr-4 py-3 border-2 border-blue-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-blue-900 dark:text-white placeholder-blue-400 dark:placeholder-gray-400 transition-all"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-sage-200 dark:border-gray-600 rounded-[1.5rem] focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-white dark:bg-gray-700 text-soft-gray dark:text-white placeholder-gentle-gray dark:placeholder-gray-400 transition-all"
                   required
                 />
               </div>
@@ -191,31 +210,31 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors"
+                className="text-sm text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-medium transition-colors lowercase"
               >
-                Forgot Password?
+                forgot password?
               </button>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-gradient-to-r from-sage-500 to-mint-500 hover:from-sage-600 hover:to-mint-600 text-white font-semibold rounded-[1.5rem] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed lowercase"
             >
-              {loading ? 'Logging in...' : 'Log In'}
+              {loading ? 'logging in...' : 'log in'}
             </button>
           </form>
 
           <div className="mt-6 text-center space-y-3">
-            <p className="text-blue-700 dark:text-blue-300">
-              Don't have an account?{' '}
-              <Link to="/signup" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors">
-                Sign Up
+            <p className="text-soft-gray dark:text-blue-300 lowercase">
+              don't have an account?{' '}
+              <Link to="/signup" className="text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-semibold transition-colors lowercase">
+                sign up
               </Link>
             </p>
-            <p className="text-blue-700 dark:text-blue-300">
-              <Link to="/" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors">
-                ← Back to Home
+            <p className="text-soft-gray dark:text-blue-300">
+              <Link to="/" className="text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-semibold transition-colors lowercase">
+                ← back to home
               </Link>
             </p>
           </div>

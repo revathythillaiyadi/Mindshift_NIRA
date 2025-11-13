@@ -1,58 +1,76 @@
-import { Bot, BookText, Heart, Target } from 'lucide-react';
+import { Bot, BookText, Heart, Target, Radio } from 'lucide-react';
+import TreeRing from './TreeRing';
 
 const services = [
   {
-    title: 'AI Chatbot NIRA',
-    description: 'Your 24/7 companion offering empathetic, judgment-free conversations powered by advanced AI technology trained in cognitive behavioral therapy techniques.',
+    title: 'Meet NIRA, your empathetic companion',
+    description: 'A warm presence available 24/7, offering gentle conversations and compassionate support whenever you need someone to listen.',
     icon: Bot,
-    gradient: 'from-blue-500 to-blue-600',
   },
   {
-    title: 'Guided Journaling',
-    description: 'Structured prompts and reflective exercises designed to help you process emotions, track patterns, and gain deeper self-awareness.',
+    title: 'A quiet place for your thoughts',
+    description: 'Gentle prompts and reflective exercises help you process emotions and discover insights at your own pace.',
     icon: BookText,
-    gradient: 'from-teal-500 to-teal-600',
   },
   {
-    title: 'Mood Tracking',
-    description: 'Visual insights into your emotional patterns over time, helping you understand triggers and celebrate progress on your wellness journey.',
+    title: 'Understand your feelings',
+    description: 'Visual insights into your emotional patterns help you recognize what you\'re experiencing and celebrate your progress.',
     icon: Heart,
-    gradient: 'from-blue-400 to-cyan-500',
   },
   {
-    title: 'Personalized Goals',
-    description: 'Custom-tailored objectives based on your unique needs, with actionable steps and milestone tracking to keep you motivated and on track.',
+    title: 'Map your unique journey',
+    description: 'Personalized objectives based on your needs, with gentle milestones to keep you motivated and moving forward.',
     icon: Target,
-    gradient: 'from-teal-400 to-blue-500',
+  },
+  {
+    title: 'Guided Audio Reframing',
+    description: 'Go beyond typing. Talk to NIRA with our new voice chat option. You can engage in 5-minute guided audio sessions where NIRA helps you actively challenge and shift difficult thought patterns, just by listening and speaking.',
+    icon: Radio,
   },
 ];
 
 export default function Services() {
   return (
-    <section id="services" className="py-20 px-6 bg-gradient-to-br from-blue-50/50 via-white to-teal-50/30 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 transition-colors">
-      <div className="container mx-auto max-w-7xl">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-blue-900 dark:text-blue-100 mb-4">
-            Comprehensive Mental Wellness Tools
-          </h2>
-          <p className="text-xl text-blue-700 dark:text-blue-300 max-w-3xl mx-auto">
-            Everything you need to support your mental health journey, all in one place
+    <section id="services" className="py-20 px-6 bg-gradient-to-b from-sage-50/30 via-warm-white to-mint-50/20 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <TreeRing
+          ringCount={7}
+          className="absolute bottom-1/4 -left-20 w-[200px] h-[200px] opacity-35 animate-breathing"
+          style={{ animationDelay: '1s' }}
+        />
+      </div>
+      <div className="container mx-auto max-w-7xl relative">
+        <div className="text-center mb-16 animate-fade-in">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-forest dark:text-sage-100 transition-colors">
+              Your Personal Space for Growth
+            </h2>
+          </div>
+          <p className="text-xl text-gentle-gray/70 max-w-3xl mx-auto font-serif italic">
+            Everything you need to nurture your mental wellness, thoughtfully designed for your journey
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {services.map((service) => {
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {services.map((service, index) => {
             const Icon = service.icon;
             return (
               <div
                 key={service.title}
-                className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg border border-blue-100 dark:border-gray-700 hover:shadow-xl transition-all hover:-translate-y-1 group"
+                className="bg-white/80 backdrop-blur-sm p-8 rounded-[2rem] shadow-lg border-2 border-sage-100/50 hover:shadow-xl transition-all hover:-translate-y-2 group relative overflow-hidden animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className={`w-14 h-14 bg-gradient-to-br ${service.gradient} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <Icon className="w-7 h-7 text-white" strokeWidth={2} />
+
+                <div className="w-16 h-16 bg-gradient-to-br from-sage-500 to-mint-500 rounded-[1.5rem] flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all shadow-md relative">
+                  <Icon className="w-8 h-8 text-white" strokeWidth={2} />
                 </div>
-                <h3 className="text-2xl font-bold text-blue-900 dark:text-blue-100 mb-3">{service.title}</h3>
-                <p className="text-blue-700 dark:text-blue-300 leading-relaxed">{service.description}</p>
+
+                <h3 className="text-xl font-bold text-forest mb-3 relative">{service.title}</h3>
+                <p className="text-gentle-gray/70 leading-relaxed text-sm relative">{service.description}</p>
+
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-sage-400/20 via-mint-400/20 to-sage-400/20 rounded-b-[2rem]">
+                  <div className="h-full w-0 group-hover:w-full bg-gradient-to-r from-sage-500 to-mint-500 transition-all duration-500 ease-out" />
+                </div>
               </div>
             );
           })}
