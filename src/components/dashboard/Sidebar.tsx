@@ -1,5 +1,5 @@
-import { MessageSquare, BookOpen, Settings, Target, Trash2, Plus, Brain, Search, Pin } from 'lucide-react';
-import { useState } from 'react';
+import { MessageSquare, BookOpen, Settings, Target, Trash2, Plus, Brain, Search, Pin, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 interface SidebarProps {
   currentView: string;
@@ -13,6 +13,7 @@ interface ChatSession {
 }
 
 export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [chatHistory, setChatHistory] = useState<ChatSession[]>([
     { id: '1', title: 'dealing with work stress and burnout', timestamp: '2 hours ago' },
     { id: '2', title: 'morning anxiety thoughts', timestamp: 'yesterday' },
@@ -22,6 +23,19 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [pinnedChats, setPinnedChats] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const saved = localStorage.getItem('sidebar-collapsed');
+    if (saved) {
+      setIsCollapsed(JSON.parse(saved));
+    }
+  }, []);
+
+  const toggleCollapse = () => {
+    const newState = !isCollapsed;
+    setIsCollapsed(newState);
+    localStorage.setItem('sidebar-collapsed', JSON.stringify(newState));
+  };
 
   const deleteChat = (id: string) => {
     setChatHistory(prev => prev.filter(chat => chat.id !== id));
@@ -151,21 +165,29 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
   );
 
   return (
-    <aside className="w-80 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl flex flex-col transition-colors border-r border-sage-100/50 dark:border-gray-700 overflow-hidden">
+    <aside className={`bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl flex flex-col transition-all duration-300 border-r border-sage-100/50 dark:border-gray-700 overflow-hidden relative ${
+      isCollapsed ? 'w-20' : 'w-80'
+    }`}>
       <div className="p-4 border-b border-sage-100/50 dark:border-gray-700">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 bg-gradient-to-br from-forest to-sage-600 rounded-2xl flex items-center justify-center shadow-lg">
+        <div className={`flex items-center gap-4 ${isCollapsed ? 'justify-center mb-0' : 'mb-6'}`}>
+          <div className="w-12 h-12 bg-gradient-to-br from-forest to-sage-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
             <Brain className="w-7 h-7 text-white" />
           </div>
-          <div>
-            <h2 className="font-bold text-xl text-forest dark:text-white lowercase">mindshift</h2>
-            <p className="text-sm text-sage-600 dark:text-sage-400 lowercase">your companion</p>
-          </div>
+          {!isCollapsed && (
+            <div>
+              <h2 className="font-bold text-xl text-forest dark:text-white lowercase">mindshift</h2>
+              <p className="text-sm text-sage-600 dark:text-sage-400 lowercase">your companion</p>
+            </div>
+          )}
         </div>
+      </div>
 
-        <h3 className="text-[11px] uppercase tracking-[0.05em] text-sage-500 dark:text-sage-400 font-semibold mb-3 px-2">
-          navigation
-        </h3>
+      <div className="p-4 border-b border-sage-100/50 dark:border-gray-700">
+        {!isCollapsed && (
+          <h3 className="text-[11px] uppercase tracking-[0.05em] text-sage-500 dark:text-sage-400 font-semibold mb-3 px-2">
+            navigation
+          </h3>
+        )}
 
         <nav className="space-y-2">
           {navItems.map((item) => {
@@ -175,15 +197,16 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
               <button
                 key={item.id}
                 onClick={() => onViewChange(item.id as any)}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 ease-in-out relative group focus:outline-none focus:ring-2 focus:ring-[#187E5F] focus:ring-offset-2 ${
+                className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-4'} px-4 py-3 rounded-2xl transition-all duration-200 ease-in-out relative group focus:outline-none focus:ring-2 focus:ring-[#187E5F] focus:ring-offset-2 ${
                   isActive
                     ? 'bg-[#E8EDE7] dark:bg-gray-700/50 font-semibold shadow-sm border-2 border-[#187E5F]/20 dark:border-sage-600/30'
                     : 'hover:bg-sage-50/80 dark:hover:bg-gray-700/50 hover:shadow-md hover:-translate-y-0.5 border-2 border-transparent'
                 }`}
                 aria-label={item.label}
                 aria-current={isActive ? 'page' : undefined}
+                title={isCollapsed ? item.label : ''}
               >
-                {isActive && (
+                {isActive && !isCollapsed && (
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#187E5F] dark:bg-sage-400 rounded-r-full transition-all duration-300" />
                 )}
                 <Icon
@@ -194,16 +217,20 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
                   fill={isActive ? 'currentColor' : 'none'}
                   size={20}
                 />
-                <span className={`text-sm font-normal transition-colors duration-200 ${
-                  isActive ? 'text-[#187E5F] dark:text-sage-400' : 'text-sage-600 dark:text-gray-400'
-                }`}>{item.label}</span>
-                {item.badge && (
-                  <div
-                    className="ml-auto w-[18px] h-[18px] bg-[#FF8C42] text-white rounded-full flex items-center justify-center text-[10px] font-bold animate-pulse"
-                    aria-label={`${item.badge} new items`}
-                  >
-                    {item.badge}
-                  </div>
+                {!isCollapsed && (
+                  <>
+                    <span className={`text-sm font-normal transition-colors duration-200 ${
+                      isActive ? 'text-[#187E5F] dark:text-sage-400' : 'text-sage-600 dark:text-gray-400'
+                    }`}>{item.label}</span>
+                    {item.badge && (
+                      <div
+                        className="ml-auto w-[18px] h-[18px] bg-[#FF8C42] text-white rounded-full flex items-center justify-center text-[10px] font-bold animate-pulse"
+                        aria-label={`${item.badge} new items`}
+                      >
+                        {item.badge}
+                      </div>
+                    )}
+                  </>
                 )}
               </button>
             );
@@ -211,9 +238,11 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
         </nav>
       </div>
 
-      <div className="border-t border-[#E5E7EB] dark:border-gray-700 my-4 mx-6"></div>
+      {!isCollapsed && (
+        <>
+          <div className="border-t border-[#E5E7EB] dark:border-gray-700 my-4 mx-6"></div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar px-6 pb-6 space-y-4 relative">
+          <div className="flex-1 overflow-y-auto custom-scrollbar px-6 pb-6 space-y-4 relative">
         <div className="flex items-center justify-between">
           <h3 className="text-[11px] font-semibold text-[#6B7280] dark:text-gray-400 uppercase tracking-[0.05em]">
             recent conversations
@@ -283,8 +312,23 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
           })()}
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-12 sidebar-fade-gradient pointer-events-none"></div>
-      </div>
+            <div className="absolute bottom-0 left-0 right-0 h-12 sidebar-fade-gradient pointer-events-none"></div>
+          </div>
+        </>
+      )}
+
+      <button
+        onClick={toggleCollapse}
+        className="absolute -right-3 top-6 w-6 h-6 bg-[#187E5F] dark:bg-sage-600 hover:bg-forest dark:hover:bg-sage-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110 z-10"
+        aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        {isCollapsed ? (
+          <ChevronRight className="w-4 h-4" />
+        ) : (
+          <ChevronLeft className="w-4 h-4" />
+        )}
+      </button>
     </aside>
   );
 }
