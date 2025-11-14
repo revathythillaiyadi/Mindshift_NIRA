@@ -14,6 +14,7 @@ export default function ChatArea() {
   const [inputText, setInputText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [typingMessages, setTypingMessages] = useState<Set<string>>(new Set());
+  const [showVoiceTooltip, setShowVoiceTooltip] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -212,51 +213,69 @@ export default function ChatArea() {
 
       <div className="p-6 bg-white/90 dark:bg-gray-800 border-t border-sage-100/50 dark:border-gray-700">
         <div className="flex items-end gap-3">
-          <button
-            onClick={() => setIsRecording(!isRecording)}
-            className={`p-5 rounded-2xl transition-all shadow-lg group relative ${
-              isRecording
-                ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                : 'bg-gradient-to-br from-sage-600 to-mint-600 hover:shadow-xl hover:scale-110 animate-gentle-pulse'
-            }`}
-            title={isRecording ? 'Stop recording' : 'Speak your thoughts'}
-          >
-            <Mic className="w-8 h-8 text-white" />
-            {!isRecording && (
-              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-sage-600 dark:text-sage-400 whitespace-nowrap bg-white dark:bg-gray-700 px-2 py-1 rounded shadow-md">
-                Speak your thoughts
-              </span>
+          <div className="relative">
+            <button
+              onClick={() => {
+                setIsRecording(!isRecording);
+                setShowVoiceTooltip(false);
+              }}
+              className={`p-5 rounded-2xl transition-all shadow-lg group relative ${
+                isRecording
+                  ? 'bg-red-500 hover:bg-red-600 animate-pulse'
+                  : 'bg-gradient-to-br from-sage-600 to-mint-600 hover:shadow-xl animate-voice-pulse'
+              }`}
+              style={!isRecording ? { boxShadow: '0 0 0 0 rgba(24, 126, 95, 0.4)' } : {}}
+              title={isRecording ? 'Stop recording' : 'Speak your thoughts'}
+            >
+              <Mic className="w-8 h-8 text-white" />
+              {!isRecording && (
+                <>
+                  <div className="absolute inset-0 rounded-2xl animate-voice-ring" style={{
+                    boxShadow: '0 0 0 0 rgba(24, 126, 95, 0.6)',
+                    pointerEvents: 'none'
+                  }}></div>
+                  <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-sage-600 dark:text-sage-400 whitespace-nowrap bg-white dark:bg-gray-700 px-2 py-1 rounded shadow-md">
+                    Speak your thoughts
+                  </span>
+                </>
+              )}
+            </button>
+            {!isRecording && showVoiceTooltip && (
+              <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-[#187E5F] text-white px-3 py-2 rounded-lg shadow-lg text-xs whitespace-nowrap animate-tooltip-appear">
+                Tap to speak
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-[#187E5F]"></div>
+              </div>
             )}
-          </button>
+          </div>
 
           <div className="flex-1 flex flex-col gap-3">
-            <div className="flex gap-2 mb-1">
+            <div className="flex gap-3 mb-1 overflow-x-auto pb-1 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <button
                 onClick={() => setInputText("I'm feeling anxious right now...")}
-                className="px-3 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium hover:shadow-md hover:scale-105 transition-all flex items-center gap-1.5"
+                className="px-4 py-2.5 h-10 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-2 flex-shrink-0"
               >
-                <AlertCircle className="w-3.5 h-3.5" />
+                <AlertCircle className="w-5 h-5" />
                 <span>Feeling anxious</span>
               </button>
               <button
                 onClick={() => setInputText("I need a breathing exercise...")}
-                className="px-3 py-2 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-full text-xs font-medium hover:shadow-md hover:scale-105 transition-all flex items-center gap-1.5"
+                className="px-4 py-2.5 h-10 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-full text-xs font-medium hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-2 flex-shrink-0"
               >
-                <Wind className="w-3.5 h-3.5" />
+                <Wind className="w-5 h-5" />
                 <span>Breathing exercise</span>
               </button>
               <button
                 onClick={() => setInputText("I need support...")}
-                className="px-3 py-2 bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 rounded-full text-xs font-medium hover:shadow-md hover:scale-105 transition-all flex items-center gap-1.5"
+                className="px-4 py-2.5 h-10 bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 rounded-full text-xs font-medium hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-2 flex-shrink-0"
               >
-                <Heart className="w-3.5 h-3.5" />
+                <Heart className="w-5 h-5" />
                 <span>Need support</span>
               </button>
               <button
                 onClick={() => setInputText("I want to share something I'm grateful for...")}
-                className="px-3 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium hover:shadow-md hover:scale-105 transition-all flex items-center gap-1.5"
+                className="px-4 py-2.5 h-10 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-2 flex-shrink-0"
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <Sparkles className="w-5 h-5" />
                 <span>Gratitude</span>
               </button>
             </div>
@@ -265,7 +284,7 @@ export default function ChatArea() {
               onChange={(e) => setInputText(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="share your thoughts with nira..."
-              className="w-full px-6 py-4 rounded-2xl border border-sage-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all text-base resize-none shadow-sm placeholder-sage-400 dark:placeholder-gray-500 lowercase"
+              className="w-full px-6 py-4 rounded-2xl border border-sage-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all text-[15px] resize-none shadow-sm placeholder-[#78968b] dark:placeholder-gray-500 lowercase"
               rows={2}
             />
             <div className="flex items-center justify-between px-3">
@@ -284,10 +303,14 @@ export default function ChatArea() {
           <button
             onClick={handleSendMessage}
             disabled={!inputText.trim()}
-            className="p-3.5 bg-gradient-to-br from-forest to-sage-600 text-white rounded-2xl hover:shadow-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 shadow-md"
+            className={`w-12 h-12 rounded-2xl hover:shadow-lg transition-all disabled:cursor-not-allowed shadow-md flex items-center justify-center ${
+              inputText.trim()
+                ? 'bg-gradient-to-br from-[#187E5F] to-[#66887f] hover:scale-105 opacity-100'
+                : 'bg-[#66887f] opacity-50'
+            }`}
             title="Send message"
           >
-            <Send className="w-6 h-6" />
+            <Send className="w-6 h-6 text-white" />
           </button>
         </div>
       </div>
