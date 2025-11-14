@@ -139,36 +139,36 @@ export default function ChatArea() {
 
   return (
     <div className="h-full flex flex-col bg-warm-white dark:bg-gray-800 rounded-2xl shadow-xl border border-sage-100/50 dark:border-gray-700 overflow-hidden transition-colors">
-      <div className="bg-gradient-to-r from-[#187E5F] via-[#0B5844] to-[#187E5F] p-6 flex items-center justify-between shadow-md" style={{ backgroundSize: '200% 100%', animation: 'gradient-shift 3s ease-in-out' }}>
-        <div className="flex items-center gap-4">
-          <div className={`w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg overflow-hidden ${isThinking ? 'animate-gentle-pulse' : ''}`} style={{ boxShadow: '0 0 16px rgba(24, 126, 95, 0.5)' }}>
+      <div className="bg-gradient-to-r from-[#187E5F] via-[#0B5844] to-[#187E5F] px-4 py-3 flex items-center justify-between shadow-md" style={{ backgroundSize: '200% 100%', animation: 'gradient-shift 3s ease-in-out' }}>
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg overflow-hidden ${isThinking ? 'animate-gentle-pulse' : ''}`} style={{ boxShadow: '0 0 16px rgba(24, 126, 95, 0.5)' }}>
             <img
               src="/Gemini_Generated_Image_jnzolrjnzolrjnzo.png"
               alt="NIRA Avatar"
-              className="w-12 h-12 object-cover rounded-2xl"
+              className="w-9 h-9 object-cover rounded-2xl"
             />
           </div>
           <div>
-            <h3 className="text-white font-bold text-lg">NIRA</h3>
-            <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 bg-mint-400 rounded-full animate-gentle-pulse shadow-sm"></div>
-              <span className="text-sage-100 text-sm">Here for you</span>
+            <h3 className="text-white font-bold text-base">NIRA</h3>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 bg-mint-400 rounded-full animate-gentle-pulse shadow-sm"></div>
+              <span className="text-sage-100 text-xs">Here for you</span>
             </div>
           </div>
         </div>
         <button
-          className="p-2.5 hover:bg-white/10 rounded-xl transition-all hover:scale-105"
+          className="p-2 hover:bg-white/10 rounded-xl transition-all hover:scale-105"
           title="Audio settings"
         >
-          <Volume2 className="w-5 h-5 text-white" />
+          <Volume2 className="w-4 h-4 text-white" />
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5 bg-gradient-to-b from-sage-50/30 via-warm-white to-mint-50/20 dark:from-gray-900 dark:to-gray-800 chat-background-pattern">
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 bg-gradient-to-b from-sage-50/30 via-warm-white to-mint-50/20 dark:from-gray-900 dark:to-gray-800 chat-background-pattern">
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex gap-4 ${message.type === 'user' ? 'flex-row-reverse' : 'flex-row'} mb-5`}
+            className={`flex gap-3 ${message.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
           >
             {message.type === 'user' && (
               <div
@@ -179,7 +179,7 @@ export default function ChatArea() {
             )}
             <div className={`max-w-[75%] ${message.type === 'user' ? 'items-end' : 'items-start'} flex flex-col gap-2`}>
               {message.type === 'bot' && message.isTyping && message.text === '' && (
-                <div className="flex items-center gap-2 px-6 py-4 bg-sage-100 dark:bg-gray-700 rounded-2xl shadow-md border border-sage-200/50 dark:border-gray-600">
+                <div className="flex items-center gap-2 px-4 py-3 bg-sage-100 dark:bg-gray-700 rounded-2xl shadow-md border border-sage-200/50 dark:border-gray-600">
                   <div className="flex gap-1">
                     <span className="w-2 h-2 bg-sage-600 dark:bg-sage-400 rounded-full animate-thinking-dot" style={{ animationDelay: '0s' }}></span>
                     <span className="w-2 h-2 bg-sage-600 dark:bg-sage-400 rounded-full animate-thinking-dot" style={{ animationDelay: '0.2s' }}></span>
@@ -190,29 +190,29 @@ export default function ChatArea() {
               )}
               {(message.text || !message.isTyping) && (
                 <div
-                  className={`px-5 py-[18px] rounded-2xl ${
+                  className={`px-4 py-3 rounded-2xl ${
                     message.type === 'bot'
                       ? 'bg-[#D4EDE5] dark:bg-gray-700 text-[#2c4943] dark:text-gray-100 border border-[rgba(24,126,95,0.2)] dark:border-gray-600'
                       : 'bg-beige-100 dark:bg-beige-800 text-soft-gray dark:text-white border border-beige-200/50 dark:border-beige-700'
                   }`}
                   style={message.type === 'bot' ? { boxShadow: '0 2px 8px rgba(44, 73, 67, 0.08)' } : { boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)' }}
                 >
-                  <p className="text-base leading-relaxed">
+                  <p className="text-sm leading-relaxed">
                     {message.text}
                     {message.isTyping && <span className="animate-pulse ml-1">|</span>}
                   </p>
                 </div>
               )}
-              <span className="text-xs text-sage-500 dark:text-gray-400 px-3">
+              <span className="text-xs text-sage-500 dark:text-gray-400 px-1">
                 {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             </div>
           </div>
         ))}
         {isThinking && messages.length > 0 && messages[messages.length - 1].type === 'user' && (
-          <div className="flex gap-4 mb-5">
+          <div className="flex gap-3">
             <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 px-5 py-[18px] bg-sage-100 dark:bg-gray-700 rounded-2xl shadow-md border border-sage-200/50 dark:border-gray-600">
+              <div className="flex items-center gap-2 px-4 py-3 bg-sage-100 dark:bg-gray-700 rounded-2xl shadow-md border border-sage-200/50 dark:border-gray-600">
                 <div className="flex gap-1">
                   <span className="w-2 h-2 bg-sage-600 dark:bg-sage-400 rounded-full animate-thinking-dot" style={{ animationDelay: '0s' }}></span>
                   <span className="w-2 h-2 bg-sage-600 dark:bg-sage-400 rounded-full animate-thinking-dot" style={{ animationDelay: '0.2s' }}></span>
@@ -226,8 +226,8 @@ export default function ChatArea() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="px-6 py-5 bg-white/90 dark:bg-gray-800 border-t border-sage-100/50 dark:border-gray-700">
-        <div className="flex items-end gap-3">
+      <div className="px-4 py-3 bg-white/90 dark:bg-gray-800 border-t border-sage-100/50 dark:border-gray-700">
+        <div className="flex items-end gap-2">
           <div className="relative">
             <button
               onClick={() => {
@@ -237,7 +237,7 @@ export default function ChatArea() {
                   setShowVoiceTooltip(false);
                 }
               }}
-              className={`w-[52px] h-[52px] rounded-2xl transition-all shadow-lg group relative flex items-center justify-center ${
+              className={`w-11 h-11 rounded-2xl transition-all shadow-lg group relative flex items-center justify-center ${
                 isRecording
                   ? 'bg-red-500 hover:bg-red-600'
                   : 'bg-gradient-to-br from-sage-600 to-mint-600 hover:shadow-xl'
@@ -247,7 +247,7 @@ export default function ChatArea() {
               } : {}}
               title={isRecording ? 'Stop recording' : 'Speak your thoughts'}
             >
-              <Mic className="w-6 h-6 text-white" />
+              <Mic className="w-5 h-5 text-white" />
               {isRecording && (
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 flex gap-0.5">
                   <div className="w-1 bg-white rounded-full animate-waveform-1" style={{ height: '12px' }}></div>
@@ -263,8 +263,8 @@ export default function ChatArea() {
             </button>
           </div>
 
-          <div className="flex-1 flex flex-col gap-3">
-            <div className="flex gap-3 mb-6 overflow-x-auto pb-1 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="flex-1 flex flex-col gap-2">
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <button
                 onClick={() => handleSendMessage("I'm feeling anxious right now...")}
                 disabled={isThinking}
@@ -290,53 +290,47 @@ export default function ChatArea() {
                 <span>Need Support</span>
               </button>
             </div>
-            <textarea
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder={isThinking ? "NIRA is thinking..." : "Share your thoughts with NIRA..."}
-              disabled={isThinking}
-              className="w-full px-6 py-4 rounded-2xl border border-sage-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all text-[15px] resize-none shadow-sm placeholder-[#78968b] dark:placeholder-gray-500 disabled:opacity-60 disabled:cursor-not-allowed"
-              rows={2}
-              style={{ minHeight: '52px' }}
-            />
-            <div className="flex items-center justify-between px-3 gap-3">
+            <div className="relative">
+              <textarea
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder={isThinking ? "NIRA is thinking..." : "Share your thoughts with NIRA..."}
+                disabled={isThinking}
+                className="w-full px-4 py-3 pr-12 rounded-2xl border border-sage-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all text-[15px] resize-none shadow-sm placeholder-[#78968b] dark:placeholder-gray-500 disabled:opacity-60 disabled:cursor-not-allowed"
+                rows={1}
+                style={{ minHeight: '44px' }}
+              />
               <button
-                className="p-2 hover:bg-[rgba(24,126,95,0.1)] dark:hover:bg-gray-700 rounded-xl transition-all hover:scale-105 group relative"
+                className="absolute right-3 bottom-3 p-1.5 hover:bg-[rgba(24,126,95,0.1)] dark:hover:bg-gray-700 rounded-lg transition-all group"
                 title="Add emoji"
               >
-                <Smile className="w-5 h-5 text-[#187E5F] dark:text-sage-400" />
-                <span className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-white bg-gray-800 dark:bg-gray-900 px-2 py-1 rounded shadow-md whitespace-nowrap pointer-events-none">
-                  Add emoji
-                </span>
+                <Smile className="w-4 h-4 text-[#187E5F] dark:text-sage-400" />
               </button>
-              <span className="text-xs text-sage-500 dark:text-gray-400">
-                Press Enter to send
-              </span>
             </div>
           </div>
 
           <button
             onClick={() => handleSendMessage()}
             disabled={!inputText.trim() || isThinking}
-            className={`w-[52px] h-[52px] rounded-2xl hover:shadow-lg transition-all disabled:cursor-not-allowed shadow-md flex items-center justify-center ${
+            className={`w-11 h-11 rounded-2xl hover:shadow-lg transition-all disabled:cursor-not-allowed shadow-md flex items-center justify-center ${
               inputText.trim() && !isThinking
                 ? 'bg-gradient-to-br from-[#187E5F] to-[#66887f] hover:scale-105 opacity-100'
                 : 'bg-[#66887f] opacity-50'
             }`}
             title="Send message"
           >
-            <Send className="w-5 h-5 text-white" />
+            <Send className="w-4 h-4 text-white" />
           </button>
         </div>
 
         <div
           onClick={() => navigate('/dashboard?tab=journal')}
-          className="mt-5 bg-[#F8FAF9] dark:bg-[rgba(24,126,95,0.08)] rounded-[10px] px-4 py-[10px] cursor-pointer hover:bg-[#E8F5F0] dark:hover:bg-[rgba(24,126,95,0.12)] transition-all duration-200 hover:-translate-y-0.5 mb-5"
+          className="mt-3 bg-[#F8FAF9] dark:bg-[rgba(24,126,95,0.08)] rounded-lg px-3 py-2 cursor-pointer hover:bg-[#E8F5F0] dark:hover:bg-[rgba(24,126,95,0.12)] transition-all duration-200"
         >
           <div className="flex items-center justify-center gap-2">
-            <BookOpen className="w-4 h-4 text-[#2c4943] dark:text-sage-300" />
-            <span className="text-[13px] text-[#2c4943] dark:text-sage-200">
+            <BookOpen className="w-3.5 h-3.5 text-[#2c4943] dark:text-sage-300" />
+            <span className="text-xs text-[#2c4943] dark:text-sage-200">
               Want to reflect deeper? <span className="font-semibold text-[#187E5F] dark:text-sage-300">Start a journal entry.</span>
             </span>
           </div>
