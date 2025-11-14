@@ -205,8 +205,8 @@ export default function MilestonesAchievements({
                 }`}
               >
                 <div className="relative">
-                  <button
-                    className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer ${
+                  <div
+                    className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 ${
                       badge.isEarned
                         ? 'animate-badge-float hover:-translate-y-1'
                         : 'opacity-40 hover:opacity-60'
@@ -241,7 +241,7 @@ export default function MilestonesAchievements({
                         <div className="absolute -bottom-1 right-1 text-lg animate-sparkle" style={{ animationDelay: '1s' }}>✨</div>
                       </>
                     )}
-                  </button>
+                  </div>
                 </div>
 
                 <div className="text-center mt-3 max-w-[90px]">
