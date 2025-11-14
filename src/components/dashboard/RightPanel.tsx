@@ -257,7 +257,7 @@ export default function RightPanel({ selectedRegion }: RightPanelProps) {
                   </div>
                 </div>
                 <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                  <span className="text-teal-600 dark:text-teal-400 font-medium">Trending up</span>
+                  
                 </div>
               </div>
             )}
