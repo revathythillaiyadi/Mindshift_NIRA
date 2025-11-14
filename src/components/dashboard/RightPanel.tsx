@@ -195,8 +195,8 @@ export default function RightPanel({ selectedRegion }: RightPanelProps) {
               )}
             </button>
             {expandedSections.has('mood') && (
-              <div className="px-4 pb-4 space-y-3 bg-gradient-to-br from-[#E8F5F0]/30 to-white dark:from-gray-600/20 dark:to-gray-700">
-                <div className="relative h-32 px-2">
+              <div className="px-4 pb-4 pt-3 space-y-4 bg-gradient-to-br from-[#E8F5F0]/30 to-white dark:from-gray-600/20 dark:to-gray-700">
+                <div className="relative h-32">
                   <svg className="w-full h-full" viewBox="0 0 350 120" preserveAspectRatio="none">
                     <defs>
                       <linearGradient id="moodGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -243,15 +243,15 @@ export default function RightPanel({ selectedRegion }: RightPanelProps) {
                       </circle>
                     ))}
                   </svg>
-                  <div className="flex justify-between px-2 mt-2">
+                  <div className="flex justify-between mt-3">
                     {moodData.map((day) => (
                       <span key={day.date} className="text-xs text-gray-600 dark:text-gray-400">{day.date}</span>
                     ))}
                   </div>
                 </div>
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 px-2">
-                  <span>last 7 days</span>
-                  <span className="text-teal-600 dark:text-teal-400 font-medium">trending up</span>
+                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                  <span>Last 7 days</span>
+                  <span className="text-teal-600 dark:text-teal-400 font-medium">Trending up</span>
                 </div>
               </div>
             )}
