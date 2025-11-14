@@ -103,7 +103,7 @@ export default function DashboardHeader({
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold bg-gradient-to-r from-sage-600 to-mint-600 dark:from-sage-400 dark:to-mint-400 bg-clip-text text-transparent">
-            Mindshift Dashboard
+            MindShift: Your Space for Growth
           </h1>
           {greeting.text && (
             <p
