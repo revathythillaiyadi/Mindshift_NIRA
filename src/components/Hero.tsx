@@ -9,7 +9,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center px-6 overflow-hidden bg-neutral-50 dark:bg-sage-700 transition-colors">
+    <section className="relative min-h-[90vh] flex items-center justify-center px-6 overflow-hidden bg-neutral-50 dark:bg-[#101720] transition-colors">
       {/* Tree Rings Background */}
       <div className="absolute inset-0 overflow-hidden">
         <TreeRing
@@ -32,12 +32,12 @@ export default function Hero() {
       <div className="container mx-auto max-w-5xl relative z-10">
         <div className="text-center space-y-8 animate-fade-in">
           {/* Headline */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight text-sage-700 dark:text-neutral-200 transition-colors">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight text-sage-700 dark:text-white transition-colors">
             Hey, feeling a little heavy lately?
           </h1>
 
           {/* Sub-headline */}
-          <p className="text-xl md:text-2xl lg:text-3xl leading-relaxed max-w-3xl mx-auto text-sage-500 dark:text-sage-200 font-light transition-colors">
+          <p className="text-xl md:text-2xl lg:text-3xl leading-relaxed max-w-3xl mx-auto text-sage-500 dark:text-[#F0F4F8] font-light transition-colors">
             You're not alone. Let's reframe those thoughts and reshape your world.
           </p>
 
@@ -45,7 +45,7 @@ export default function Hero() {
           <div className="pt-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <button
               onClick={handleStartJourney}
-              className="px-12 py-5 bg-gradient-to-r from-emerald to-emerald-600 text-white text-lg font-semibold rounded-[28px] hover:from-emerald-600 hover:to-ocean-light transition-all duration-200 hover:shadow-[0_8px_24px_rgba(24,126,95,0.25)] hover:scale-105 active:scale-98 animate-pulse-gentle shadow-[0_4px_16px_rgba(24,126,95,0.2)]"
+              className="px-12 py-5 bg-gradient-to-r from-emerald to-emerald-600 dark:from-[#5dd4ac] dark:to-[#4ec199] text-white dark:text-[#101720] text-lg font-semibold rounded-[28px] hover:from-emerald-600 hover:to-ocean-light dark:hover:from-[#4ec199] dark:hover:to-[#3db088] transition-all duration-200 hover:shadow-[0_8px_24px_rgba(24,126,95,0.25)] dark:hover:shadow-[0_8px_24px_rgba(93,212,172,0.4)] hover:scale-105 active:scale-98 animate-pulse-gentle shadow-[0_4px_16px_rgba(24,126,95,0.2)] dark:shadow-[0_4px_16px_rgba(93,212,172,0.3)]"
             >
               Start Your Journey
             </button>

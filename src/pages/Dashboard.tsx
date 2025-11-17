@@ -55,7 +55,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <div className="flex h-screen bg-gradient-to-br from-warm-white via-mint-50/20 to-sage-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors relative">
+      <div className="flex h-screen bg-gradient-to-br from-warm-white via-mint-50/20 to-sage-50/30 dark:from-[#101720] dark:via-[#0f1620] dark:to-[#101720] transition-colors relative">
         <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-60 dark:opacity-70 z-0">
           <TreeRing
             ringCount={15}
@@ -101,7 +101,7 @@ export default function Dashboard() {
                 {currentView === 'journal' && <JournalArea />}
                 {currentView === 'settings' && <SettingsPanel />}
                 {currentView === 'goals' && (
-                  <div className="text-center text-gray-600 dark:text-gray-400 mt-20">
+                  <div className="text-center text-gray-600 dark:text-[#F0F4F8] mt-20">
                     Goals & Progress view coming soon...
                   </div>
                 )}
