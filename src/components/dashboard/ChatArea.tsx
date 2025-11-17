@@ -203,7 +203,7 @@ export default function ChatArea() {
                   </p>
                 </div>
               )}
-              <span className="text-xs text-sage-500 dark:text-[#8FA3B8] px-1">
+              <span className="text-xs text-sage-500 dark:text-[#B0BED0] px-1">
                 {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             </div>
@@ -297,7 +297,7 @@ export default function ChatArea() {
                 onKeyPress={handleKeyPress}
                 placeholder={isThinking ? "NIRA is thinking..." : "Share your thoughts with NIRA..."}
                 disabled={isThinking}
-                className="w-full px-4 py-3 pr-12 rounded-2xl border border-sage-300 dark:border-[#283647] dark:bg-[#141b26] dark:text-white focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all text-[15px] resize-none shadow-sm placeholder-[#78968b] dark:placeholder-[#7B8FA8] disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 pr-12 rounded-2xl border border-sage-300 dark:border-[#283647] dark:bg-[#141b26] dark:text-white focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent transition-all text-[15px] resize-none shadow-sm placeholder-[#78968b] dark:placeholder-[#B0BED0] disabled:opacity-60 disabled:cursor-not-allowed"
                 rows={1}
                 style={{ minHeight: '44px' }}
               />

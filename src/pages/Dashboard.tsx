@@ -101,7 +101,7 @@ export default function Dashboard() {
                 {currentView === 'journal' && <JournalArea />}
                 {currentView === 'settings' && <SettingsPanel />}
                 {currentView === 'goals' && (
-                  <div className="text-center text-gray-600 dark:text-[#F0F4F8] mt-20">
+                  <div className="text-center text-gray-600 dark:text-white mt-20">
                     Goals & Progress view coming soon...
                   </div>
                 )}

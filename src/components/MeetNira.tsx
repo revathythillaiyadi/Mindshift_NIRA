@@ -37,10 +37,10 @@ export default function MeetNira() {
           <h2 className="text-4xl md:text-5xl font-bold text-soft-gray dark:text-white transition-colors">
             Meet Nira, Your Companion
           </h2>
-          <p className="text-xl text-forest/70 dark:text-[#F0F4F8] max-w-2xl mx-auto font-serif italic">
+          <p className="text-xl text-forest/70 dark:text-white max-w-2xl mx-auto font-serif italic">
             A gentle presence, here to hold space for you.
           </p>
-          <p className="text-sm text-forest/50 dark:text-[#D0DBE8]">
+          <p className="text-sm text-forest/50 dark:text-[#F0F4F8]">
             Your calm corner awaits.
           </p>
         </div>
@@ -88,7 +88,7 @@ export default function MeetNira() {
                       }`}>
                         <p className="text-sm leading-relaxed">{message.text}</p>
                       </div>
-                      <span className="text-xs text-gentle-gray/40 dark:text-[#8FA3B8] mt-2 px-2 italic">
+                      <span className="text-xs text-gentle-gray/40 dark:text-[#B0BED0] mt-2 px-2 italic">
                         Just now
                       </span>
                     </div>
@@ -99,15 +99,15 @@ export default function MeetNira() {
               <div className="p-6 bg-white/60 dark:bg-[#141b26] backdrop-blur-md">
                 <div className="flex items-center gap-3">
                   <button className="p-3 hover:bg-sage-50 dark:hover:bg-[#1c2533] rounded-full transition-all" title="voice input">
-                    <Mic className="w-5 h-5 text-sage-500/70 dark:text-[#7B8FA8]" strokeWidth={1.5} />
+                    <Mic className="w-5 h-5 text-sage-500/70 dark:text-[#B0BED0]" strokeWidth={1.5} />
                   </button>
                   <button className="p-3 hover:bg-sage-50 dark:hover:bg-[#1c2533] rounded-full transition-all" title="add emoji">
-                    <Smile className="w-5 h-5 text-sage-500/70 dark:text-[#7B8FA8]" strokeWidth={1.5} />
+                    <Smile className="w-5 h-5 text-sage-500/70 dark:text-[#B0BED0]" strokeWidth={1.5} />
                   </button>
                   <input
                     type="text"
                     placeholder="Take your time... share what's on your mind"
-                    className="flex-1 px-6 py-3.5 rounded-[2rem] border border-forest dark:border-[#283647] focus:outline-none focus:ring-2 focus:ring-forest/30 dark:focus:ring-[#00FFC8]/50 focus:border-forest dark:focus:border-[#00FFC8] transition-all text-sm text-soft-gray dark:text-white placeholder:text-gentle-gray/50 dark:placeholder:text-[#7B8FA8] bg-white dark:bg-[#1c2533]"
+                    className="flex-1 px-6 py-3.5 rounded-[2rem] border border-forest dark:border-[#283647] focus:outline-none focus:ring-2 focus:ring-forest/30 dark:focus:ring-[#00FFC8]/50 focus:border-forest dark:focus:border-[#00FFC8] transition-all text-sm text-soft-gray dark:text-white placeholder:text-gentle-gray/50 dark:placeholder:text-[#B0BED0] bg-white dark:bg-[#1c2533]"
                     disabled
                   />
                   <button className="w-12 h-12 bg-gradient-to-r from-sage-400 to-mint-400 dark:bg-[#00FFC8] text-white dark:text-[#0a0f16] rounded-full hover:shadow-lg dark:shadow-[0_0_20px_rgba(0,255,200,0.5)] dark:hover:shadow-[0_0_30px_rgba(0,255,200,0.7)] hover:scale-105 transition-all flex items-center justify-center flex-shrink-0">
@@ -122,7 +122,7 @@ export default function MeetNira() {
         </div>
 
         <div className="text-center mt-12 flex items-center justify-center gap-2 animate-pulse-gentle">
-          <span className="text-forest/50 dark:text-[#D0DBE8] text-sm">You're doing great.</span>
+          <span className="text-forest/50 dark:text-white text-sm">You're doing great.</span>
         </div>
       </div>
     </section>

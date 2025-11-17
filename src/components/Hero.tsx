@@ -37,7 +37,7 @@ export default function Hero() {
           </h1>
 
           {/* Sub-headline */}
-          <p className="text-xl md:text-2xl lg:text-3xl leading-relaxed max-w-3xl mx-auto text-sage-500 dark:text-[#E8EEF5] font-light transition-colors">
+          <p className="text-xl md:text-2xl lg:text-3xl leading-relaxed max-w-3xl mx-auto text-sage-500 dark:text-[#F0F4F8] font-light transition-colors">
             You're not alone. Let's reframe those thoughts and reshape your world.
           </p>
 
