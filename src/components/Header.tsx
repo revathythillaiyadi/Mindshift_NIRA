@@ -21,11 +21,11 @@ export default function Header({ isDark, setIsDark }: HeaderProps) {
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#about" className="text-sage-600 dark:text-sage-200 hover:text-emerald dark:hover:text-emerald-100 transition-colors duration-200 font-medium hover:underline decoration-2 underline-offset-4">About Us</a>
-            <a href="#services" className="text-sage-600 dark:text-sage-200 hover:text-emerald dark:hover:text-emerald-100 transition-colors duration-200 font-medium hover:underline decoration-2 underline-offset-4">Services</a>
-            <a href="#resources" className="text-sage-600 dark:text-sage-200 hover:text-emerald dark:hover:text-emerald-100 transition-colors duration-200 font-medium hover:underline decoration-2 underline-offset-4">Resources</a>
-            <a href="#how-it-works" className="text-sage-600 dark:text-sage-200 hover:text-emerald dark:hover:text-emerald-100 transition-colors duration-200 font-medium hover:underline decoration-2 underline-offset-4">How it Works</a>
-            <a href="#faqs" className="text-sage-600 dark:text-sage-200 hover:text-emerald dark:hover:text-emerald-100 transition-colors duration-200 font-medium hover:underline decoration-2 underline-offset-4">FAQs</a>
+            <a href="#about" className="text-base text-sage-600 dark:text-sage-200 hover:text-emerald dark:hover:text-emerald-100 transition-colors duration-200 font-medium hover:underline decoration-2 underline-offset-4">About Us</a>
+            <a href="#services" className="text-base text-sage-600 dark:text-sage-200 hover:text-emerald dark:hover:text-emerald-100 transition-colors duration-200 font-medium hover:underline decoration-2 underline-offset-4">Services</a>
+            <a href="#resources" className="text-base text-sage-600 dark:text-sage-200 hover:text-emerald dark:hover:text-emerald-100 transition-colors duration-200 font-medium hover:underline decoration-2 underline-offset-4">Resources</a>
+            <a href="#how-it-works" className="text-base text-sage-600 dark:text-sage-200 hover:text-emerald dark:hover:text-emerald-100 transition-colors duration-200 font-medium hover:underline decoration-2 underline-offset-4">How it Works</a>
+            <a href="#faqs" className="text-base text-sage-600 dark:text-sage-200 hover:text-emerald dark:hover:text-emerald-100 transition-colors duration-200 font-medium hover:underline decoration-2 underline-offset-4">FAQs</a>
           </div>
 
           <div className="flex items-center space-x-4">
