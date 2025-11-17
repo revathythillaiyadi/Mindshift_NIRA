@@ -47,7 +47,7 @@ export default function Services() {
             </h2>
           </div>
           <p className="text-xl text-gentle-gray/70 max-w-3xl mx-auto font-serif italic">
-            Everything you need to nurture your mental wellness, thoughtfully designed for your journey
+            Everything you need to nurture your mental wellness, thoughtfully designed for your journey.
           </p>
         </div>
 

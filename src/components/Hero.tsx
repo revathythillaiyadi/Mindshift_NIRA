@@ -33,12 +33,12 @@ export default function Hero() {
         <div className="text-center space-y-8 animate-fade-in">
           {/* Headline */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight text-sage-700 dark:text-neutral-200 transition-colors">
-            hey, feeling a little heavy lately?
+            Hey, feeling a little heavy lately?
           </h1>
 
           {/* Sub-headline */}
           <p className="text-xl md:text-2xl lg:text-3xl leading-relaxed max-w-3xl mx-auto text-sage-500 dark:text-sage-200 font-light transition-colors">
-            you're not alone. let's reframe those thoughts and reshape your world.
+            You're not alone. Let's reframe those thoughts and reshape your world.
           </p>
 
           {/* Call-to-Action Button */}

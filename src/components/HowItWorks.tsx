@@ -217,7 +217,7 @@ export default function HowItWorks() {
             </h2>
           </div>
           <p className="text-xl text-gentle-gray/70 max-w-2xl mx-auto font-serif italic">
-            Like a vine reaching toward the sun, each step winds naturally along your journey toward wellness
+            Like a vine reaching toward the sun, each step winds naturally along your journey toward wellness.
           </p>
         </div>
 

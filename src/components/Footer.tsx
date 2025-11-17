@@ -10,7 +10,7 @@ export default function Footer() {
               <Brain className="w-10 h-10 text-mint-300" strokeWidth={2} />
               <div className="flex flex-col">
                 <span className="text-2xl font-bold">MindShift</span>
-                <span className="text-sm text-mint-200">Reframe your thoughts, Reshape your world</span>
+                <span className="text-sm text-mint-200">Reframe your thoughts, reshape your world</span>
               </div>
             </div>
             <p className="text-white/80 leading-relaxed mb-6">

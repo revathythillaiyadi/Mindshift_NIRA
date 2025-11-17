@@ -73,11 +73,11 @@ export default function Login() {
               </div>
             </div>
 
-            <h2 className="text-3xl font-bold text-forest dark:text-blue-100 text-center mb-2 lowercase">
-              reset password
+            <h2 className="text-3xl font-bold text-forest dark:text-blue-100 text-center mb-2">
+              Reset Password
             </h2>
-            <p className="text-soft-gray dark:text-blue-300 text-center mb-8 lowercase">
-              enter your email to receive a password reset link
+            <p className="text-soft-gray dark:text-blue-300 text-center mb-8">
+              Enter your email to receive a password reset link.
             </p>
 
             {resetMessage && (
@@ -95,8 +95,8 @@ export default function Login() {
 
             <form onSubmit={handleForgotPassword} className="space-y-5">
               <div>
-                <label htmlFor="reset-email" className="block text-sm font-semibold text-forest dark:text-blue-100 mb-2 lowercase">
-                  email address
+                <label htmlFor="reset-email" className="block text-sm font-semibold text-forest dark:text-blue-100 mb-2">
+                  Email Address
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-sage-400" />
@@ -106,7 +106,7 @@ export default function Login() {
                     value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
                     placeholder="your.email@example.com"
-                    className="w-full pl-12 pr-4 py-3 border-2 border-sage-200 dark:border-gray-600 rounded-[1.5rem] focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-white dark:bg-gray-700 text-soft-gray dark:text-white placeholder-gentle-gray dark:placeholder-gray-400 transition-all lowercase"
+                    className="w-full pl-12 pr-4 py-3 border-2 border-sage-200 dark:border-gray-600 rounded-[1.5rem] focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-white dark:bg-gray-700 text-soft-gray dark:text-white placeholder-gentle-gray dark:placeholder-gray-400 transition-all"
                     required
                   />
                 </div>
@@ -115,17 +115,17 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-sage-500 to-mint-500 hover:from-sage-600 hover:to-mint-600 text-white font-semibold rounded-[1.5rem] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed lowercase"
+                className="w-full py-3 bg-gradient-to-r from-sage-500 to-mint-500 hover:from-sage-600 hover:to-mint-600 text-white font-semibold rounded-[1.5rem] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'sending...' : 'send reset link'}
+                {loading ? 'Sending...' : 'Send Reset Link'}
               </button>
 
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(false)}
-                className="w-full text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-medium transition-colors lowercase"
+                className="w-full text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-medium transition-colors"
               >
-                back to login
+                Back to Login
               </button>
             </form>
           </div>
@@ -155,11 +155,11 @@ export default function Login() {
             </div>
           </div>
 
-          <h2 className="text-3xl font-bold text-forest dark:text-blue-100 text-center mb-2 lowercase">
-            welcome back to mindshift
+          <h2 className="text-3xl font-bold text-forest dark:text-blue-100 text-center mb-2">
+            Welcome Back to MindShift
           </h2>
-          <p className="text-soft-gray dark:text-blue-300 text-center mb-8 lowercase">
-            continue your journey to mental wellness
+          <p className="text-soft-gray dark:text-blue-300 text-center mb-8">
+            Continue your journey to mental wellness.
           </p>
 
           {error && (
@@ -171,8 +171,8 @@ export default function Login() {
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-forest dark:text-blue-100 mb-2 lowercase">
-                email address
+              <label htmlFor="email" className="block text-sm font-semibold text-forest dark:text-blue-100 mb-2">
+                Email Address
               </label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-sage-400" />
@@ -182,15 +182,15 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your.email@example.com"
-                  className="w-full pl-12 pr-4 py-3 border-2 border-sage-200 dark:border-gray-600 rounded-[1.5rem] focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-white dark:bg-gray-700 text-soft-gray dark:text-white placeholder-gentle-gray dark:placeholder-gray-400 transition-all lowercase"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-sage-200 dark:border-gray-600 rounded-[1.5rem] focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-transparent bg-white dark:bg-gray-700 text-soft-gray dark:text-white placeholder-gentle-gray dark:placeholder-gray-400 transition-all"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-forest dark:text-blue-100 mb-2 lowercase">
-                password
+              <label htmlFor="password" className="block text-sm font-semibold text-forest dark:text-blue-100 mb-2">
+                Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-sage-400" />
@@ -210,31 +210,31 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowForgotPassword(true)}
-                className="text-sm text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-medium transition-colors lowercase"
+                className="text-sm text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-medium transition-colors"
               >
-                forgot password?
+                Forgot password?
               </button>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-sage-500 to-mint-500 hover:from-sage-600 hover:to-mint-600 text-white font-semibold rounded-[1.5rem] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed lowercase"
+              className="w-full py-3 bg-gradient-to-r from-sage-500 to-mint-500 hover:from-sage-600 hover:to-mint-600 text-white font-semibold rounded-[1.5rem] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'logging in...' : 'log in'}
+              {loading ? 'Logging In...' : 'Log In'}
             </button>
           </form>
 
           <div className="mt-6 text-center space-y-3">
-            <p className="text-soft-gray dark:text-blue-300 lowercase">
-              don't have an account?{' '}
-              <Link to="/signup" className="text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-semibold transition-colors lowercase">
-                sign up
+            <p className="text-soft-gray dark:text-blue-300">
+              Don't have an account?{' '}
+              <Link to="/signup" className="text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-semibold transition-colors">
+                Sign Up
               </Link>
             </p>
             <p className="text-soft-gray dark:text-blue-300">
-              <Link to="/" className="text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-semibold transition-colors lowercase">
-                ← back to home
+              <Link to="/" className="text-sage-600 dark:text-blue-400 hover:text-sage-700 dark:hover:text-blue-300 font-semibold transition-colors">
+                ← Back to Home
               </Link>
             </p>
           </div>

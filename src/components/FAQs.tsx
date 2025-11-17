@@ -51,7 +51,7 @@ export default function FAQs() {
             Frequently Asked Questions
           </h2>
           <p className="text-xl text-warm-gray/70">
-            Everything you need to know about MindShift
+            Everything you need to know about MindShift.
           </p>
         </div>
 

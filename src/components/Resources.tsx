@@ -40,7 +40,7 @@ export default function Resources() {
             Mental Health Resources
           </h2>
           <p className="text-xl text-warm-gray/70 max-w-3xl mx-auto">
-            Curated, vetted resources to support your wellness journey
+            Curated, vetted resources to support your wellness journey.
           </p>
         </div>
 

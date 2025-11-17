@@ -35,13 +35,13 @@ export default function MeetNira() {
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-16 space-y-4 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-soft-gray dark:text-gray-300 transition-colors">
-            meet Nira, your companion
+            Meet Nira, Your Companion
           </h2>
           <p className="text-xl text-forest/70 max-w-2xl mx-auto font-serif italic">
-            a gentle presence, here to hold space for you
+            A gentle presence, here to hold space for you.
           </p>
-          <p className="text-sm text-forest/50 lowercase">
-            your calm corner awaits
+          <p className="text-sm text-forest/50">
+            Your calm corner awaits.
           </p>
         </div>
 
@@ -54,10 +54,10 @@ export default function MeetNira() {
                     <Bot className="w-8 h-8 text-forest dark:text-sage-100 transition-colors" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold text-lg tracking-wide">nira</h3>
+                    <h3 className="text-white font-semibold text-lg tracking-wide">Nira</h3>
                     <div className="flex items-center gap-2">
                       <div className="w-2.5 h-2.5 bg-white dark:bg-gray-800 rounded-full animate-pulse"></div>
-                      <span className="text-white/90 text-sm lowercase">here with you</span>
+                      <span className="text-white/90 text-sm">Here with you</span>
                     </div>
                   </div>
                 </div>
@@ -86,10 +86,10 @@ export default function MeetNira() {
                           ? 'bg-white/80 backdrop-blur-sm text-soft-gray shadow-sm border border-lavender-100/40'
                           : 'bg-gradient-to-br from-mint-200/60 to-sage-200/50 backdrop-blur-sm text-soft-gray'
                       }`}>
-                        <p className="text-sm leading-relaxed lowercase">{message.text}</p>
+                        <p className="text-sm leading-relaxed">{message.text}</p>
                       </div>
-                      <span className="text-xs text-gentle-gray/40 mt-2 px-2 lowercase italic">
-                        just now
+                      <span className="text-xs text-gentle-gray/40 mt-2 px-2 italic">
+                        Just now
                       </span>
                     </div>
                   </div>
@@ -106,8 +106,8 @@ export default function MeetNira() {
                   </button>
                   <input
                     type="text"
-                    placeholder="take your time... share what's on your mind"
-                    className="flex-1 px-6 py-3.5 rounded-[2rem] border border-forest focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest transition-all text-sm text-soft-gray placeholder:text-gentle-gray/50 bg-white lowercase"
+                    placeholder="Take your time... share what's on your mind"
+                    className="flex-1 px-6 py-3.5 rounded-[2rem] border border-forest focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest transition-all text-sm text-soft-gray placeholder:text-gentle-gray/50 bg-white"
                     disabled
                   />
                   <button className="w-12 h-12 bg-gradient-to-r from-sage-400 to-mint-400 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all flex items-center justify-center flex-shrink-0">
@@ -122,7 +122,7 @@ export default function MeetNira() {
         </div>
 
         <div className="text-center mt-12 flex items-center justify-center gap-2 animate-pulse-gentle">
-          <span className="text-forest/50 text-sm lowercase">you're doing great</span>
+          <span className="text-forest/50 text-sm">You're doing great.</span>
         </div>
       </div>
     </section>
