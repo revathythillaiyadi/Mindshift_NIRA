@@ -6,7 +6,7 @@ export default function MeetNira() {
   const [visibleMessages, setVisibleMessages] = useState(0);
 
   const messages = [
-    { type: 'bot', text: "hi there 🌿 i'm Nira — i'm here to listen, no rush." },
+    { type: 'bot', text: "hi there 🌿 i'm NIRA — i'm here to listen, no rush." },
     { type: 'user', text: "i've been feeling pretty heavy lately..." },
     { type: 'bot', text: "i hear you. that sounds really tough. want to tell me what's been weighing on you?" },
     { type: 'user', text: "just everything... work, life, it all feels like too much" },
@@ -35,7 +35,7 @@ export default function MeetNira() {
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-16 space-y-4 animate-fade-in">
           <h2 className="text-4xl md:text-5xl font-bold text-soft-gray dark:text-white transition-colors">
-            Meet Nira, Your Companion
+            Meet NIRA, Your Companion
           </h2>
           <p className="text-xl text-forest/70 dark:text-white max-w-2xl mx-auto font-serif italic">
             A gentle presence, here to hold space for you.
@@ -54,7 +54,7 @@ export default function MeetNira() {
                     <Bot className="w-8 h-8 text-forest dark:text-[#0a0f16] transition-colors" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold text-lg tracking-wide">Nira</h3>
+                    <h3 className="text-white font-semibold text-lg tracking-wide">NIRA</h3>
                     <div className="flex items-center gap-2">
                       <div className="w-2.5 h-2.5 bg-white dark:bg-[#00FFC8] rounded-full animate-pulse shadow-[0_0_8px_rgba(0,255,200,0.8)]"></div>
                       <span className="text-white/90 text-sm">Here with you</span>
