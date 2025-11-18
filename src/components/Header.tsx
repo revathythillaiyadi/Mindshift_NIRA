@@ -53,11 +53,11 @@ export default function Header({ isDark, setIsDark }: HeaderProps) {
               {isDark ? <Sun className="w-5 h-5 text-[${darkAccent}]" /> : <Moon className="w-5 h-5 text-sage-500" />}
             </button>
             {/* Login Button - Brighter green with white text */}
-            <Link to="/login" className="px-6 py-2 text-white border border-emerald-400 dark:border-mint-400 bg-transparent hover:bg-emerald-400/10 dark:hover:bg-mint-400/10 rounded-[20px] transition-all duration-200 font-medium">
+            <Link to="/login" className="px-6 py-2 text-white border border-emerald-500 dark:border-mint-500 bg-transparent hover:bg-emerald-500/10 dark:hover:bg-mint-500/10 rounded-[20px] transition-all duration-200 font-medium">
               Login
             </Link>
             {/* Sign Up Button - Brighter green gradient with white text */}
-            <Link to="/signup" className="px-6 py-2 bg-gradient-to-r from-emerald-400 to-mint-400 dark:from-emerald-400 dark:to-mint-400 text-white rounded-[20px] hover:from-emerald-500 hover:to-mint-500 dark:hover:from-emerald-500 dark:hover:to-mint-500 transition-all duration-200 hover:shadow-lg shadow-[0_4px_12px_rgba(52,211,153,0.3)] dark:shadow-[0_4px_16px_rgba(52,211,153,0.4)] font-medium">
+            <Link to="/signup" className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-mint-500 dark:from-emerald-500 dark:to-mint-500 text-white rounded-[20px] hover:from-emerald-600 hover:to-mint-600 dark:hover:from-emerald-600 dark:hover:to-mint-600 transition-all duration-200 hover:shadow-lg shadow-[0_4px_12px_rgba(16,185,129,0.3)] dark:shadow-[0_4px_16px_rgba(16,185,129,0.4)] font-medium">
               Sign Up
             </Link>
           </div>
