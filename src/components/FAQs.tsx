@@ -28,7 +28,7 @@ const faqs = [
   },
   {
     question: 'How often should I use MindShift?',
-    answer: 'Mindshift can be a helpful tool for mild anxiety and low mood by promoting reframing and mindfulness, with users reporting reduced stress in short sessions. However, it\'s not a cure or medical treatment—evidence-based studies on similar NLP apps show benefits for symptom relief, but consult a doctor for clinical anxiety or depression.',
+    answer: 'Use it as needed—daily for 5-10 minute check-ins to build habits, or sporadically during tough moments. Consistency (3-5 times/week) often yields the best results for lasting mindset shifts, but listen to your needs; there\'s no "right" frequency.',
   },
   {
     question: 'What happens if I\'m in crisis?',
