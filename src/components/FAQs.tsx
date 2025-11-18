@@ -7,8 +7,8 @@ const faqs = [
     answer: 'Absolutely. We use bank-level encryption to protect your data. All conversations are confidential, and we never share your personal information with third parties. Your privacy is our highest priority.',
   },
   {
-    question: 'What is NIRA and how does it help me reframe my thoughts?',
-    answer: 'NIRA (Neural Insight and Reframing Assistant) is your personal AI guide designed to shift perspective. By leveraging Neuro Linguistic Programming (NLP) and powerful reframing methods, NIRA actively assists you in identifying and consciously turning negative thoughts into positive, actionable affirmations for mindful growth, all within a supportive, conversational environment.',
+    question: 'Who or what is NIRA?',
+    answer: 'NIRA (Neural Insight & Reframing Assistant) is the friendly AI companion inside the Mindshift app. It\'s your 24×7 pocket buddy that listens to whatever\'s on your mind and uses smart, gentle questions (based on NLP "sleight of mouth" techniques) to help you instantly see things from a clearer, more helpful angle. No lectures, no judgment — just quick, natural mindset shifts that feel like talking to a wise friend who always knows the right question to ask. Chat or speak with NIRA anytime.',
   },
   {
     question: 'How does NIRA differ from a human therapist?',
