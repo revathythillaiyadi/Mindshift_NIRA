@@ -157,8 +157,6 @@ export default function HowItWorks() {
             const isActive = index <= activeStep;
             const progress = (index + 1) / (steps.length + 1);
             const isVisible = scrollProgress >= progress - 0.1;
-            const pathProgress = progress * pathLength;
-            const footprintPoint = getPathPointAtDistance(pathProgress);
 
             return (
               <g key={index} className={`transition-all duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
@@ -205,83 +203,6 @@ export default function HowItWorks() {
                     />
                   </>
                 )}
-              </g>
-            );
-          })}
-
-          {/* Footprints along the path */}
-          {Array.from({ length: 18 }).map((_, idx) => {
-            const stepProgress = (idx + 0.5) / 18;
-            const distance = stepProgress * pathLength;
-            const point = getPathPointAtDistance(distance);
-            const isLeft = idx % 2 === 0;
-            const offset = isLeft ? -25 : 25;
-            const isVisible = scrollProgress >= stepProgress - 0.05;
-            const rotation = isLeft ? -30 : 30;
-
-            return (
-              <g
-                key={`footprint-${idx}`}
-                className={`transition-all duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
-                style={{
-                  transformOrigin: `${(point.x / 100) * 1000 + offset}px ${(point.y / 100) * 1000}px`,
-                  animation: isVisible ? 'footprintAppear 0.6s ease-out' : 'none',
-                  animationDelay: `${idx * 0.1}s`,
-                  animationFillMode: 'backwards'
-                }}
-              >
-                {/* Main footprint sole */}
-                <ellipse
-                  cx={(point.x / 100) * 1000 + offset}
-                  cy={(point.y / 100) * 1000}
-                  rx="10"
-                  ry="16"
-                  fill="#10b981"
-                  stroke="#059669"
-                  strokeWidth="1"
-                  className="dark:fill-emerald-500 dark:stroke-emerald-600"
-                  transform={`rotate(${rotation} ${(point.x / 100) * 1000 + offset} ${(point.y / 100) * 1000})`}
-                />
-
-                {/* Heel */}
-                <ellipse
-                  cx={(point.x / 100) * 1000 + offset}
-                  cy={(point.y / 100) * 1000 + 12}
-                  rx="9"
-                  ry="8"
-                  fill="#10b981"
-                  stroke="#059669"
-                  strokeWidth="1"
-                  className="dark:fill-emerald-500 dark:stroke-emerald-600"
-                  transform={`rotate(${rotation} ${(point.x / 100) * 1000 + offset} ${(point.y / 100) * 1000 + 12})`}
-                />
-
-                {/* Toes - more defined */}
-                {[-4, 0, 4].map((toeOffset, toeIdx) => (
-                  <ellipse
-                    key={`toe-${toeIdx}`}
-                    cx={(point.x / 100) * 1000 + offset + toeOffset}
-                    cy={(point.y / 100) * 1000 - 14}
-                    rx="3"
-                    ry="4"
-                    fill="#10b981"
-                    stroke="#059669"
-                    strokeWidth="0.5"
-                    className="dark:fill-emerald-500 dark:stroke-emerald-600"
-                    transform={`rotate(${rotation} ${(point.x / 100) * 1000 + offset + toeOffset} ${(point.y / 100) * 1000 - 14})`}
-                  />
-                ))}
-
-                {/* Arch detail */}
-                <ellipse
-                  cx={(point.x / 100) * 1000 + offset}
-                  cy={(point.y / 100) * 1000 + 2}
-                  rx="6"
-                  ry="10"
-                  fill="rgba(255, 255, 255, 0.15)"
-                  className="dark:fill-white/10"
-                  transform={`rotate(${rotation} ${(point.x / 100) * 1000 + offset} ${(point.y / 100) * 1000 + 2})`}
-                />
               </g>
             );
           })}
