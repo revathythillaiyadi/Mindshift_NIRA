@@ -23,7 +23,7 @@ export default function MeetNira() {
   }, [visibleMessages, messages.length]);
 
   return (
-    <section className="py-24 px-6 bg-gradient-to-b from-mint-50/20 via-warm-white to-sage-50/30 dark:from-[#0a0f16] dark:via-[#0a0f16] dark:to-[#0a0f16] relative overflow-hidden">
+    <section className="py-12 px-6 bg-gradient-to-b from-mint-50/20 via-warm-white to-sage-50/30 dark:from-[#0a0f16] dark:via-[#0a0f16] dark:to-[#0a0f16] relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <TreeRing
           ringCount={10}
