@@ -74,7 +74,7 @@ export default function FAQs() {
               </button>
               {openIndex === index && (
                 <div className="px-6 pb-5">
-                  <p className="text-warm-gray/70 leading-relaxed">{faq.answer}</p>
+                  <p className="leading-relaxed" style={{ color: '#1e2936' }}>{faq.answer}</p>
                 </div>
               )}
             </div>
