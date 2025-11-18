@@ -157,6 +157,8 @@ export default function HowItWorks() {
             const isActive = index <= activeStep;
             const progress = (index + 1) / (steps.length + 1);
             const isVisible = scrollProgress >= progress - 0.1;
+            const pathProgress = progress * pathLength;
+            const footprintPoint = getPathPointAtDistance(pathProgress);
 
             return (
               <g key={index} className={`transition-all duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
@@ -203,6 +205,43 @@ export default function HowItWorks() {
                     />
                   </>
                 )}
+              </g>
+            );
+          })}
+
+          {/* Footprints along the path */}
+          {Array.from({ length: 15 }).map((_, idx) => {
+            const stepProgress = (idx + 0.5) / 15;
+            const distance = stepProgress * pathLength;
+            const point = getPathPointAtDistance(distance);
+            const isLeft = idx % 2 === 0;
+            const offset = isLeft ? -15 : 15;
+            const isVisible = scrollProgress >= stepProgress - 0.05;
+            const footprintColor = isLeft ? '#10b981' : '#3b82f6';
+
+            return (
+              <g key={`footprint-${idx}`} className={`transition-all duration-500 ${isVisible ? 'opacity-60' : 'opacity-0'}`}>
+                {/* Footprint shape - simplified as ellipses */}
+                <ellipse
+                  cx={(point.x / 100) * 1000 + offset}
+                  cy={(point.y / 100) * 1000}
+                  rx="8"
+                  ry="12"
+                  fill={footprintColor}
+                  className="dark:fill-emerald-400"
+                  transform={`rotate(${isLeft ? -25 : 25} ${(point.x / 100) * 1000 + offset} ${(point.y / 100) * 1000})`}
+                />
+                {/* Toes */}
+                {[0, 1, 2].map((toe) => (
+                  <circle
+                    key={`toe-${toe}`}
+                    cx={(point.x / 100) * 1000 + offset + (toe - 1) * 3}
+                    cy={(point.y / 100) * 1000 - 10}
+                    r="2.5"
+                    fill={footprintColor}
+                    className="dark:fill-emerald-400"
+                  />
+                ))}
               </g>
             );
           })}
