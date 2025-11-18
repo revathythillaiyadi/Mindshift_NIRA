@@ -212,7 +212,7 @@ export default function HowItWorks() {
       <div className="container mx-auto max-w-7xl relative" style={{ zIndex: 1 }}>
         <div className="text-center mb-24 animate-fade-in">
           <div className="inline-flex items-center gap-2 mb-4">
-            <h2 className="text-4xl md:text-5xl font-bold text-forest dark:text-[#1e2936] transition-colors">
+            <h2 className="text-4xl md:text-5xl font-bold text-soft-gray dark:text-white transition-colors">
               Your Path to Growth
             </h2>
           </div>
