@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     question: 'How does NIRA differ from a human therapist?',
-    answer: 'NIRA is an AI companion designed to provide immediate support and guidance using evidence-based techniques. While NIRA can help with thought reframing and daily mental wellness, it\'s not a replacement for professional therapy. We recommend using MindShift as a complement to professional care when needed.',
+    answer: 'NIRA is an always-available, on-demand tool for everyday thought shifts, using AI-driven questions for quick insights. It\'s not a replacement for human therapists, who offer deeper emotional support, diagnosis, and personalized strategies through empathy and expertise. Think of NIRA as a daily "mind gym" complement to professional care.',
   },
   {
     question: 'Is MindShift effective for managing anxiety and depression?',
