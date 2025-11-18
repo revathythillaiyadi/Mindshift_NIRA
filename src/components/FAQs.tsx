@@ -32,7 +32,7 @@ const faqs = [
   },
   {
     question: 'What happens if I\'m in crisis?',
-    answer: 'MindShift includes an SOS feature that immediately connects you to crisis resources and emergency helplines. If you\'re experiencing thoughts of self-harm or suicide, please call 988 (US) or your local emergency services immediately.',
+    answer: 'Mindshift is for everyday support, not emergencies. If you are in crisis (e.g. suicidal thoughts), NIRA will immediately guide you to professional resources like hotlines and urge you to seek immediate help. Safety first—always reach out to a trusted person or service.',
   },
   {
     question: 'Can I use MindShift alongside medication or therapy?',
