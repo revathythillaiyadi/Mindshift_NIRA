@@ -1,4 +1,4 @@
-import { Moon, Sun, User, ChevronDown, LogOut, Settings, UserCircle, BookOpen, Flag } from 'lucide-react';
+import { Moon, Sun, User, ChevronDown, LogOut, Settings, UserCircle, BookOpen, Flag, AlertCircle } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -23,6 +23,49 @@ const regions = [
   { code: 'JP', name: 'Japan' },
 ];
 
+const regionalContacts: Record<string, { crisis: string; hotline: string; emergency: string }> = {
+  US: {
+    crisis: '988 (Suicide & Crisis Lifeline)',
+    hotline: '1-800-273-8255 (National Suicide Prevention)',
+    emergency: '911',
+  },
+  UK: {
+    crisis: '116 123 (Samaritans)',
+    hotline: '0800 689 5652 (Campaign Against Living Miserably)',
+    emergency: '999',
+  },
+  CA: {
+    crisis: '1-833-456-4566 (Talk Suicide Canada)',
+    hotline: '1-866-277-3553 (Kids Help Phone)',
+    emergency: '911',
+  },
+  AU: {
+    crisis: '13 11 14 (Lifeline)',
+    hotline: '1800 55 1800 (Kids Helpline)',
+    emergency: '000',
+  },
+  IN: {
+    crisis: '9152987821 (AASRA)',
+    hotline: '080 46110007 (iCall)',
+    emergency: '112',
+  },
+  DE: {
+    crisis: '0800 1110111 (TelefonSeelsorge)',
+    hotline: '0800 1110222 (TelefonSeelsorge)',
+    emergency: '112',
+  },
+  FR: {
+    crisis: '3114 (National Suicide Prevention)',
+    hotline: '01 45 39 40 00 (SOS Amitié)',
+    emergency: '112',
+  },
+  JP: {
+    crisis: '0120-783-556 (TELL Lifeline)',
+    hotline: '0570-064-556 (Mental Health Support)',
+    emergency: '110',
+  },
+};
+
 function getTimeBasedGreeting(name: string): { text: string; emoji: string } {
   const hour = new Date().getHours();
 
@@ -46,6 +89,7 @@ export default function DashboardHeader({
 }: DashboardHeaderProps) {
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showSOSModal, setShowSOSModal] = useState(false);
   const [userName, setUserName] = useState<string>('');
   const [greeting, setGreeting] = useState<{ text: string; emoji: string }>({ text: '', emoji: '' });
   const [fadeIn, setFadeIn] = useState(false);
@@ -137,6 +181,16 @@ export default function DashboardHeader({
             <span className="text-sm">Journal</span>
           </button>
 
+          <button
+            onClick={() => setShowSOSModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold text-sm shadow-[0_4px_12px_rgba(255,140,66,0.35)] hover:shadow-xl transition-all hover:scale-105 hover:-translate-y-[1px] animate-gentle-pulse"
+            style={{ backgroundColor: '#FF8C42', backgroundImage: 'linear-gradient(135deg, #FF8C42 0%, #FFB347 100%)' }}
+            title="Get Help Now"
+          >
+            <AlertCircle className="w-4 h-4" />
+            <span>Get Help Now</span>
+          </button>
+
           <div className="relative" ref={regionMenuRef}>
             <button
               onClick={() => setShowRegionMenu(!showRegionMenu)}
@@ -220,6 +274,75 @@ export default function DashboardHeader({
           </div>
         </div>
       </div>
+
+      {/* SOS Modal */}
+      {showSOSModal && (() => {
+        const contacts = regionalContacts[selectedRegion] || regionalContacts.US;
+        return (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999] p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-2xl max-w-md w-full p-6 transition-colors">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                  <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+                </div>
+                <h2 className="text-2xl font-bold lowercase text-gray-800 dark:text-white">emergency resources</h2>
+              </div>
+
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
+                If you're in crisis or need immediate support, please reach out to one of these services:
+              </p>
+
+              <div className="space-y-4 mb-6">
+                <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-[1rem] border border-red-200 dark:border-red-800">
+                  <h3 className="font-semibold text-red-900 dark:text-red-200 mb-2">Crisis Hotline</h3>
+                  <a
+                    href={`tel:${contacts.crisis.split(' ')[0]}`}
+                    className="text-lg font-bold text-red-600 dark:text-red-400 hover:underline"
+                  >
+                    {contacts.crisis}
+                  </a>
+                </div>
+
+                <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-[1rem] border border-amber-200 dark:border-amber-800">
+                  <h3 className="font-semibold text-amber-900 dark:text-amber-200 mb-2">Support Hotline</h3>
+                  <a
+                    href={`tel:${contacts.hotline.split(' ')[0]}`}
+                    className="text-lg font-bold text-amber-600 dark:text-amber-400 hover:underline"
+                  >
+                    {contacts.hotline}
+                  </a>
+                </div>
+
+                <div className="p-4 bg-sage-50 dark:bg-sage-900/20 rounded-[1rem] border border-blue-200 dark:border-blue-800">
+                  <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">Emergency Services</h3>
+                  <a
+                    href={`tel:${contacts.emergency}`}
+                    className="text-lg font-bold text-sage-600 dark:text-sage-400 hover:underline"
+                  >
+                    {contacts.emergency}
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowSOSModal(false)}
+                  className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-[1rem] hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors font-medium"
+                >
+                  Close
+                </button>
+                <button className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-[1rem] hover:shadow-lg transition-all font-medium">
+                  Call Now
+                </button>
+              </div>
+
+              <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
+                You're not alone. Help is available 24/7.
+              </p>
+            </div>
+          </div>
+        );
+      })()}
     </header>
   );
 }

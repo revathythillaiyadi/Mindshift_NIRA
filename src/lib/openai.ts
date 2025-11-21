@@ -133,3 +133,122 @@ export function hasTitlePhrase(transcript: string): boolean {
   return titlePhrases.some(phrase => lowerTranscript.includes(phrase));
 }
 
+/**
+ * Get AI chat response from OpenAI with streaming support
+ * Optimized for mental health conversations - calm, empathic, kind
+ */
+export async function getAIResponse(
+  userMessage: string,
+  conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }> = [],
+  onChunk?: (chunk: string) => void
+): Promise<string> {
+  if (!OPENAI_API_KEY) {
+    console.warn('OpenAI API key not configured - using fallback response');
+    return "I hear you. Let's work through this together. Can you tell me more about what's on your mind?";
+  }
+
+  try {
+    const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
+      {
+        role: 'system',
+        content: `You are NIRA (Neural Insight and Reframing Assistant), a compassionate mental wellness companion. Your role is to:
+- Listen actively and validate feelings without judgment
+- Use gentle, empathic questions to help users reframe their thoughts
+- Apply NLP "sleight of mouth" techniques to shift perspectives naturally
+- Keep responses concise (2-3 sentences) for natural conversation flow
+- Be warm, kind, and supportive - like a wise friend who knows the right questions
+- Never give direct advice, instead guide through thoughtful questions
+- Respond in a conversational, natural tone as if speaking in real-time`,
+      },
+      ...conversationHistory,
+      {
+        role: 'user',
+        content: userMessage,
+      },
+    ];
+
+    const isStreaming = !!onChunk;
+    
+    const response = await fetch(OPENAI_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini', // Fast and cost-effective for real-time conversations
+        messages,
+        stream: isStreaming, // Enable streaming if callback provided
+        temperature: 0.7, // Balanced for natural, empathic responses
+        max_tokens: 200, // Keep responses concise but allow natural flow
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+    }
+
+    if (onChunk && response.body) {
+      // Stream the response using Server-Sent Events (SSE)
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let fullResponse = '';
+      let buffer = '';
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || ''; // Keep incomplete line in buffer
+
+          for (const line of lines) {
+            const trimmedLine = line.trim();
+            if (!trimmedLine) continue;
+            
+            if (trimmedLine === 'data: [DONE]') {
+              // End of stream
+              break;
+            }
+            
+            if (trimmedLine.startsWith('data: ')) {
+              try {
+                const jsonStr = trimmedLine.slice(6); // Remove 'data: ' prefix
+                const data = JSON.parse(jsonStr);
+                const content = data.choices?.[0]?.delta?.content || '';
+                if (content) {
+                  fullResponse += content;
+                  onChunk(content);
+                }
+              } catch (e) {
+                // Skip invalid JSON lines
+                console.debug('Skipping invalid JSON line:', trimmedLine);
+              }
+            }
+          }
+        }
+      } finally {
+        reader.releaseLock();
+      }
+
+      return fullResponse.trim() || "I hear you. Let's work through this together. Can you tell me more about what's on your mind?";
+    } else {
+      // Non-streaming response (fallback if streaming fails)
+      const data = await response.json();
+      const responseText = data.choices[0]?.message?.content?.trim() || "I hear you. Let's work through this together. Can you tell me more about what's on your mind?";
+      // If onChunk is provided but streaming wasn't used, call it once with full response
+      if (onChunk && responseText) {
+        onChunk(responseText);
+      }
+      return responseText;
+    }
+  } catch (error) {
+    console.error('Error getting AI response:', error);
+    // Return a fallback response that's still helpful
+    return "I hear you. Let's work through this together. Can you tell me more about what's on your mind?";
+  }
+}
+

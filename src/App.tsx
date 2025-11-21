@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import MeetNira from './components/MeetNira';
@@ -12,11 +12,34 @@ import AboutUs from './components/AboutUs';
 import Resources from './components/Resources';
 import FAQs from './components/FAQs';
 import BetaSignup from './components/BetaSignup';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
 import Footer from './components/Footer';
 import { useTheme } from './contexts/ThemeContext';
 
 // Placeholder components
 function DashboardView({ navigate, isDark, toggleTheme }: { navigate: ReturnType<typeof useNavigate>; isDark: boolean; toggleTheme: () => void }) {
+  const location = useLocation();
+
+  // Handle hash scrolling when landing page loads with a hash
+  useEffect(() => {
+    if (location.hash) {
+      const hash = location.hash.substring(1); // Remove the # symbol
+      setTimeout(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          const headerOffset = 80;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
+    }
+  }, [location.hash]);
+
   return (
     <div className="min-h-screen bg-warm-white dark:bg-gray-900 transition-colors scroll-smooth">
       <Header isDark={isDark} setIsDark={toggleTheme} />
@@ -32,6 +55,8 @@ function DashboardView({ navigate, isDark, toggleTheme }: { navigate: ReturnType
         <Resources />
         <FAQs />
         <BetaSignup />
+        <PrivacyPolicy />
+        <TermsOfService />
       </main>
       <Footer />
     </div>

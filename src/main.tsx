@@ -7,6 +7,7 @@ import SignUp from './pages/SignUp.tsx';
 import Dashboard from './pages/Dashboard.tsx';
 import Profile from './pages/Profile.tsx';
 import TheScribe from './pages/TheScribe.jsx';
+import BetaQRCode from './pages/BetaQRCode.tsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext.tsx';
 import { ThemeProvider } from './contexts/ThemeContext.tsx';
 import './index.css';
@@ -48,6 +49,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/" element={<App />} />
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
+            <Route path="/beta-qr" element={<BetaQRCode />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/scribe" element={<TheScribe />} />

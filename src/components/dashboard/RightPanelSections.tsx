@@ -1,5 +1,8 @@
 import { AlertCircle, TrendingUp, Target, Bell, ChevronDown, ChevronUp, Award, Activity, Sparkles, Trophy, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { useUserStats } from '../../hooks/useUserStats';
+import { getTodayConversations, getTodayMindfulnessMinutes } from '../../lib/database';
 
 interface RightPanelSectionsProps {
   selectedRegion: string;
@@ -49,6 +52,8 @@ const regionalContacts: Record<string, { crisis: string; hotline: string; emerge
 };
 
 export default function RightPanelSections({ selectedRegion }: RightPanelSectionsProps) {
+  const { user } = useAuth();
+  const { stats } = useUserStats();
   const [showSOSModal, setShowSOSModal] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
     const hasSeenReflection = localStorage.getItem('has-seen-reflection');
@@ -58,6 +63,48 @@ export default function RightPanelSections({ selectedRegion }: RightPanelSection
     }
     return new Set(['goals']);
   });
+  const [weeklyStats, setWeeklyStats] = useState({
+    totalCheckIns: 0,
+    journalEntries: 0,
+    mindfulnessMinutes: 0,
+    moodImprovement: 15,
+    entriesIncrease: 3,
+  });
+
+  // Load real-time stats from conversations
+  useEffect(() => {
+    const loadStats = async () => {
+      if (!user) return;
+      
+      try {
+        const [checkIns, minutes] = await Promise.all([
+          getTodayConversations(user.id),
+          getTodayMindfulnessMinutes(user.id),
+        ]);
+        
+        setWeeklyStats(prev => ({
+          totalCheckIns: checkIns,
+          journalEntries: stats?.journal_count_monthly || 0,
+          mindfulnessMinutes: minutes,
+          moodImprovement: prev.moodImprovement, // TODO: Calculate from mood_logs
+          entriesIncrease: prev.entriesIncrease, // TODO: Calculate from weekly comparison
+        }));
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    };
+
+    loadStats();
+    // Refresh every 30 seconds to stay in sync (reduced frequency to prevent resource exhaustion)
+    const interval = setInterval(() => {
+      loadStats().catch(error => {
+        // Silently handle errors to prevent console spam
+        console.debug('Stats refresh error (non-critical):', error);
+      });
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, [user, stats?.journal_count_monthly]);
 
   const toggleSection = (section: string) => {
     setExpandedSections(prev => {
@@ -80,14 +127,6 @@ export default function RightPanelSections({ selectedRegion }: RightPanelSection
     { date: 'Sat', mood: 8 },
     { date: 'Sun', mood: 8 },
   ];
-
-  const weeklyStats = {
-    totalCheckIns: 12,
-    journalEntries: 8,
-    mindfulnessMinutes: 45,
-    moodImprovement: 15,
-    entriesIncrease: 3,
-  };
 
   const maxMood = 10;
   const contacts = regionalContacts[selectedRegion] || regionalContacts.US;

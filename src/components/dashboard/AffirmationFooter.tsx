@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sparkles, Heart } from 'lucide-react';
 
 const affirmations = [
@@ -15,7 +16,34 @@ const affirmations = [
 ];
 
 export default function AffirmationFooter() {
+  const navigate = useNavigate();
   const [dailyAffirmation, setDailyAffirmation] = useState('');
+
+  const handleLinkClick = (section: string) => {
+    // Navigate to landing page and scroll to section
+    navigate(`/#${section}`, { replace: false });
+    // Scroll to section after navigation (with a delay for page load)
+    setTimeout(() => {
+      const element = document.getElementById(section);
+      if (element) {
+        const headerOffset = 80; // Account for fixed header if any
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      } else {
+        // If element not found yet, try again after more delay
+        setTimeout(() => {
+          const retryElement = document.getElementById(section);
+          if (retryElement) {
+            retryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 300);
+      }
+    }, 200);
+  };
 
   useEffect(() => {
     const today = new Date().toDateString();
@@ -64,30 +92,30 @@ export default function AffirmationFooter() {
                 Links
               </h3>
               <nav className="flex flex-col gap-2">
-                <a
-                  href="#"
-                  className="text-[13px] text-[#66887f] dark:text-gray-400 hover:text-[#187E5F] dark:hover:text-sage-400 transition-colors"
+                <button
+                  onClick={() => handleLinkClick('privacy')}
+                  className="text-left text-[13px] text-[#66887f] dark:text-gray-400 hover:text-[#187E5F] dark:hover:text-sage-400 transition-colors cursor-pointer"
                 >
                   Privacy Policy
-                </a>
-                <a
-                  href="#"
-                  className="text-[13px] text-[#66887f] dark:text-gray-400 hover:text-[#187E5F] dark:hover:text-sage-400 transition-colors"
+                </button>
+                <button
+                  onClick={() => handleLinkClick('terms')}
+                  className="text-left text-[13px] text-[#66887f] dark:text-gray-400 hover:text-[#187E5F] dark:hover:text-sage-400 transition-colors cursor-pointer"
                 >
                   Terms of Service
-                </a>
-                <a
-                  href="#"
-                  className="text-[13px] text-[#66887f] dark:text-gray-400 hover:text-[#187E5F] dark:hover:text-sage-400 transition-colors"
+                </button>
+                <button
+                  onClick={() => handleLinkClick('about')}
+                  className="text-left text-[13px] text-[#66887f] dark:text-gray-400 hover:text-[#187E5F] dark:hover:text-sage-400 transition-colors cursor-pointer"
                 >
                   About Us
-                </a>
-                <a
-                  href="#"
-                  className="text-[13px] text-[#66887f] dark:text-gray-400 hover:text-[#187E5F] dark:hover:text-sage-400 transition-colors"
+                </button>
+                <button
+                  onClick={() => handleLinkClick('beta-signup')}
+                  className="text-left text-[13px] text-[#66887f] dark:text-gray-400 hover:text-[#187E5F] dark:hover:text-sage-400 transition-colors cursor-pointer"
                 >
                   Contact
-                </a>
+                </button>
               </nav>
             </div>
 

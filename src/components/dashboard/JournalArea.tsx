@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Calendar, Mic, Type, Edit3, Trash2, Download, ChevronLeft, ChevronRight, Search, ChevronDown, BookOpen, Lock, HelpCircle, Loader2, Edit, FileText, Bold, Italic, Underline, List, ListOrdered, Heading1, Heading2, Heading3, ArrowLeft, ArrowRight } from 'lucide-react';
 import { extractAndCorrectTitle, hasTitlePhrase } from '../../lib/openai';
+import { pauseAudioForRecording, resumeAudioAfterRecording } from '../../lib/audioDucking';
 
 interface JournalEntry {
   id: string;
@@ -226,6 +227,9 @@ export default function JournalArea() {
         baseContentRef.current = newEntry.content; // Store the current content as base
         titleProcessedRef.current = false; // Reset title processing flag
         titleProcessingRef.current = false;
+        
+        // Pause background audio for better microphone pickup
+        pauseAudioForRecording();
         
         // Start timer
         recordingTimerRef.current = setInterval(() => {
@@ -468,6 +472,9 @@ export default function JournalArea() {
     
     setIsRecording(false);
     setRecordingTime(0);
+    
+    // Resume background audio after recording stops
+    resumeAudioAfterRecording();
     
     // Auto-save if requested (when user pauses speech)
     if (autoSave && finalContent.trim() && !isSaving) {
@@ -723,15 +730,15 @@ export default function JournalArea() {
     <div className="w-full flex items-stretch gap-0 pb-6 h-full min-h-[calc(100vh-200px)]">
       {/* Middle Panel - Dear Diary Editor (Always Visible, Dominant) */}
       <div className="flex-1 min-w-0">
-        <div className="bg-gradient-to-br from-[#faf8f3] via-[#fefdfb] to-[#f9f7f0] dark:bg-[var(--color-dark-secondary-bg)] rounded-[1.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.12)] border-2 border-[#e8d5b7]/40 dark:border-[var(--border-color)] h-full flex flex-col relative overflow-hidden" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3Cpattern id="paper" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"%3E%3Cline x1="0" y1="30" x2="100" y2="30" stroke="%23e5d4b8" stroke-width="0.5" opacity="0.3"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100" height="100" fill="url(%23paper)"/%3E%3C/svg%3E")' }}>
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#8b7355] via-[#a0826d] to-[#8b7355] opacity-20 dark:from-[var(--color-neon-teal)] dark:via-[var(--color-neon-teal-dim)] dark:to-[var(--color-neon-teal)] dark:opacity-30"></div>
+        <div className="bg-gradient-to-br from-[var(--color-soft-cream)] via-[var(--color-primary-white)] to-[var(--color-soft-cream)] dark:bg-[var(--color-primary-white)] rounded-[1.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.12)] border-2 border-[#e8d5b7]/40 dark:border-[var(--border-color)] h-full flex flex-col relative overflow-hidden" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3Cpattern id="paper" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"%3E%3Cline x1="0" y1="30" x2="100" y2="30" stroke="%23e5d4b8" stroke-width="0.5" opacity="0.3"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100" height="100" fill="url(%23paper)"/%3E%3C/svg%3E")' }}>
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-deep-emerald)] via-[var(--color-rich-teal)] to-[var(--color-deep-emerald)] dark:from-[var(--color-primary-white)] dark:via-[var(--color-soft-cream)] dark:to-[var(--color-primary-white)] opacity-30 dark:opacity-40"></div>
           
           {/* Header */}
           <div className="p-6 pb-4">
-            <h2 className="text-2xl font-serif text-[#5d4e37] dark:text-[var(--color-neon-teal)] mb-1 tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>
+            <h2 className="text-2xl font-serif text-[#5d4e37] dark:text-[var(--color-text-primary)] mb-1 tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>
               Dear Diary
             </h2>
-            <p className="text-xs text-[#8b7355] dark:text-[var(--color-dark-text-muted)] italic" style={{ fontFamily: 'Georgia, serif' }}>
+            <p className="text-xs text-[#8b7355] dark:text-[var(--color-text-muted)] italic" style={{ fontFamily: 'Georgia, serif' }}>
               {selectedDate ? selectedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
@@ -744,8 +751,8 @@ export default function JournalArea() {
               onClick={() => setInputMode('text')}
               className={`flex items-center gap-2 px-4 py-2 rounded-[1rem] transition-all ${
                 inputMode === 'text'
-                  ? 'bg-gradient-to-r from-sage-500 to-mint-500 text-white'
-                  : 'bg-sage-50 dark:bg-[var(--color-dark-elevated-bg)] text-gray-700 dark:text-[var(--color-dark-text-secondary)]'
+                  ? 'bg-gradient-to-r from-[var(--color-deep-emerald)] to-[var(--color-rich-teal)] dark:from-[var(--color-deep-emerald)] dark:to-[var(--color-rich-teal)] text-white shadow-lg'
+                  : 'bg-[var(--color-light-sage)] dark:bg-[var(--color-primary-white)] text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)] border border-[var(--color-pale-mint)] dark:border-[var(--color-light-sage)]'
               }`}
             >
               <Type className="w-4 h-4" />
@@ -755,8 +762,8 @@ export default function JournalArea() {
               onClick={() => setInputMode('voice')}
               className={`flex items-center gap-2 px-4 py-2 rounded-[1rem] transition-all ${
                 inputMode === 'voice'
-                  ? 'bg-gradient-to-r from-sage-500 to-mint-500 text-white'
-                  : 'bg-sage-50 dark:bg-[var(--color-dark-elevated-bg)] text-gray-700 dark:text-[var(--color-dark-text-secondary)]'
+                  ? 'bg-gradient-to-r from-[var(--color-deep-emerald)] to-[var(--color-rich-teal)] dark:from-[var(--color-deep-emerald)] dark:to-[var(--color-rich-teal)] text-white shadow-lg'
+                  : 'bg-[var(--color-light-sage)] dark:bg-[var(--color-primary-white)] text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)] border border-[var(--color-pale-mint)] dark:border-[var(--color-light-sage)]'
               }`}
             >
               <Mic className="w-4 h-4" />
@@ -766,8 +773,8 @@ export default function JournalArea() {
               onClick={() => setInputMode('handwriting')}
               className={`flex items-center gap-2 px-4 py-2 rounded-[1rem] transition-all ${
                 inputMode === 'handwriting'
-                  ? 'bg-gradient-to-r from-sage-500 to-mint-500 text-white'
-                  : 'bg-sage-50 dark:bg-[var(--color-dark-elevated-bg)] text-gray-700 dark:text-[var(--color-dark-text-secondary)]'
+                  ? 'bg-gradient-to-r from-[var(--color-deep-emerald)] to-[var(--color-rich-teal)] dark:from-[var(--color-deep-emerald)] dark:to-[var(--color-rich-teal)] text-white shadow-lg'
+                  : 'bg-[var(--color-light-sage)] dark:bg-[var(--color-primary-white)] text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)] border border-[var(--color-pale-mint)] dark:border-[var(--color-light-sage)]'
               }`}
             >
               <Edit3 className="w-4 h-4" />
@@ -777,7 +784,7 @@ export default function JournalArea() {
             <div className="relative ml-auto">
               <button
                 onClick={() => setShowTemplateDropdown(!showTemplateDropdown)}
-                className="flex items-center gap-2 px-4 py-2 rounded-[1rem] bg-sage-50 dark:bg-[var(--color-dark-elevated-bg)] text-gray-700 dark:text-[var(--color-dark-text-secondary)] hover:bg-sage-100 dark:hover:bg-[var(--color-dark-card-bg)] transition-all"
+                className="flex items-center gap-2 px-4 py-2 rounded-[1rem] bg-[var(--color-light-sage)] dark:bg-[var(--color-primary-white)] text-[var(--color-text-primary)] dark:text-[var(--color-text-primary)] hover:bg-[var(--color-pale-mint)] dark:hover:bg-[var(--color-soft-cream)] border border-[var(--color-pale-mint)] dark:border-[var(--color-light-sage)] transition-all"
               >
                 <FileText className="w-4 h-4" />
                 Use Template
@@ -785,27 +792,27 @@ export default function JournalArea() {
               </button>
 
               {showTemplateDropdown && (
-                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[var(--color-dark-elevated-bg)] rounded-xl shadow-2xl border border-sage-200 dark:border-[var(--border-color)] py-2 z-50">
+                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[var(--color-primary-white)] rounded-xl shadow-2xl border border-sage-200 dark:border-[var(--color-light-sage)] py-2 z-50">
                   <button
                     onClick={() => useTemplate('gratitude')}
-                    className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-dark-card-bg)] transition-colors text-sm"
+                    className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-soft-cream)] transition-colors text-sm"
                   >
-                    <div className="font-medium text-gray-800 dark:text-[var(--color-dark-text-primary)]">🙏 Gratitude Journal</div>
-                    <div className="text-xs text-gray-500 dark:text-[var(--color-dark-text-muted)]">List things you're thankful for</div>
+                    <div className="font-medium text-gray-800 dark:text-[var(--color-text-primary)]">🙏 Gratitude Journal</div>
+                    <div className="text-xs text-gray-500 dark:text-[var(--color-text-muted)]">List things you're thankful for</div>
                   </button>
                   <button
                     onClick={() => useTemplate('daily')}
-                    className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-dark-card-bg)] transition-colors text-sm"
+                    className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-soft-cream)] transition-colors text-sm"
                   >
-                    <div className="font-medium text-gray-800 dark:text-[var(--color-dark-text-primary)]">📅 Daily Reflection</div>
-                    <div className="text-xs text-gray-500 dark:text-[var(--color-dark-text-muted)]">Reflect on your day</div>
+                    <div className="font-medium text-gray-800 dark:text-[var(--color-text-primary)]">📅 Daily Reflection</div>
+                    <div className="text-xs text-gray-500 dark:text-[var(--color-text-muted)]">Reflect on your day</div>
                   </button>
                   <button
                     onClick={() => useTemplate('mood')}
-                    className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-dark-card-bg)] transition-colors text-sm"
+                    className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-soft-cream)] transition-colors text-sm"
                   >
-                    <div className="font-medium text-gray-800 dark:text-[var(--color-dark-text-primary)]">😊 Mood Tracker</div>
-                    <div className="text-xs text-gray-500 dark:text-[var(--color-dark-text-muted)]">Track emotions and triggers</div>
+                    <div className="font-medium text-gray-800 dark:text-[var(--color-text-primary)]">😊 Mood Tracker</div>
+                    <div className="text-xs text-gray-500 dark:text-[var(--color-text-muted)]">Track emotions and triggers</div>
                   </button>
                 </div>
               )}
@@ -834,79 +841,79 @@ export default function JournalArea() {
               placeholder="Give this entry a title..."
               value={newEntry.title}
               onChange={(e) => setNewEntry({ ...newEntry, title: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg border-b-2 border-l-0 border-r-0 border-t-0 border-[#d4c4a8] dark:border-[var(--border-color)] bg-transparent dark:bg-[var(--color-dark-elevated-bg)] dark:text-[var(--color-neon-teal)] focus:outline-none focus:border-[#8b7355] dark:focus:border-[var(--color-neon-teal)] transition-colors text-lg font-serif text-[#5d4e37] dark:text-[var(--color-neon-teal)]"
+              className="w-full px-4 py-3 rounded-lg border-b-2 border-l-0 border-r-0 border-t-0 border-[#d4c4a8] dark:border-[var(--color-light-sage)] bg-transparent dark:bg-[var(--color-primary-white)] dark:text-[var(--color-text-primary)] focus:outline-none focus:border-[#8b7355] dark:focus:border-[var(--color-soft-mint)] transition-colors text-lg font-serif text-[#5d4e37] dark:text-[var(--color-text-primary)]"
               style={{ fontFamily: 'Georgia, serif' }}
             />
 
             {inputMode === 'text' && (
               <div className="relative">
                 {showToolbar && (
-                  <div className="mb-2 p-2 bg-[#f5ede1]/80 dark:bg-[var(--color-dark-elevated-bg)] rounded-lg border border-[#e8d5b7] dark:border-[var(--border-color)] flex flex-wrap gap-1 shadow-sm">
+                  <div className="mb-2 p-2 bg-[#f5ede1]/80 dark:bg-[var(--color-primary-white)] rounded-lg border border-[#e8d5b7] dark:border-[var(--color-light-sage)] flex flex-wrap gap-1 shadow-sm">
                     <button
                       onClick={() => insertFormatting('bold')}
-                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-dark-card-bg)] rounded transition-colors"
+                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-soft-cream)] rounded transition-colors"
                       title="Bold (Markdown: **text**)"
                       type="button"
                     >
-                      <Bold className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-neon-teal)]" />
+                      <Bold className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-text-primary)]" />
                     </button>
                     <button
                       onClick={() => insertFormatting('italic')}
-                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-dark-card-bg)] rounded transition-colors"
+                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-soft-cream)] rounded transition-colors"
                       title="Italic (Markdown: *text*)"
                       type="button"
                     >
-                      <Italic className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-neon-teal)]" />
+                      <Italic className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-text-primary)]" />
                     </button>
                     <button
                       onClick={() => insertFormatting('underline')}
-                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-dark-card-bg)] rounded transition-colors"
+                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-soft-cream)] rounded transition-colors"
                       title="Underline (Markdown: __text__)"
                       type="button"
                     >
-                      <Underline className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-neon-teal)]" />
+                      <Underline className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-text-primary)]" />
                     </button>
-                    <div className="w-px h-6 bg-[#d4c4a8] dark:bg-[var(--border-color)] my-auto mx-1"></div>
+                    <div className="w-px h-6 bg-[#d4c4a8] dark:bg-[var(--color-light-sage)] my-auto mx-1"></div>
                     <button
                       onClick={() => insertFormatting('h1')}
-                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-dark-card-bg)] rounded transition-colors"
+                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-soft-cream)] rounded transition-colors"
                       title="Heading 1 (Markdown: # text)"
                       type="button"
                     >
-                      <Heading1 className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-neon-teal)]" />
+                      <Heading1 className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-text-primary)]" />
                     </button>
                     <button
                       onClick={() => insertFormatting('h2')}
-                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-dark-card-bg)] rounded transition-colors"
+                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-soft-cream)] rounded transition-colors"
                       title="Heading 2 (Markdown: ## text)"
                       type="button"
                     >
-                      <Heading2 className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-neon-teal)]" />
+                      <Heading2 className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-text-primary)]" />
                     </button>
                     <button
                       onClick={() => insertFormatting('h3')}
-                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-dark-card-bg)] rounded transition-colors"
+                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-soft-cream)] rounded transition-colors"
                       title="Heading 3 (Markdown: ### text)"
                       type="button"
                     >
-                      <Heading3 className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-neon-teal)]" />
+                      <Heading3 className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-text-primary)]" />
                     </button>
-                    <div className="w-px h-6 bg-[#d4c4a8] dark:bg-[var(--border-color)] my-auto mx-1"></div>
+                    <div className="w-px h-6 bg-[#d4c4a8] dark:bg-[var(--color-light-sage)] my-auto mx-1"></div>
                     <button
                       onClick={() => insertFormatting('ul')}
-                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-dark-card-bg)] rounded transition-colors"
+                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-soft-cream)] rounded transition-colors"
                       title="Bullet List (Markdown: - item)"
                       type="button"
                     >
-                      <List className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-neon-teal)]" />
+                      <List className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-text-primary)]" />
                     </button>
                     <button
                       onClick={() => insertFormatting('ol')}
-                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-dark-card-bg)] rounded transition-colors"
+                      className="p-2 hover:bg-[#e8d5b7] dark:hover:bg-[var(--color-soft-cream)] rounded transition-colors"
                       title="Numbered List (Markdown: 1. item)"
                       type="button"
                     >
-                      <ListOrdered className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-neon-teal)]" />
+                      <ListOrdered className="w-4 h-4 text-[#5d4e37] dark:text-[var(--color-text-primary)]" />
                     </button>
                   </div>
                 )}
@@ -916,7 +923,7 @@ export default function JournalArea() {
                   value={newEntry.content}
                   onChange={(e) => setNewEntry({ ...newEntry, content: e.target.value })}
                   onFocus={() => setShowToolbar(true)}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-[#e8d5b7]/60 dark:border-[var(--border-color)] bg-[#fffef9]/50 dark:bg-[var(--color-dark-elevated-bg)] dark:text-[var(--color-neon-teal)] focus:outline-none focus:border-[#c9b896] dark:focus:border-[var(--color-neon-teal)] transition-colors resize-none text-[#3d3428] dark:text-[var(--color-neon-teal)] shadow-inner"
+                  className="w-full px-4 py-3 rounded-lg border-2 border-[#e8d5b7]/60 dark:border-[var(--color-light-sage)] bg-[#fffef9]/50 dark:bg-[var(--color-primary-white)] dark:text-[var(--color-text-primary)] focus:outline-none focus:border-[#c9b896] dark:focus:border-[var(--color-soft-mint)] transition-colors resize-none text-[#3d3428] dark:text-[var(--color-text-primary)] shadow-inner"
                   style={{
                     fontFamily: 'Georgia, serif',
                     fontSize: '15px',
@@ -1047,7 +1054,7 @@ export default function JournalArea() {
               <button
                 onClick={handleSaveEntry}
                 disabled={!newEntry.content || isSaving}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-[#187E5F] to-[#0B5844] text-white rounded-[1rem] hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-[var(--color-deep-emerald)] to-[var(--color-rich-teal)] dark:from-[var(--color-deep-emerald)] dark:to-[var(--color-rich-teal)] text-white rounded-[1rem] hover:shadow-lg dark:hover:shadow-[0_4px_20px_rgba(0,255,200,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2"
               >
                 {isSaving ? (
                   <>
@@ -1083,23 +1090,23 @@ export default function JournalArea() {
 
             {/* Your Journey Stats */}
             <div className="mt-6 pt-6 border-t border-[#e8d5b7]/40 dark:border-[var(--border-color)]">
-              <h3 className="text-lg font-serif text-[#5d4e37] dark:text-[var(--color-neon-teal)] mb-4" style={{ fontFamily: 'Georgia, serif' }}>Your Journey</h3>
+              <h3 className="text-lg font-serif text-[#5d4e37] dark:text-[var(--color-text-primary)] dark:font-semibold mb-4" style={{ fontFamily: 'Georgia, serif' }}>Your Journey</h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-sage-50 dark:bg-[var(--color-dark-elevated-bg)] rounded-xl p-4 text-center border border-[var(--color-light-sage)] dark:border-[var(--border-color)]">
-                  <div className="text-[18px] font-bold text-[#187E5F] dark:text-[var(--color-neon-teal)]">{totalEntries}</div>
-                  <div className="text-[12px] text-[#78968b] dark:text-[var(--color-dark-text-muted)]">Total Entries</div>
+                <div className="bg-sage-50 dark:bg-[var(--color-primary-white)] rounded-xl p-4 text-center border border-[var(--color-light-sage)] dark:border-[var(--color-light-sage)]">
+                  <div className="text-[18px] font-bold text-[var(--color-deep-emerald)] dark:text-[var(--color-text-primary)]">{totalEntries}</div>
+                  <div className="text-[12px] text-[var(--color-sage-muted)] dark:text-[var(--color-text-muted)]">Total Entries</div>
                 </div>
-                <div className="bg-sage-50 dark:bg-[var(--color-dark-elevated-bg)] rounded-xl p-4 text-center border border-[var(--color-light-sage)] dark:border-[var(--border-color)]">
-                  <div className="text-[18px] font-bold text-[#187E5F] dark:text-[var(--color-neon-teal)]">{streak} 🔥</div>
-                  <div className="text-[12px] text-[#78968b] dark:text-[var(--color-dark-text-muted)]">Day Streak</div>
+                <div className="bg-sage-50 dark:bg-[var(--color-primary-white)] rounded-xl p-4 text-center border border-[var(--color-light-sage)] dark:border-[var(--color-light-sage)]">
+                  <div className="text-[18px] font-bold text-[var(--color-deep-emerald)] dark:text-[var(--color-text-primary)]">{streak} 🔥</div>
+                  <div className="text-[12px] text-[var(--color-sage-muted)] dark:text-[var(--color-text-muted)]">Day Streak</div>
                 </div>
-                <div className="bg-sage-50 dark:bg-[var(--color-dark-elevated-bg)] rounded-xl p-4 text-center border border-[var(--color-light-sage)] dark:border-[var(--border-color)]">
-                  <div className="text-[18px] font-bold text-[#187E5F] dark:text-[var(--color-neon-teal)]">{thisMonthEntries}</div>
-                  <div className="text-[12px] text-[#78968b] dark:text-[var(--color-dark-text-muted)]">This Month</div>
+                <div className="bg-sage-50 dark:bg-[var(--color-primary-white)] rounded-xl p-4 text-center border border-[var(--color-light-sage)] dark:border-[var(--color-light-sage)]">
+                  <div className="text-[18px] font-bold text-[var(--color-deep-emerald)] dark:text-[var(--color-text-primary)]">{thisMonthEntries}</div>
+                  <div className="text-[12px] text-[var(--color-sage-muted)] dark:text-[var(--color-text-muted)]">This Month</div>
                 </div>
-                <div className="bg-sage-50 dark:bg-[var(--color-dark-elevated-bg)] rounded-xl p-4 text-center border border-[var(--color-light-sage)] dark:border-[var(--border-color)]">
-                  <div className="text-[18px] font-bold text-[#187E5F] dark:text-[var(--color-neon-teal)]">{entries.length > 0 ? getWordCount(entries[0].content) : 0}</div>
-                  <div className="text-[12px] text-[#78968b] dark:text-[var(--color-dark-text-muted)]">Avg Words</div>
+                <div className="bg-sage-50 dark:bg-[var(--color-primary-white)] rounded-xl p-4 text-center border border-[var(--color-light-sage)] dark:border-[var(--color-light-sage)]">
+                  <div className="text-[18px] font-bold text-[var(--color-deep-emerald)] dark:text-[var(--color-text-primary)]">{entries.length > 0 ? getWordCount(entries[0].content) : 0}</div>
+                  <div className="text-[12px] text-[var(--color-sage-muted)] dark:text-[var(--color-text-muted)]">Avg Words</div>
                 </div>
               </div>
             </div>
@@ -1107,28 +1114,28 @@ export default function JournalArea() {
             {/* Calendar View at Bottom */}
             <div className="mt-6 pt-6 border-t border-[#e8d5b7]/40 dark:border-[var(--border-color)]">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-serif text-[#5d4e37] dark:text-[var(--color-neon-teal)]" style={{ fontFamily: 'Georgia, serif' }}>Calendar View</h3>
+                <h3 className="text-lg font-serif text-[#5d4e37] dark:text-[var(--color-text-primary)] dark:font-semibold" style={{ fontFamily: 'Georgia, serif' }}>Calendar View</h3>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
-                    className="p-2 hover:bg-sage-50 dark:hover:bg-[var(--color-dark-card-bg)] rounded-lg transition-colors"
+                    className="p-2 hover:bg-sage-50 dark:hover:bg-[var(--color-soft-cream)] rounded-lg transition-colors"
                   >
-                    <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-[var(--color-neon-teal)]" />
+                    <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-[var(--color-text-primary)]" />
                   </button>
-                  <span className="text-sm font-medium text-gray-700 dark:text-[var(--color-dark-text-secondary)] min-w-[140px] text-center">
+                  <span className="text-sm font-medium text-gray-700 dark:text-[var(--color-text-primary)] dark:font-semibold min-w-[140px] text-center">
                     {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                   </span>
                   <button
                     onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
-                    className="p-2 hover:bg-sage-50 dark:hover:bg-[var(--color-dark-card-bg)] rounded-lg transition-colors"
+                    className="p-2 hover:bg-sage-50 dark:hover:bg-[var(--color-soft-cream)] rounded-lg transition-colors"
                   >
-                    <ChevronRight className="w-5 h-5 text-gray-600 dark:text-[var(--color-neon-teal)]" />
+                    <ChevronRight className="w-5 h-5 text-gray-600 dark:text-[var(--color-text-primary)]" />
                   </button>
                 </div>
               </div>
               <div className="grid grid-cols-7 gap-2">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                  <div key={day} className="text-center text-xs font-semibold text-gray-600 dark:text-[var(--color-dark-text-muted)] py-2">
+                  <div key={day} className="text-center text-xs font-semibold text-gray-600 dark:text-[var(--color-text-muted)] py-2">
                     {day}
                   </div>
                 ))}
@@ -1190,11 +1197,11 @@ export default function JournalArea() {
                       }}
                       className={`aspect-square flex items-center justify-center text-sm rounded-lg transition-all relative ${
                         isSelected
-                          ? 'bg-gradient-to-br from-[#187E5F] to-[#0B5844] text-white font-semibold ring-2 ring-[#187E5F] ring-offset-2'
+                          ? 'bg-gradient-to-br from-[var(--color-deep-emerald)] to-[var(--color-rich-teal)] dark:from-[var(--color-primary-white)] dark:to-[var(--color-soft-cream)] text-white dark:text-[var(--color-text-primary)] font-semibold ring-2 ring-[var(--color-deep-emerald)] dark:ring-[var(--color-light-sage)] ring-offset-2'
                           : hasEntryOnDate(day)
-                          ? 'bg-gradient-to-br from-sage-400 to-mint-400 text-white font-semibold hover:shadow-md'
-                          : 'text-gray-700 dark:text-[var(--color-dark-text-secondary)] hover:bg-sage-50 dark:hover:bg-[var(--color-dark-card-bg)]'
-                      } ${isToday && !isSelected ? 'ring-1 ring-sage-400' : ''}`}
+                          ? 'bg-gradient-to-br from-sage-400 to-mint-400 dark:from-[var(--color-primary-white)]/60 dark:to-[var(--color-soft-cream)]/60 text-white dark:text-[var(--color-text-primary)] font-semibold hover:shadow-md'
+                          : 'text-gray-700 dark:text-[var(--color-text-primary)] hover:bg-sage-50 dark:hover:bg-[var(--color-soft-cream)]'
+                      } ${isToday && !isSelected ? 'ring-1 ring-sage-400 dark:ring-[var(--color-light-sage)]/50' : ''}`}
                       title={dayEntries.length > 0 ? `${dayEntries.length} entry${dayEntries.length > 1 ? 'ies' : ''} on this date` : 'Click to create entry for this date'}
                     >
                       {day}
@@ -1226,14 +1233,14 @@ export default function JournalArea() {
 
       {/* Right Panel - Past Entries (Collapsible) */}
       <div className={`relative transition-all duration-300 ${isPastEntriesCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-80 opacity-100'}`}>
-        <div className="h-full bg-gradient-to-br from-[#faf8f3] via-[#fefdfb] to-[#f9f7f0] dark:bg-[var(--color-dark-secondary-bg)] rounded-r-[1.5rem] shadow-lg border-2 border-l-0 border-[#e8d5b7]/40 dark:border-[var(--border-color)] flex flex-col relative overflow-hidden" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3Cpattern id="paper" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"%3E%3Cline x1="0" y1="30" x2="100" y2="30" stroke="%23e5d4b8" stroke-width="0.5" opacity="0.3"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100" height="100" fill="url(%23paper)"/%3E%3C/svg%3E")' }}>
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#8b7355] via-[#a0826d] to-[#8b7355] opacity-20 dark:from-[var(--color-neon-teal)] dark:via-[var(--color-neon-teal-dim)] dark:to-[var(--color-neon-teal)] dark:opacity-30"></div>
+        <div className="h-full bg-gradient-to-br from-[var(--color-soft-cream)] via-[var(--color-primary-white)] to-[var(--color-soft-cream)] dark:bg-[var(--color-primary-white)] rounded-r-[1.5rem] shadow-lg border-2 border-l-0 border-[#e8d5b7]/40 dark:border-[var(--color-light-sage)] flex flex-col relative overflow-hidden" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3Cpattern id="paper" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"%3E%3Cline x1="0" y1="30" x2="100" y2="30" stroke="%23e5d4b8" stroke-width="0.5" opacity="0.3"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100" height="100" fill="url(%23paper)"/%3E%3C/svg%3E")' }}>
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-deep-emerald)] via-[var(--color-rich-teal)] to-[var(--color-deep-emerald)] dark:from-[var(--color-primary-white)] dark:via-[var(--color-soft-cream)] dark:to-[var(--color-primary-white)] opacity-30 dark:opacity-40"></div>
           
           {/* Header */}
           <div className="p-6 pb-4">
             <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-[#5d4e37] dark:text-[var(--color-neon-teal)]" />
-              <h2 className="text-2xl font-serif text-[#5d4e37] dark:text-[var(--color-neon-teal)]" style={{ fontFamily: 'Georgia, serif' }}>
+              <Calendar className="w-5 h-5 text-[#5d4e37] dark:text-[var(--color-text-primary)]" />
+              <h2 className="text-2xl font-serif text-[#5d4e37] dark:text-[var(--color-text-primary)]" style={{ fontFamily: 'Georgia, serif' }}>
                 Past Entries
               </h2>
             </div>
@@ -1257,31 +1264,31 @@ export default function JournalArea() {
                   <div className="relative">
                     <button
                       onClick={() => setShowSortDropdown(!showSortDropdown)}
-                      className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#e8d5b7] dark:border-[var(--border-color)] hover:bg-[#f5ede1] dark:hover:bg-[var(--color-dark-card-bg)] transition-colors text-sm"
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#e8d5b7] dark:border-[var(--color-light-sage)] bg-white dark:bg-[var(--color-soft-cream)] hover:bg-[#f5ede1] dark:hover:bg-[var(--color-light-sage)] transition-colors text-sm"
                     >
-                      <span className="text-gray-700 dark:text-[var(--color-dark-text-secondary)]">
+                      <span className="text-gray-700 dark:text-[var(--color-text-primary)] dark:font-medium">
                         {sortBy === 'recent' ? 'Most Recent' : sortBy === 'oldest' ? 'Oldest' : 'Most Read'}
                       </span>
-                      <ChevronDown className="w-3 h-3 text-gray-500 dark:text-[var(--color-dark-text-muted)]" />
+                      <ChevronDown className="w-3 h-3 text-gray-500 dark:text-[var(--color-text-primary)]" />
                     </button>
 
                     {showSortDropdown && (
-                      <div className="absolute top-full left-0 mt-2 w-40 bg-white dark:bg-[var(--color-dark-elevated-bg)] rounded-xl shadow-2xl border border-sage-200 dark:border-[var(--border-color)] py-2 z-50">
+                      <div className="absolute top-full left-0 mt-2 w-40 bg-white dark:bg-[var(--color-soft-cream)] rounded-xl shadow-2xl border border-sage-200 dark:border-[var(--color-light-sage)] py-2 z-50">
                         <button
                           onClick={() => { setSortBy('recent'); setShowSortDropdown(false); }}
-                          className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-dark-card-bg)] transition-colors text-sm text-gray-700 dark:text-[var(--color-dark-text-secondary)]"
+                          className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-light-sage)] transition-colors text-sm text-gray-700 dark:text-[var(--color-text-primary)] dark:font-medium"
                         >
                           Most Recent
                         </button>
                         <button
                           onClick={() => { setSortBy('oldest'); setShowSortDropdown(false); }}
-                          className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-dark-card-bg)] transition-colors text-sm text-gray-700 dark:text-[var(--color-dark-text-secondary)]"
+                          className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-light-sage)] transition-colors text-sm text-gray-700 dark:text-[var(--color-text-primary)] dark:font-medium"
                         >
                           Oldest
                         </button>
                         <button
                           onClick={() => { setSortBy('most-read'); setShowSortDropdown(false); }}
-                          className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-dark-card-bg)] transition-colors text-sm text-gray-700 dark:text-[var(--color-dark-text-secondary)]"
+                          className="w-full text-left px-4 py-2 hover:bg-sage-50 dark:hover:bg-[var(--color-light-sage)] transition-colors text-sm text-gray-700 dark:text-[var(--color-text-primary)] dark:font-medium"
                         >
                           Most Read
                         </button>
@@ -1334,15 +1341,15 @@ export default function JournalArea() {
                             }
                           }, 100);
                         }}
-                        className="group relative bg-[#fffef9] dark:bg-[var(--color-dark-elevated-bg)] p-4 rounded-xl border-2 border-[#e8d5b7]/60 dark:border-[var(--border-color)] hover:border-[#c9b896] dark:hover:border-[var(--color-neon-teal)] transition-all cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(139,115,85,0.15)] dark:hover:shadow-[0_6px_20px_rgba(0,255,200,0.2)] shadow-[0_2px_8px_rgba(139,115,85,0.08)]"
+                        className="group relative bg-[#fffef9] dark:bg-[var(--color-primary-white)] p-4 rounded-xl border-2 border-[#e8d5b7]/60 dark:border-[var(--color-light-sage)] hover:border-[#c9b896] dark:hover:border-[var(--color-soft-mint)] transition-all cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(139,115,85,0.15)] dark:hover:shadow-[0_6px_20px_rgba(24,126,95,0.25)] shadow-[0_2px_8px_rgba(139,115,85,0.08)]"
                         style={{ backgroundImage: 'linear-gradient(to bottom, #fffef9 0%, #fdfcf7 100%)' }}
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex items-center gap-3 flex-1">
                             <span className="text-2xl">{entry.emoji}</span>
                             <div className="flex-1 min-w-0">
-                              <h3 className="font-serif text-[#5d4e37] dark:text-[var(--color-neon-teal)] truncate" style={{ fontFamily: 'Georgia, serif', fontSize: '16px' }}>{entry.title}</h3>
-                              <p className="text-xs text-gray-500 dark:text-[var(--color-dark-text-muted)]">
+                              <h3 className="font-serif text-[#5d4e37] dark:text-[var(--color-text-primary)] truncate" style={{ fontFamily: 'Georgia, serif', fontSize: '16px' }}>{entry.title}</h3>
+                              <p className="text-xs text-gray-500 dark:text-[var(--color-text-muted)]">
                                 {entry.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                               </p>
                             </div>
@@ -1364,10 +1371,10 @@ export default function JournalArea() {
                                   editorElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
                                 }
                               }}
-                              className="p-1.5 hover:bg-sage-50 dark:hover:bg-[var(--color-dark-card-bg)] rounded-lg transition-all"
+                              className="p-1.5 hover:bg-sage-50 dark:hover:bg-[var(--color-soft-cream)] rounded-lg transition-all"
                               title="Edit entry"
                             >
-                              <Edit className="w-4 h-4 text-[#66887f] dark:text-[var(--color-neon-teal)] hover:text-[#187E5F] dark:hover:text-[var(--color-neon-teal-dim)] transition-colors" />
+                              <Edit className="w-4 h-4 text-[#66887f] dark:text-[var(--color-text-primary)] hover:text-[#187E5F] dark:hover:text-[var(--color-text-primary)] transition-colors" />
                             </button>
                             <button
                               onClick={(e) => {
@@ -1377,14 +1384,14 @@ export default function JournalArea() {
                               className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
                               title="Delete entry"
                             >
-                              <Trash2 className="w-4 h-4 text-[#66887f] dark:text-[var(--color-dark-text-muted)] hover:text-[#187E5F] dark:hover:text-red-400 transition-colors" />
+                              <Trash2 className="w-4 h-4 text-[#66887f] dark:text-[var(--color-text-muted)] hover:text-[#187E5F] dark:hover:text-red-400 transition-colors" />
                             </button>
                           </div>
                         </div>
-                        <p className="text-sm text-[#3d3428] dark:text-[var(--color-dark-text-secondary)] leading-relaxed line-clamp-2 mb-2 font-serif" style={{ fontFamily: 'Georgia, serif' }}>
+                        <p className="text-sm text-[#3d3428] dark:text-[var(--color-text-primary)] leading-relaxed line-clamp-2 mb-2 font-serif" style={{ fontFamily: 'Georgia, serif' }}>
                           {entry.content}
                         </p>
-                        <div className="flex items-center gap-3 text-[12px] text-[#78968b] dark:text-[var(--color-dark-text-muted)]">
+                        <div className="flex items-center gap-3 text-[12px] text-[#78968b] dark:text-[var(--color-text-muted)]">
                           <span>{entry.emoji} {getReadTime(entry.content)}</span>
                           <span>•</span>
                           <span>{getWordCount(entry.content)} words</span>

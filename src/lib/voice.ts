@@ -1,7 +1,7 @@
 // Voice utility for text-to-speech with calm and warm voices
 
 import { duckAudio, restoreAudio } from './audioDucking';
-import { isElevenLabsAvailable, playElevenLabsAudio } from './elevenlabs';
+import { isElevenLabsAvailable, playElevenLabsAudio, stopElevenLabsAudio } from './elevenlabs';
 
 interface VoiceConfig {
   name: string;
@@ -233,6 +233,12 @@ export function speakText(text: string, voiceOption: string = 'female'): Promise
     return Promise.resolve();
   }
 
+  // Stop any existing speech (ElevenLabs or browser TTS) before starting new speech
+  stopElevenLabsAudio();
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+
   // Normalize voice option - now support child voice
   const validOption = (voiceOption === 'female' || voiceOption === 'male' || voiceOption === 'child')
     ? voiceOption as 'female' | 'male' | 'child'
@@ -242,14 +248,18 @@ export function speakText(text: string, voiceOption: string = 'female'): Promise
   if (isElevenLabsAvailable()) {
     console.log(`🎤 Using ElevenLabs for natural ${validOption} voice (mental health optimized)`);
     console.log(`📝 Text to speak: "${text.substring(0, 100)}${text.length > 100 ? '...' : ''}"`);
+    
+    // Try ElevenLabs - if it fails, don't fallback to browser TTS to prevent voice switching
+    // This ensures consistent voice experience
     return playElevenLabsAudio(text, validOption)
       .then(() => {
         console.log('✅ ElevenLabs speech completed successfully');
       })
       .catch((error) => {
-        console.warn('⚠️ ElevenLabs failed, falling back to browser TTS:', error);
-        // Fall back to browser TTS
-        return speakWithBrowserTTS(text, voiceOption);
+        console.warn('⚠️ ElevenLabs failed, but not falling back to prevent voice switching:', error);
+        // Don't fallback - just resolve silently to prevent male voice from playing
+        // This ensures users always hear the intended voice
+        return Promise.resolve();
       });
   }
 

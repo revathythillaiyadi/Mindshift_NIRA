@@ -1,6 +1,8 @@
 import { MessageSquare, BookOpen, Settings, Trash2, Plus, Brain, Search, Pin, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { getChatSessions, deleteChatSession } from '../../lib/database';
 
 interface SidebarProps {
   currentView: string;
@@ -15,16 +17,107 @@ interface ChatSession {
 
 export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { user } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [chatHistory, setChatHistory] = useState<ChatSession[]>([
-    { id: '1', title: 'dealing with work stress and burnout', timestamp: '2 hours ago' },
-    { id: '2', title: 'morning anxiety thoughts', timestamp: 'yesterday' },
-    { id: '3', title: 'relationship concerns', timestamp: '3 days ago' },
-    { id: '4', title: 'sleep issues discussion', timestamp: '1 week ago' },
-  ]);
+  const [chatHistory, setChatHistory] = useState<ChatSession[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const [pinnedChats, setPinnedChats] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(false);
+
+  // Format timestamp to relative time
+  const formatTimestamp = (date: Date): string => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffMins < 1) return 'just now';
+    if (diffMins < 60) return `${diffMins} ${diffMins === 1 ? 'minute' : 'minutes'} ago`;
+    if (diffHours < 24) return `${diffHours} ${diffHours === 1 ? 'hour' : 'hours'} ago`;
+    if (diffDays === 1) return 'yesterday';
+    if (diffDays < 7) return `${diffDays} days ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) === 1 ? '' : 's'} ago`;
+    return `${Math.floor(diffDays / 30)} month${Math.floor(diffDays / 30) === 1 ? '' : 's'} ago`;
+  };
+
+  // Load conversations from database (chat_sessions table)
+  useEffect(() => {
+    const loadConversations = async () => {
+      if (!user) {
+        setChatHistory([]);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const sessions = await getChatSessions(user.id, 20);
+        const formatted: ChatSession[] = sessions.map(session => ({
+          id: session.id,
+          title: session.title || 'Untitled Conversation',
+          timestamp: formatTimestamp(new Date(session.updated_at)),
+        }));
+        setChatHistory(formatted);
+      } catch (error) {
+        console.error('Error loading conversations:', error);
+        // Fallback to old method if sessions table doesn't exist
+        try {
+          const { getFirstMessagesOfConversations } = await import('../../lib/database');
+          const conversations = await getFirstMessagesOfConversations(user.id, 20);
+          const formatted: ChatSession[] = conversations.map(conv => ({
+            id: conv.id,
+            title: conv.title,
+            timestamp: formatTimestamp(conv.timestamp),
+          }));
+          setChatHistory(formatted);
+        } catch (fallbackError) {
+          console.error('Error loading conversations (fallback):', fallbackError);
+          setChatHistory([]);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadConversations();
+
+    // Listen for new chat messages (when first message is sent in a new conversation)
+    const handleChatUpdate = () => {
+      // Add a small delay to ensure database is updated
+      setTimeout(loadConversations, 500);
+    };
+
+    window.addEventListener('firstChatMessageCreated', handleChatUpdate);
+    window.addEventListener('newChatRequested', () => {
+      // Clear list when new chat is requested (will be populated when user sends first message)
+      setChatHistory([]);
+    });
+    
+    // Listen for conversation deletions to refresh list
+    const handleConversationDeleted = () => {
+      setTimeout(loadConversations, 300);
+    };
+    window.addEventListener('conversationDeleted', handleConversationDeleted);
+
+    // Poll for updates every 10 seconds (but respect if user just deleted something)
+    const interval = setInterval(() => {
+      // Don't poll immediately after a delete (wait 3 seconds to let delete complete)
+      const lastDeleteTime = (window as any).lastDeleteTime || 0;
+      if (Date.now() - lastDeleteTime > 3000) {
+        loadConversations();
+      }
+    }, 10000);
+
+    return () => {
+      window.removeEventListener('firstChatMessageCreated', handleChatUpdate);
+      window.removeEventListener('newChatRequested', handleChatUpdate);
+      window.removeEventListener('conversationDeleted', handleConversationDeleted);
+      clearInterval(interval);
+    };
+  }, [user]);
 
   useEffect(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
@@ -39,8 +132,64 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
     localStorage.setItem('sidebar-collapsed', JSON.stringify(newState));
   };
 
-  const deleteChat = (id: string) => {
+  const deleteChat = async (id: string) => {
+    if (!user) return;
+    
+    // Confirm deletion
+    if (!confirm('Are you sure you want to delete this conversation?')) {
+      return;
+    }
+    
+    // Remove from local state immediately (optimistic update)
+    const previousHistory = [...chatHistory];
     setChatHistory(prev => prev.filter(chat => chat.id !== id));
+    
+    try {
+      // Delete session and all associated messages from database
+      await deleteChatSession(id, user.id);
+      console.log(`Successfully deleted conversation ${id}`);
+      
+      // Mark delete time to prevent immediate polling refresh
+      window.lastDeleteTime = Date.now();
+      
+      // Dispatch event to refresh conversations list
+      window.dispatchEvent(new CustomEvent('conversationDeleted', { detail: { deletedId: id } }));
+      
+      // Force reload conversations after a delay to ensure database is updated
+      setTimeout(async () => {
+        try {
+          const sessions = await getChatSessions(user.id, 20);
+          const formatted: ChatSession[] = sessions.map(session => ({
+            id: session.id,
+            title: session.title || 'Untitled Conversation',
+            timestamp: formatTimestamp(new Date(session.updated_at)),
+          }));
+          setChatHistory(formatted);
+        } catch (reloadError) {
+          console.error('Error reloading conversations:', reloadError);
+          // Fallback: try old method if sessions table doesn't exist
+          try {
+            const { getFirstMessagesOfConversations } = await import('../../lib/database');
+            const conversations = await getFirstMessagesOfConversations(user.id, 20);
+            const formatted: ChatSession[] = conversations.map(conv => ({
+              id: conv.id,
+              title: conv.title,
+              timestamp: formatTimestamp(conv.timestamp),
+            }));
+            setChatHistory(formatted);
+          } catch (fallbackError) {
+            console.error('Error reloading conversations (fallback):', fallbackError);
+            // Restore previous state if reload completely fails
+            setChatHistory(previousHistory);
+          }
+        }
+      }, 800);
+    } catch (error: any) {
+      console.error('Error deleting conversation:', error);
+      // Restore previous state on error
+      setChatHistory(previousHistory);
+      alert(`Failed to delete conversation: ${error?.message || 'Unknown error'}. Please try again.`);
+    }
   };
 
   const togglePin = (id: string) => {
@@ -257,6 +406,16 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
           </h3>
           <div className="relative group">
             <button
+              onClick={() => {
+                // Clear current chat session
+                sessionStorage.removeItem('chat-session-id');
+                // Clear URL params to ensure clean chat view
+                setSearchParams({});
+                // Switch to chat view
+                onViewChange('chat');
+                // Trigger a custom event to notify ChatArea to reset
+                window.dispatchEvent(new CustomEvent('newChatRequested'));
+              }}
               className="p-2 hover:bg-sage-100 dark:hover:bg-gray-700 rounded-xl transition-all duration-200 ease-in-out hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#187E5F] focus:ring-offset-1"
               title="Start new conversation"
               aria-label="Start new conversation"
@@ -279,8 +438,24 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
         </div>
 
         <div className="space-y-4">
-          {(() => {
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="text-sm text-[#9CA3AF] dark:text-gray-500">Loading conversations...</div>
+            </div>
+          ) : (() => {
             const { today, thisWeek, earlier } = groupConversations();
+            const hasAnyConversations = today.length > 0 || thisWeek.length > 0 || earlier.length > 0;
+            
+            if (!hasAnyConversations) {
+              return (
+                <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+                  <MessageSquare className="w-12 h-12 text-[#9CA3AF] dark:text-gray-500 mb-3 opacity-50" />
+                  <p className="text-sm text-[#9CA3AF] dark:text-gray-500 mb-1">No conversations yet</p>
+                  <p className="text-xs text-[#9CA3AF] dark:text-gray-600">Start a new chat to begin</p>
+                </div>
+              );
+            }
+            
             return (
               <>
                 {today.length > 0 && (
@@ -327,14 +502,14 @@ export default function Sidebar({ currentView, onViewChange }: SidebarProps) {
 
       <button
         onClick={toggleCollapse}
-        className="absolute -right-[18px] top-1/2 -translate-y-1/2 w-9 h-9 bg-white dark:bg-gray-800 border border-sage-100 dark:border-gray-700 hover:bg-sage-50 dark:hover:bg-gray-700 text-sage-600 dark:text-sage-400 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110 z-20 focus:outline-none focus:ring-2 focus:ring-[#187E5F] focus:ring-offset-2"
+        className="absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white dark:bg-[var(--color-dark-elevated-bg)] border-2 border-[var(--color-deep-emerald)] dark:border-[var(--color-neon-teal)] hover:bg-[var(--color-light-sage)] dark:hover:bg-[var(--color-dark-card-bg)] text-[var(--color-deep-emerald)] dark:text-[var(--color-neon-teal)] rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-200 hover:scale-110 z-30 focus:outline-none focus:ring-2 focus:ring-[var(--color-deep-emerald)] focus:ring-offset-2"
         aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
         {isCollapsed ? (
-          <ChevronRight className="w-[18px] h-[18px]" strokeWidth={2.5} />
+          <ChevronRight className="w-5 h-5" strokeWidth={3} />
         ) : (
-          <ChevronLeft className="w-[18px] h-[18px]" strokeWidth={2.5} />
+          <ChevronLeft className="w-5 h-5" strokeWidth={3} />
         )}
       </button>
     </aside>

@@ -91,22 +91,22 @@ export default function Footer() {
             <h3 className="text-lg font-bold mb-4">Legal</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-white/80 hover:text-mint-300 transition-colors">
+                <a href="#privacy" className="text-white/80 hover:text-mint-300 transition-colors">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="text-white/80 hover:text-mint-300 transition-colors">
+                <a href="#terms" className="text-white/80 hover:text-mint-300 transition-colors">
                   Terms of Service
                 </a>
               </li>
               <li>
-                <a href="#" className="text-white/80 hover:text-mint-300 transition-colors">
+                <a href="#resources" className="text-white/80 hover:text-mint-300 transition-colors">
                   Cookie Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="text-white/80 hover:text-mint-300 transition-colors">
+                <a href="#accessibility" className="text-white/80 hover:text-mint-300 transition-colors">
                   Accessibility
                 </a>
               </li>

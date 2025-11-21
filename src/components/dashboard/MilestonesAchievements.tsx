@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Lock, Trophy } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 
 interface Badge {
   id: string;
@@ -18,61 +18,126 @@ interface MilestonesAchievementsProps {
   totalCheckIns: number;
 }
 
-const SproutIcon = ({ tier }: { tier: 'bronze' | 'silver' | 'gold' }) => {
-  const leafColors = {
-    bronze: '#8B4513',
-    silver: '#A8A8A8',
-    gold: '#FFA500'
-  };
-
-  const stemColor = tier === 'gold' ? '#4CAF50' : tier === 'silver' ? '#6B8E6B' : '#5A7D5A';
-
+// Seed Icon for First Step (bronze)
+const SeedIcon = () => {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Seed body */}
+      <ellipse cx="20" cy="24" rx="8" ry="10" fill="#8B4513" stroke="#654321" strokeWidth="1.5" />
+      {/* Seed highlight */}
+      <ellipse cx="18" cy="22" rx="3" ry="4" fill="#A0522D" opacity="0.6" />
+      {/* Small sprout lines */}
+      <path d="M20 14 L18 18" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" />
+      <path d="M20 14 L22 18" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+};
+
+// Sapling Icon for Week Warrior (gold)
+const SaplingIcon = () => {
+  return (
+    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Stem */}
       <path
-        d="M20 32 C20 32, 18 28, 18 24 C18 20, 20 16, 20 12"
-        stroke={stemColor}
-        strokeWidth="2.5"
+        d="M20 32 C20 32, 20 28, 20 24 C20 20, 20 16, 20 12"
+        stroke="#4CAF50"
+        strokeWidth="3"
         strokeLinecap="round"
       />
-      <ellipse
-        cx="15"
-        cy="18"
-        rx="5"
-        ry="7"
-        fill="white"
-        transform="rotate(-25 15 18)"
-        opacity="0.95"
-      />
+      {/* Lower leaves */}
       <path
-        d="M15 18 C15 18, 12 15, 10 12 C8 9, 10 6, 13 8 C16 10, 15 18, 15 18"
-        fill={leafColors[tier]}
-        stroke="white"
+        d="M20 20 C20 20, 16 18, 14 16 C12 14, 13 12, 15 13 C17 14, 20 20, 20 20"
+        fill="#FFA500"
+        stroke="#FF8C00"
         strokeWidth="1"
       />
-      <ellipse
-        cx="25"
-        cy="18"
-        rx="5"
-        ry="7"
-        fill="white"
-        transform="rotate(25 25 18)"
-        opacity="0.95"
+      <path
+        d="M20 20 C20 20, 24 18, 26 16 C28 14, 27 12, 25 13 C23 14, 20 20, 20 20"
+        fill="#FFA500"
+        stroke="#FF8C00"
+        strokeWidth="1"
+      />
+      {/* Upper leaves */}
+      <path
+        d="M20 16 C20 16, 17 14, 15 12 C13 10, 14 8, 16 9 C18 10, 20 16, 20 16"
+        fill="#FFD700"
+        stroke="#FFA500"
+        strokeWidth="1"
       />
       <path
-        d="M25 18 C25 18, 28 15, 30 12 C32 9, 30 6, 27 8 C24 10, 25 18, 25 18"
-        fill={leafColors[tier]}
-        stroke="white"
+        d="M20 16 C20 16, 23 14, 25 12 C27 10, 26 8, 24 9 C22 10, 20 16, 20 16"
+        fill="#FFD700"
+        stroke="#FFA500"
         strokeWidth="1"
       />
       <ellipse
         cx="20"
         cy="12"
         rx="4"
-        ry="6"
-        fill={leafColors[tier]}
-        opacity="0.9"
+        ry="5"
+        fill="#FFD700"
+        stroke="#FFA500"
+        strokeWidth="1"
       />
+    </svg>
+  );
+};
+
+// Large Banyan Tree Icon for Thoughtful (silver tier but green leaves)
+const TreeIcon = () => {
+  return (
+    <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Main trunk - wider at base */}
+      <path d="M23 40 L23 28 L27 28 L27 40 Z" fill="#8B4513" />
+      <path d="M23 28 Q25 26 27 28" fill="#654321" opacity="0.6" />
+      
+      {/* Aerial roots - characteristic of banyan tree */}
+      <path d="M22 32 Q20 38 19 40" stroke="#654321" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      <path d="M28 32 Q30 38 31 40" stroke="#654321" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      <path d="M25 30 Q24 36 23 38" stroke="#654321" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+      <path d="M25 30 Q26 36 27 38" stroke="#654321" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+      
+      {/* Large spreading canopy - lower layer (dark green) */}
+      <ellipse cx="25" cy="22" rx="14" ry="10" fill="#2D5016" />
+      <ellipse cx="25" cy="22" rx="12" ry="8" fill="#3A6B1F" opacity="0.9" />
+      
+      {/* Middle canopy layer (medium green) */}
+      <ellipse cx="25" cy="18" rx="12" ry="9" fill="#4A8B2E" />
+      <ellipse cx="25" cy="18" rx="10" ry="7" fill="#5A9B3E" opacity="0.9" />
+      
+      {/* Upper canopy layer (bright green) */}
+      <ellipse cx="25" cy="14" rx="10" ry="8" fill="#5C9C3F" />
+      <ellipse cx="25" cy="14" rx="8" ry="6" fill="#6CAC4F" opacity="0.9" />
+      
+      {/* Top crown (lighter green) */}
+      <ellipse cx="25" cy="10" rx="8" ry="7" fill="#7ABC5F" />
+      <ellipse cx="25" cy="10" rx="6" ry="5" fill="#8ACC6F" opacity="0.9" />
+      
+      {/* Extended branches - left side */}
+      <ellipse cx="18" cy="20" rx="4" ry="5" fill="#4A8B2E" transform="rotate(-20 18 20)" />
+      <ellipse cx="15" cy="17" rx="3" ry="4" fill="#5C9C3F" transform="rotate(-25 15 17)" />
+      <ellipse cx="12" cy="15" rx="2.5" ry="3.5" fill="#6CAC4F" transform="rotate(-30 12 15)" />
+      
+      {/* Extended branches - right side */}
+      <ellipse cx="32" cy="20" rx="4" ry="5" fill="#4A8B2E" transform="rotate(20 32 20)" />
+      <ellipse cx="35" cy="17" rx="3" ry="4" fill="#5C9C3F" transform="rotate(25 35 17)" />
+      <ellipse cx="38" cy="15" rx="2.5" ry="3.5" fill="#6CAC4F" transform="rotate(30 38 15)" />
+      
+      {/* Leaf clusters for detail */}
+      <circle cx="20" cy="16" r="2" fill="#7ABC5F" opacity="0.8" />
+      <circle cx="30" cy="16" r="2" fill="#7ABC5F" opacity="0.8" />
+      <circle cx="22" cy="19" r="1.5" fill="#8ACC6F" opacity="0.8" />
+      <circle cx="28" cy="19" r="1.5" fill="#8ACC6F" opacity="0.8" />
+      <circle cx="25" cy="12" r="2.5" fill="#8ACC6F" opacity="0.9" />
+      
+      {/* Highlights for dimension */}
+      <ellipse cx="23" cy="14" rx="2" ry="3" fill="#9ADC7F" opacity="0.7" />
+      <ellipse cx="27" cy="18" rx="2" ry="3" fill="#9ADC7F" opacity="0.7" />
+      <ellipse cx="25" cy="10" rx="2.5" ry="3" fill="#AAF09F" opacity="0.8" />
+      
+      {/* Tree rings on trunk */}
+      <ellipse cx="25" cy="32" rx="1.5" ry="2" fill="#654321" opacity="0.4" />
+      <ellipse cx="25" cy="35" rx="1.5" ry="2" fill="#654321" opacity="0.4" />
     </svg>
   );
 };
@@ -106,10 +171,10 @@ export default function MilestonesAchievements({
     {
       id: 'thoughtful',
       name: 'Thoughtful',
-      description: 'Written 10 journal entries',
+      description: 'Chatted 3 times in a day',
       tier: 'silver',
-      isEarned: journalEntries >= 10,
-      progress: { current: Math.min(journalEntries, 10), total: 10 },
+      isEarned: totalCheckIns >= 3,
+      progress: { current: Math.min(totalCheckIns, 3), total: 3 },
     },
   ];
 
@@ -135,7 +200,7 @@ export default function MilestonesAchievements({
   };
 
   const lockedStyle = {
-    gradient: 'radial-gradient(circle, #808080 0%, #606060 100%)',
+    gradient: 'radial-gradient(circle, #E8F5F0 0%, #D4EDE5 100%)',
   };
 
   const earnedBadges = badges.filter(b => b.isEarned);
@@ -165,7 +230,14 @@ export default function MilestonesAchievements({
   }, [streakDays, journalEntries, totalCheckIns]);
 
   const getBadgeIcon = (badge: Badge) => {
-    return <SproutIcon tier={badge.tier} />;
+    if (badge.id === 'first-step') {
+      return <SeedIcon />;
+    } else if (badge.id === 'week-warrior') {
+      return <SaplingIcon />;
+    } else if (badge.id === 'thoughtful') {
+      return <TreeIcon />;
+    }
+    return <SeedIcon />; // fallback
   };
 
   return (
@@ -209,30 +281,28 @@ export default function MilestonesAchievements({
                     className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 ${
                       badge.isEarned
                         ? 'animate-badge-float hover:-translate-y-1'
-                        : 'opacity-40 hover:opacity-60'
+                        : 'hover:scale-105'
                     }`}
                     style={{
                       background: badge.isEarned ? tierStyles[badge.tier].gradient : lockedStyle.gradient,
-                      boxShadow: badge.isEarned ? tierStyles[badge.tier].shadow : 'none',
+                      boxShadow: badge.isEarned ? tierStyles[badge.tier].shadow : '0 2px 4px rgba(0,0,0,0.1)',
                     }}
                     onMouseEnter={(e) => {
                       if (badge.isEarned) {
                         e.currentTarget.style.boxShadow = tierStyles[badge.tier].hoverShadow;
+                      } else {
+                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (badge.isEarned) {
                         e.currentTarget.style.boxShadow = tierStyles[badge.tier].shadow;
+                      } else {
+                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
                       }
                     }}
                   >
                     {getBadgeIcon(badge)}
-
-                    {!badge.isEarned && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-full">
-                        <Lock className="w-6 h-6 text-white opacity-70" />
-                      </div>
-                    )}
 
                     {badge.isEarned && badge.tier === 'gold' && (
                       <>

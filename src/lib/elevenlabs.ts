@@ -208,6 +208,25 @@ export async function speakWithElevenLabs(
   }
 }
 
+// Track current ElevenLabs audio to prevent overlapping
+let currentElevenLabsAudio: HTMLAudioElement | null = null;
+
+/**
+ * Stop any currently playing ElevenLabs audio
+ */
+export function stopElevenLabsAudio(): void {
+  if (currentElevenLabsAudio) {
+    currentElevenLabsAudio.pause();
+    currentElevenLabsAudio.currentTime = 0;
+    if (currentElevenLabsAudio.src) {
+      URL.revokeObjectURL(currentElevenLabsAudio.src);
+    }
+    currentElevenLabsAudio = null;
+    restoreAudio(); // Restore background audio
+    console.log('🔇 Stopped ElevenLabs audio');
+  }
+}
+
 /**
  * Play audio from ElevenLabs
  */
@@ -215,23 +234,43 @@ export async function playElevenLabsAudio(
   text: string,
   voiceOption: 'female' | 'male' | 'child' = 'female'
 ): Promise<void> {
+  // Stop any existing ElevenLabs audio first
+  stopElevenLabsAudio();
+  
+  // Also stop browser TTS if it's playing
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+
   // Duck background audio when starting
   duckAudio();
 
   const audio = await speakWithElevenLabs(text, voiceOption);
   if (audio) {
+    // Store current audio for tracking
+    currentElevenLabsAudio = audio;
+    
     return new Promise((resolve, reject) => {
       audio.onended = () => {
         URL.revokeObjectURL(audio.src); // Clean up
+        if (currentElevenLabsAudio === audio) {
+          currentElevenLabsAudio = null;
+        }
         restoreAudio(); // Restore background audio
         resolve();
       };
       audio.onerror = (error) => {
         URL.revokeObjectURL(audio.src); // Clean up
+        if (currentElevenLabsAudio === audio) {
+          currentElevenLabsAudio = null;
+        }
         restoreAudio(); // Restore background audio even on error
         reject(error);
       };
       audio.play().catch((playError) => {
+        if (currentElevenLabsAudio === audio) {
+          currentElevenLabsAudio = null;
+        }
         restoreAudio(); // Restore background audio on play error
         reject(playError);
       });

@@ -5,7 +5,7 @@ export default function Hero() {
   const navigate = useNavigate();
 
   const handleStartJourney = () => {
-    navigate('/signup');
+    navigate('/beta-qr');
   };
 
   return (

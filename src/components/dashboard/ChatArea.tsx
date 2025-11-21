@@ -4,10 +4,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useUserPreferences } from '../../hooks/useUserPreferences';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { createChatMessage, getChatHistory } from '../../lib/database';
-import { sendUserMessageToN8N, sendAIResponseToN8N } from '../../lib/n8n';
+import { createChatMessage, getChatHistory, updateStatsFromConversation, checkAndUnlockAchievements, getUserStats } from '../../lib/database';
+import { sendUserMessageToN8N, sendAIResponseToN8N, sendToN8N } from '../../lib/n8n';
 import { speakText, stopSpeech, isSpeechSynthesisAvailable, muteVoiceAgent, unmuteVoiceAgent, isVoiceAgentMutedState } from '../../lib/voice';
-import { muteBackgroundAudio, unmuteBackgroundAudio, isBackgroundAudioMuted } from '../../lib/audioDucking';
+import { muteBackgroundAudio, unmuteBackgroundAudio, isBackgroundAudioMuted, pauseAudioForRecording, resumeAudioAfterRecording } from '../../lib/audioDucking';
+import { playElevenLabsAudio, isElevenLabsAvailable, stopElevenLabsAudio } from '../../lib/elevenlabs';
 
 interface Message {
   id: string;
@@ -38,6 +39,8 @@ export default function ChatArea() {
   const [isVoiceMuted, setIsVoiceMuted] = useState(() => {
     return localStorage.getItem('voice-agent-muted') === 'true';
   });
+  const [inputMode, setInputMode] = useState<'audio' | 'text'>('audio'); // Audio is default
+  const [shouldAutoStartRecording, setShouldAutoStartRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -48,14 +51,18 @@ export default function ChatArea() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const sessionIdRef = useRef<string>(() => {
+  const speechCompletionRef = useRef<Promise<void> | null>(null);
+  const conversationStartTimeRef = useRef<Date | null>(null);
+  const initialMessageSpeechStartedRef = useRef<boolean>(false);
+  const getOrCreateSessionId = () => {
     // Generate or retrieve session ID
     const stored = sessionStorage.getItem('chat-session-id');
     if (stored) return stored;
     const newSessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     sessionStorage.setItem('chat-session-id', newSessionId);
     return newSessionId;
-  });
+  };
+  const sessionIdRef = useRef<string>(getOrCreateSessionId());
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -87,6 +94,57 @@ export default function ChatArea() {
     };
   }, [messages, isInitialLoad]);
 
+  // Listen for new chat requests
+  useEffect(() => {
+    const handleNewChat = () => {
+      // Clear current session ID
+      sessionStorage.removeItem('chat-session-id');
+      // Generate new session ID
+      const newSessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      sessionStorage.setItem('chat-session-id', newSessionId);
+      sessionIdRef.current = newSessionId;
+      
+      // Reset conversation start time so next message is considered a new conversation
+      conversationStartTimeRef.current = null;
+      
+      // Clear all state: messages, input, thinking, typing indicators
+      setMessages([]);
+      setIsInitialLoad(true);
+      setInputText('');
+      setIsThinking(false);
+      setTypingMessages(new Set());
+      stopSpeech();
+      
+      // Clear any ongoing audio/video streams
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {
+          // Ignore errors
+        }
+        recognitionRef.current = null;
+      }
+      
+      // Clear any ongoing speech before showing new initial message
+      stopSpeech();
+      stopElevenLabsAudio();
+      
+      // Reset speech flags
+      initialMessageSpeechStartedRef.current = false;
+      speechCompletionRef.current = null;
+      
+      // Show initial welcome message - this will be handled by showInitialMessage
+      // Don't call speakText here to avoid double speaking
+      setIsInitialLoad(true);
+      // The showInitialMessage will be called automatically by the loadChatHistory effect
+    };
+
+    window.addEventListener('newChatRequested', handleNewChat);
+    return () => {
+      window.removeEventListener('newChatRequested', handleNewChat);
+    };
+  }, [user, preferences, isVoiceMuted]);
+
   // Load chat history from database
   useEffect(() => {
     const loadChatHistory = async () => {
@@ -104,7 +162,12 @@ export default function ChatArea() {
             timestamp: new Date(record.timestamp),
           }));
           
-          setMessages(loadedMessages);
+          // Deduplicate messages by ID - keep only one entry per unique message ID
+          const uniqueMessages = Array.from(
+            new Map(loadedMessages.map(msg => [msg.id, msg])).values()
+          );
+          
+          setMessages(uniqueMessages);
           setIsInitialLoad(false);
         } else {
           // No history, show initial message
@@ -117,6 +180,13 @@ export default function ChatArea() {
     };
 
     const showInitialMessage = () => {
+      // Stop any existing speech first to prevent overlap
+      stopSpeech();
+      stopElevenLabsAudio();
+      
+      // Reset speech started flag
+      initialMessageSpeechStartedRef.current = false;
+      
       const initialMessageId = '1';
       const fullText = "Hello! I'm NIRA - Neural Insight and Reframing Assistant. I'm your compassionate companion for mental wellness, here to help you reframe your thoughts and navigate your emotions. How can I help you today?";
 
@@ -131,22 +201,10 @@ export default function ChatArea() {
       setMessages([botResponse]);
       setTypingMessages(new Set([initialMessageId]));
 
-      // Start speaking immediately as typing begins (only if not muted)
-      // Use a short delay to ensure voices are loaded and user interaction has occurred
-      if (isSpeechSynthesisAvailable() && !isVoiceMuted) {
-        const voiceOption = preferences?.voice_option || 'female';
-        setTimeout(() => {
-          console.log(`🔊 Starting to speak initial message with ${voiceOption} voice while typing`);
-          speakText(fullText, voiceOption).catch(error => {
-            console.error('Error speaking initial message:', error);
-          });
-        }, 500); // Short delay to ensure everything is ready, but start speaking as typing happens
-      } else if (isVoiceMuted) {
-        console.log('🔇 Voice agent is muted, skipping initial message');
-      } else {
-        console.warn('Speech synthesis not available');
-      }
-
+      // ALWAYS use female voice for initial message (force consistent voice)
+      const voiceOption = 'female';
+      
+      // Start typing animation
       let currentIndex = 0;
       typingIntervalRef.current = setInterval(() => {
         if (currentIndex <= fullText.length) {
@@ -155,6 +213,41 @@ export default function ChatArea() {
             text: fullText.slice(0, currentIndex),
           }]);
           currentIndex++;
+          
+          // Start speaking after first few characters (only once, with proper guard)
+          if (!initialMessageSpeechStartedRef.current && currentIndex >= 20 && !isVoiceMuted) {
+            initialMessageSpeechStartedRef.current = true;
+            
+            // Stop ALL existing speech before starting (aggressive cleanup)
+            stopSpeech();
+            stopElevenLabsAudio();
+            if ('speechSynthesis' in window) {
+              window.speechSynthesis.cancel();
+            }
+            
+            // Use a longer delay to ensure previous speech is fully stopped
+            setTimeout(() => {
+              // Double-check that speech hasn't been started by another call
+              if (initialMessageSpeechStartedRef.current) {
+                console.log(`🔊 Starting to speak initial message with ${voiceOption} voice (forced)`);
+                
+                // Use speakText which will ensure only one voice plays
+                const speechPromise = speakText(fullText, voiceOption);
+                speechCompletionRef.current = speechPromise;
+                speechPromise
+                  .then(() => {
+                    console.log('✅ Initial message speech completed');
+                    speechCompletionRef.current = null;
+                    setShouldAutoStartRecording(true);
+                  })
+                  .catch(error => {
+                    console.error('Error speaking initial message:', error);
+                    speechCompletionRef.current = null;
+                    setShouldAutoStartRecording(true);
+                  });
+              }
+            }, 250); // Longer delay to ensure clean start
+          }
         } else {
           if (typingIntervalRef.current) {
             clearInterval(typingIntervalRef.current);
@@ -167,13 +260,35 @@ export default function ChatArea() {
           }]);
           setTypingMessages(new Set());
           setTimeout(() => setIsInitialLoad(false), 500);
-          // Voice is already speaking from the start of typing animation
+          
+          // If speech wasn't started (muted or not available), auto-start recording now
+          if (!initialMessageSpeechStartedRef.current) {
+            setTimeout(() => {
+              setShouldAutoStartRecording(true);
+            }, 500);
+          }
         }
       }, 50);
     };
 
     loadChatHistory();
-  }, [user, preferences?.voice_option]);
+  }, [user, preferences?.voice_option, isVoiceMuted]);
+
+  // Auto-start recording when shouldAutoStartRecording is true
+  useEffect(() => {
+    if (shouldAutoStartRecording && !isRecording && !isThinking && inputMode === 'audio' && !isInitialLoad) {
+      console.log('🎤 Auto-starting recording after bot response');
+      // Small delay to ensure speech is fully complete
+      const timeout = setTimeout(() => {
+        if (!isRecording && !isThinking && inputMode === 'audio') {
+          startRecording();
+        }
+        setShouldAutoStartRecording(false);
+      }, 500);
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [shouldAutoStartRecording, isRecording, isThinking, inputMode, isInitialLoad]);
 
   // Audio playback is now handled at Dashboard level to persist across views
   // This useEffect is kept for backward compatibility but audio won't play here
@@ -255,7 +370,16 @@ export default function ChatArea() {
         setRecordingTime(0);
         interimTranscriptRef.current = '';
         finalTranscriptRef.current = '';
-        baseInputTextRef.current = inputText; // Store the current input text as base
+        // Store the current input text as base, or empty string if inputText is empty
+        baseInputTextRef.current = inputText || '';
+        
+        // Clear input text when starting recording to show transcription clearly
+        if (inputMode === 'audio') {
+          setInputText('');
+        }
+        
+        // Pause background audio for better microphone pickup
+        pauseAudioForRecording();
         
         // Start timer
         recordingTimerRef.current = setInterval(() => {
@@ -287,13 +411,22 @@ export default function ChatArea() {
         interimTranscriptRef.current = newInterimTranscript;
         
         // Update input: base + all final transcripts + current interim
-        const fullText = baseInputTextRef.current + 
-                        (baseInputTextRef.current && finalTranscriptRef.current ? ' ' : '') + 
-                        finalTranscriptRef.current.trim() + 
-                        (finalTranscriptRef.current.trim() && newInterimTranscript ? ' ' : '') + 
-                        newInterimTranscript;
+        const basePart = baseInputTextRef.current.trim();
+        const finalPart = finalTranscriptRef.current.trim();
+        const interimPart = newInterimTranscript.trim();
         
-        setInputText(fullText);
+        let fullText = '';
+        if (basePart) {
+          fullText = basePart;
+          if (finalPart) fullText += ' ' + finalPart;
+          if (interimPart) fullText += ' ' + interimPart;
+        } else {
+          if (finalPart) fullText = finalPart;
+          if (interimPart) fullText += (fullText ? ' ' : '') + interimPart;
+        }
+        
+        // Always update input text to show transcription in real-time
+        setInputText(fullText.trim());
         
         // Reset pause timeout - user is still speaking
         if (pauseTimeoutRef.current) {
@@ -402,6 +535,15 @@ export default function ChatArea() {
     setIsRecording(false);
     setRecordingTime(0);
     
+    // Resume background audio after recording stops
+    resumeAudioAfterRecording();
+    
+    // Switch to text mode when user manually stops recording
+    // Keep audio mode if auto-sending (natural conversation flow)
+    if (!autoSend) {
+      setInputMode('text');
+    }
+    
     // Auto-send if there's text and autoSend is true
     if (autoSend && finalText.trim() && !isThinking) {
       setTimeout(() => {
@@ -423,120 +565,271 @@ export default function ChatArea() {
         text: textToSend,
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, newMessage]);
+      // Deduplicate: only add if message ID doesn't already exist
+      setMessages(prev => {
+        const messageExists = prev.some(msg => msg.id === newMessage.id);
+        if (messageExists) {
+          return prev; // Don't add duplicate
+        }
+        return [...prev, newMessage];
+      });
       setInputText('');
       setIsThinking(true);
 
+      // Track conversation start time (first message of this conversation session)
+      // Reset if last message was more than 5 minutes ago (new conversation)
+      const now = new Date();
+      const isNewConversation = !conversationStartTimeRef.current || 
+          (conversationStartTimeRef.current && 
+           (now.getTime() - conversationStartTimeRef.current.getTime()) > 5 * 60 * 1000);
+      
+      if (isNewConversation) {
+        conversationStartTimeRef.current = now;
+      }
+
       // Save user message to database
       try {
-        await createChatMessage({
+        const savedMessage = await createChatMessage({
           user_id: user.id,
           speaker: 'user',
           message: textToSend
         });
+        
+        // Create or update chat session if this is the first message of a new conversation
+        if (isNewConversation && savedMessage) {
+          try {
+            const { getOrCreateChatSession } = await import('../../lib/database');
+            await getOrCreateChatSession(user.id, savedMessage.id, textToSend);
+            
+            // Notify sidebar to update conversations list
+            window.dispatchEvent(new CustomEvent('firstChatMessageCreated'));
+          } catch (sessionError) {
+            console.error('Error creating chat session:', sessionError);
+            // Still notify sidebar even if session creation fails
+            window.dispatchEvent(new CustomEvent('firstChatMessageCreated'));
+          }
+        } else if (!isNewConversation) {
+          // Update session's updated_at timestamp for existing conversation
+          // Find the session ID from the first message of this conversation
+          // This will be handled by the updated_at trigger in the database
+        }
+        
+        // Update stats based on conversation activity
+        // This counts as a check-in and will calculate mindfulness minutes from chat_history
+        const updatedStats = await updateStatsFromConversation(user.id, 1); // Minutes will be calculated from chat_history
+        
+        // Check for new achievements after updating stats
+        if (updatedStats) {
+          try {
+            const unlocked = await checkAndUnlockAchievements(user.id, updatedStats);
+            if (unlocked.length > 0) {
+              console.log('🎉 New achievements unlocked:', unlocked.map(a => a.achievement_name));
+              // Trigger achievement notification if needed
+            }
+          } catch (error) {
+            console.error('Error checking achievements:', error);
+          }
+        }
       } catch (error) {
-        console.error('Error saving user message:', error);
+        console.error('Error saving user message or updating stats:', error);
       }
 
-      // Send user message to n8n webhook
-      try {
-        await sendUserMessageToN8N(
-          user.id,
-          user.email,
-          textToSend,
-          sessionIdRef.current
-        );
-      } catch (error) {
-        console.error('Error sending message to n8n:', error);
-        // Don't block chat if n8n fails
-      }
+      // Get AI response from n8n webhook immediately (no delay!)
+      const botResponseId = (Date.now() + 1).toString();
+      const botResponse: Message = {
+        id: botResponseId,
+        type: 'bot',
+        text: '',
+        timestamp: new Date(),
+        isTyping: true,
+      };
+      // Deduplicate: only add if message ID doesn't already exist
+      setMessages(prev => {
+        const messageExists = prev.some(msg => msg.id === botResponseId);
+        if (messageExists) {
+          return prev; // Don't add duplicate
+        }
+        return [...prev, botResponse];
+      });
+      setTypingMessages(prev => new Set(prev).add(botResponseId));
 
-      setTimeout(async () => {
-        const botResponseId = (Date.now() + 1).toString();
-        const fullText = "I hear you. Let's work through this together. Can you tell me more about what's on your mind?";
+      // Build conversation history from recent messages
+      const recentMessages = messages.slice(-10); // Last 10 messages for context
+      const conversationHistory = recentMessages.map(msg => ({
+        role: msg.type === 'user' ? 'user' as const : 'assistant' as const,
+        content: msg.text,
+      }));
 
-        const botResponse: Message = {
-          id: botResponseId,
-          type: 'bot',
-          text: '',
-          timestamp: new Date(),
-          isTyping: true,
-        };
-        setMessages(prev => [...prev, botResponse]);
-        setTypingMessages(prev => new Set(prev).add(botResponseId));
+      const voiceOption = (preferences?.voice_option || 'female') as 'female' | 'male' | 'child';
+      let voiceGenerationStarted = false;
+      const voiceGenerationThreshold = 20; // Start voice after 20 characters
 
-        // Start speaking immediately as typing begins (only if not muted)
-        if (isSpeechSynthesisAvailable() && !isVoiceMuted) {
-          const voiceOption = preferences?.voice_option || 'female';
-          console.log(`🔊 Starting to speak response with ${voiceOption} voice while typing`);
-          speakText(fullText, voiceOption).catch(error => {
-            console.error('❌ Error speaking text:', error);
-          });
+      // Call n8n webhook for AI response (optimized for quick responses)
+      sendToN8N({
+        message: textToSend,
+        userId: user.id,
+        sessionId: sessionIdRef.current,
+        conversationHistory,
+        context: {
+          preferences: preferences || undefined,
+        },
+      })
+      .then((n8nResponse) => {
+        if (!n8nResponse.success) {
+          throw new Error(n8nResponse.error || 'Unknown error from n8n');
         }
 
-        let currentIndex = 0;
-        let lastUpdateTime = Date.now();
-        const updateInterval = 30; // Update every 30ms for smoother animation
+        const fullText = n8nResponse.response;
         
-        typingIntervalRef.current = setInterval(() => {
-          const now = Date.now();
-          // Only update if enough time has passed (throttle for performance)
-          if (now - lastUpdateTime >= updateInterval) {
-            if (currentIndex <= fullText.length) {
-              setMessages(prev =>
-                prev.map(msg =>
-                  msg.id === botResponseId
-                    ? { ...msg, text: fullText.slice(0, currentIndex) }
-                    : msg
-                )
-              );
-              currentIndex++;
-              lastUpdateTime = now;
-            } else {
-              if (typingIntervalRef.current) {
-                clearInterval(typingIntervalRef.current);
-                typingIntervalRef.current = null;
-              }
-              setMessages(prev =>
-                prev.map(msg =>
-                  msg.id === botResponseId
-                    ? { ...msg, isTyping: false }
-                    : msg
-                )
-              );
-              setTypingMessages(prev => {
-                const newSet = new Set(prev);
-                newSet.delete(botResponseId);
-                return newSet;
+        // Simulate typing animation for better UX (quick, 50ms per 5 chars)
+        const typeSpeed = 50; // milliseconds per chunk
+        const chunkSize = 5; // characters per chunk
+        let currentIndex = 0;
+        
+        const typeInterval = setInterval(() => {
+          if (currentIndex < fullText.length) {
+            const textToShow = fullText.slice(0, currentIndex + chunkSize);
+            currentIndex += chunkSize;
+            
+            setMessages(prev =>
+              prev.map(msg =>
+                msg.id === botResponseId
+                  ? { ...msg, text: textToShow }
+                  : msg
+              )
+            );
+
+            // Start ElevenLabs voice generation when we have enough text (for instant voice)
+            if (!voiceGenerationStarted && !isVoiceMuted && textToShow.length >= voiceGenerationThreshold) {
+              voiceGenerationStarted = true;
+              
+              // Generate voice in parallel (don't wait for typing animation)
+              const generateVoice = async () => {
+                try {
+                  // Wait a bit for more complete response, then start voice
+                  await new Promise(resolve => setTimeout(resolve, 300));
+                  
+                  if (fullText && !isVoiceMuted) {
+                    console.log(`🔊 Starting ElevenLabs voice for: "${fullText.substring(0, 50)}..."`);
+                    
+                    // Use speakText which handles stopping existing speech and choosing the right method
+                    const speechPromise = speakText(fullText, voiceOption);
+                    speechCompletionRef.current = speechPromise;
+                    
+                    speechPromise
+                      .then(() => {
+                        console.log('✅ Speech completed, auto-starting recording');
+                        setShouldAutoStartRecording(true);
+                        speechCompletionRef.current = null;
+                      })
+                      .catch(error => {
+                        console.error('❌ Error speaking:', error);
+                        setShouldAutoStartRecording(true);
+                        speechCompletionRef.current = null;
+                      });
+                  }
+                } catch (error) {
+                  console.error('Error in voice generation:', error);
+                }
+              };
+              generateVoice(); // Start voice generation immediately (non-blocking)
+            }
+          } else {
+            clearInterval(typeInterval);
+            
+            // Response complete - ensure full text is shown
+            setMessages(prev =>
+              prev.map(msg =>
+                msg.id === botResponseId
+                  ? { ...msg, text: fullText, isTyping: false }
+                  : msg
+              )
+            );
+            setTypingMessages(prev => {
+              const newSet = new Set(prev);
+              newSet.delete(botResponseId);
+              return newSet;
+            });
+            setIsThinking(false);
+
+            // If voice wasn't started yet (response was very short), start it now
+            if (!voiceGenerationStarted && !isVoiceMuted && fullText) {
+              // Use speakText which handles stopping existing speech and choosing the right method
+              const speechPromise = speakText(fullText, voiceOption);
+              speechCompletionRef.current = speechPromise;
+              
+              speechPromise
+                .then(() => {
+                  setShouldAutoStartRecording(true);
+                  speechCompletionRef.current = null;
+                })
+                .catch(() => {
+                  setShouldAutoStartRecording(true);
+                  speechCompletionRef.current = null;
+                });
+            } else if (!isVoiceMuted && !speechCompletionRef.current) {
+              // If speech was muted or not started, auto-start recording
+              setTimeout(() => {
+                setShouldAutoStartRecording(true);
+              }, 500);
+            }
+
+            // Save bot response to database
+            if (user && fullText) {
+              createChatMessage({
+                user_id: user.id,
+                speaker: 'ai',
+                message: fullText
+              }).catch(error => {
+                console.error('Error saving bot message:', error);
               });
-              setIsThinking(false);
 
-              // Save bot response to database
-              if (user) {
-                createChatMessage({
-                  user_id: user.id,
-                  speaker: 'ai',
-                  message: fullText
-                }).catch(error => {
-                  console.error('Error saving bot message:', error);
-                });
-
-                // Send AI response to n8n webhook
-                sendAIResponseToN8N(
-                  user.id,
-                  user.email,
-                  fullText,
-                  sessionIdRef.current
-                ).catch(error => {
-                  console.error('Error sending AI response to n8n:', error);
-                  // Don't block chat if n8n fails
-                });
-              }
-              // Voice is already speaking from the start of typing animation
+              // Send AI response to n8n webhook (for logging/analytics)
+              sendAIResponseToN8N(
+                user.id,
+                fullText,
+                sessionIdRef.current
+              ).catch(error => {
+                console.error('Error sending AI response to n8n:', error);
+              });
             }
           }
-        }, 16); // ~60fps but throttled internally
-      }, 1500);
+        }, typeSpeed);
+      })
+      .catch((error: any) => {
+        console.error('❌ Error getting AI response from n8n:', error);
+        // Fallback response
+        const fallbackText = "I hear you. Let's work through this together. Can you tell me more about what's on your mind?";
+        setMessages(prev =>
+          prev.map(msg =>
+            msg.id === botResponseId
+              ? { ...msg, text: fallbackText, isTyping: false }
+              : msg
+          )
+        );
+        setTypingMessages(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(botResponseId);
+          return newSet;
+        });
+        setIsThinking(false);
+        
+        if (!isVoiceMuted) {
+          if (isElevenLabsAvailable()) {
+            playElevenLabsAudio(fallbackText, voiceOption).then(() => {
+              setShouldAutoStartRecording(true);
+            });
+          } else if (isSpeechSynthesisAvailable()) {
+            speakText(fallbackText, voiceOption).then(() => {
+              setShouldAutoStartRecording(true);
+            });
+          } else {
+            setShouldAutoStartRecording(true);
+          }
+        } else {
+          setShouldAutoStartRecording(true);
+        }
+      });
     }
   };
 
@@ -567,17 +860,17 @@ export default function ChatArea() {
           </div>
         </div>
         <div className="relative">
-          <button
-            onClick={() => setShowAudioMenu(!showAudioMenu)}
-            className="p-2 hover:bg-white/10 rounded-xl transition-all hover:scale-105 relative"
-            title="Audio controls"
-          >
-            {isMusicMuted && isVoiceMuted ? (
-              <VolumeX className="w-4 h-4 text-white" />
-            ) : (
-              <Volume2 className="w-4 h-4 text-white" />
-            )}
-          </button>
+            <button
+              onClick={() => setShowAudioMenu(!showAudioMenu)}
+              className="p-2 hover:bg-white/10 rounded-xl transition-all hover:scale-105 relative"
+              title="Audio controls"
+            >
+              {isMusicMuted && isVoiceMuted ? (
+                <VolumeX className="w-4 h-4 text-white" />
+              ) : (
+                <Volume2 className="w-4 h-4 text-white" />
+              )}
+            </button>
           
           {/* Audio Menu Dropdown */}
           {showAudioMenu && (
@@ -753,8 +1046,9 @@ export default function ChatArea() {
             <button
               onClick={() => {
                 if (isRecording) {
-                  stopRecording();
+                  stopRecording(false); // Don't auto-send, switch to text mode
                 } else {
+                  setInputMode('audio'); // Switch to audio mode
                   startRecording();
                 }
               }}
@@ -762,12 +1056,14 @@ export default function ChatArea() {
               className={`w-11 h-11 rounded-2xl transition-all shadow-lg group relative flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed ${
                 isRecording
                   ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                  : 'bg-gradient-to-br from-sage-600 to-mint-600 hover:shadow-xl hover:scale-105'
+                  : inputMode === 'audio'
+                  ? 'bg-gradient-to-br from-sage-600 to-mint-600 hover:shadow-xl hover:scale-105'
+                  : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500'
               }`}
-              style={!isRecording && !isThinking ? {
+              style={!isRecording && !isThinking && inputMode === 'audio' ? {
                 animation: 'voice-glow-pulse 2s ease-in-out infinite'
               } : {}}
-              title={isRecording ? `Stop recording (${recordingTime}s)` : 'Speak your thoughts'}
+              title={isRecording ? `Stop recording (${recordingTime}s)` : inputMode === 'audio' ? 'Speaking... Click to stop' : 'Switch to voice input'}
             >
               <Mic className={`w-5 h-5 text-white ${isRecording ? 'animate-pulse' : ''}`} />
               {isRecording && (
@@ -784,7 +1080,7 @@ export default function ChatArea() {
                   </div>
                 </>
               )}
-              {!isRecording && showVoiceTooltip && !isThinking && (
+              {!isRecording && showVoiceTooltip && !isThinking && inputMode === 'audio' && (
                 <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-[#187E5F]/95 text-white px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap pointer-events-none z-50 shadow-lg">
                   Click to record voice
                 </div>
@@ -793,6 +1089,35 @@ export default function ChatArea() {
           </div>
 
           <div className="flex-1 flex flex-col gap-2">
+            {/* Show text input or transcription display */}
+            {(inputMode === 'text' || (inputMode === 'audio' && isRecording && inputText.trim())) && (
+              <div className="relative">
+                <textarea
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder={isRecording ? "Listening... Speak your thoughts..." : isThinking ? "NIRA is thinking..." : "Share your thoughts with NIRA..."}
+                  disabled={isThinking || (inputMode === 'audio' && isRecording)}
+                  readOnly={inputMode === 'audio' && isRecording}
+                  className="w-full px-4 py-3 pr-12 rounded-2xl border border-[var(--color-light-sage)] dark:border-[var(--border-color)] bg-[var(--color-primary-white)] dark:bg-[var(--color-dark-secondary-bg)] text-[var(--color-text-primary)] dark:text-[var(--color-dark-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-deep-emerald)] dark:focus:ring-[var(--color-neon-teal)] focus:border-transparent transition-all text-[15px] resize-none shadow-sm placeholder-[var(--color-text-tertiary)] dark:placeholder-[var(--color-dark-text-muted)] disabled:opacity-60 disabled:cursor-not-allowed"
+                  rows={1}
+                  style={{ minHeight: '44px' }}
+                />
+                {inputMode === 'text' && (
+                  <button
+                    className="absolute right-3 bottom-3 p-1.5 hover:bg-[rgba(24,126,95,0.1)] dark:hover:bg-gray-700 rounded-lg transition-all group"
+                    title="Add emoji"
+                  >
+                    <Smile className="w-4 h-4 text-[var(--color-deep-emerald)] dark:text-[var(--color-neon-teal)]" />
+                  </button>
+                )}
+                {inputMode === 'audio' && isRecording && inputText.trim() && (
+                  <div className="absolute right-3 bottom-2 text-xs text-[var(--color-deep-emerald)] dark:text-[var(--color-neon-teal)] font-medium">
+                    Recording...
+                  </div>
+                )}
+              </div>
+            )}
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <button
                 onClick={() => handleSendMessage("I'm feeling anxious right now...")}
@@ -817,24 +1142,6 @@ export default function ChatArea() {
               >
                 <Heart className="w-4 h-4" />
                 <span>Need Support</span>
-              </button>
-            </div>
-            <div className="relative">
-              <textarea
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder={isThinking ? "NIRA is thinking..." : "Share your thoughts with NIRA..."}
-                disabled={isThinking}
-                className="w-full px-4 py-3 pr-12 rounded-2xl border border-[var(--color-light-sage)] dark:border-[var(--border-color)] bg-[var(--color-primary-white)] dark:bg-[var(--color-dark-secondary-bg)] text-[var(--color-text-primary)] dark:text-[var(--color-dark-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-deep-emerald)] dark:focus:ring-[var(--color-neon-teal)] focus:border-transparent transition-all text-[15px] resize-none shadow-sm placeholder-[var(--color-text-tertiary)] dark:placeholder-[var(--color-dark-text-muted)] disabled:opacity-60 disabled:cursor-not-allowed"
-                rows={1}
-                style={{ minHeight: '44px' }}
-              />
-              <button
-                className="absolute right-3 bottom-3 p-1.5 hover:bg-[rgba(24,126,95,0.1)] dark:hover:bg-gray-700 rounded-lg transition-all group"
-                title="Add emoji"
-              >
-                <Smile className="w-4 h-4 text-[var(--color-deep-emerald)] dark:text-[var(--color-neon-teal)]" />
               </button>
             </div>
           </div>

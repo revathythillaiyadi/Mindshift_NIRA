@@ -18,6 +18,15 @@ export interface ChatHistory {
   message: string;
 }
 
+export interface ChatSession {
+  id: string;
+  user_id: string;
+  title: string | null;
+  first_message_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface UserStats {
   id: string;
   user_id: string;
@@ -39,11 +48,13 @@ export interface Achievement {
 // Database insert types (without auto-generated fields)
 export type JournalEntryInsert = Omit<JournalEntry, 'id' | 'created_at' | 'updated_at'>;
 export type ChatHistoryInsert = Omit<ChatHistory, 'id' | 'timestamp'>;
+export type ChatSessionInsert = Omit<ChatSession, 'id' | 'created_at' | 'updated_at'>;
 export type UserStatsInsert = Omit<UserStats, 'id' | 'created_at' | 'updated_at'>;
 export type AchievementInsert = Omit<Achievement, 'id' | 'unlocked_at'>;
 
 // Database update types (partial, excluding immutable fields)
 export type JournalEntryUpdate = Partial<Omit<JournalEntry, 'id' | 'user_id' | 'created_at'>>;
 export type ChatHistoryUpdate = Partial<Omit<ChatHistory, 'id' | 'user_id' | 'timestamp'>>;
+export type ChatSessionUpdate = Partial<Omit<ChatSession, 'id' | 'user_id' | 'created_at'>>;
 export type UserStatsUpdate = Partial<Omit<UserStats, 'id' | 'user_id' | 'created_at'>>;
 

@@ -1,12 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Flame, ChevronDown, ChevronUp } from 'lucide-react';
 import DailyQuote from './DailyQuote';
 import MilestonesAchievements from './MilestonesAchievements';
 import { useUserStats } from '../../hooks/useUserStats';
+import { getTodayConversations, getTodayMindfulnessMinutes } from '../../lib/database';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function DashboardStats() {
-  const { stats, loading } = useUserStats();
+  const { stats, loading, refreshStats } = useUserStats();
+  const { user } = useAuth();
   const [streakCelebration, setStreakCelebration] = useState(false);
+  const [weeklyStats, setWeeklyStats] = useState({
+    totalCheckIns: 0,
+    journalEntries: 0,
+    mindfulnessMinutes: 0,
+  });
   // Initialize from localStorage to persist user preference, matching original RightPanel behavior
   const [isStreakExpanded, setIsStreakExpanded] = useState(() => {
     const hasSeenReflection = localStorage.getItem('has-seen-reflection');
@@ -29,6 +37,42 @@ export default function DashboardStats() {
     return true;
   });
 
+  // Load stats from conversations
+  useEffect(() => {
+    const loadConversationStats = async () => {
+      if (!user) return;
+      
+      try {
+        const [checkIns, minutes] = await Promise.all([
+          getTodayConversations(user.id),
+          getTodayMindfulnessMinutes(user.id),
+        ]);
+        
+        setWeeklyStats({
+          totalCheckIns: checkIns,
+          journalEntries: stats?.journal_count_monthly || 0,
+          mindfulnessMinutes: minutes,
+        });
+        
+        // Refresh stats to ensure streak and achievements are updated
+        await refreshStats();
+      } catch (error) {
+        console.error('Error loading conversation stats:', error);
+      }
+    };
+
+    loadConversationStats();
+    // Refresh every 30 seconds to keep stats in sync (reduced frequency to prevent resource exhaustion)
+    const interval = setInterval(() => {
+      loadConversationStats().catch(error => {
+        // Silently handle errors to prevent console spam
+        console.debug('Stats refresh error (non-critical):', error);
+      });
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, [user, stats?.journal_count_monthly, stats?.current_streak, refreshStats]);
+
   const getStreakMessage = (days: number) => {
     if (days >= 30) return "You're unstoppable! A full month of dedication!";
     if (days >= 14) return "Two weeks strong! You're building incredible habits!";
@@ -42,12 +86,6 @@ export default function DashboardStats() {
   const triggerStreakCelebration = () => {
     setStreakCelebration(true);
     setTimeout(() => setStreakCelebration(false), 1500);
-  };
-
-  const weeklyStats = {
-    totalCheckIns: 12, // TODO: Calculate from mood_logs or chat_history
-    journalEntries: stats?.journal_count_monthly || 0,
-    mindfulnessMinutes: 45, // TODO: Calculate from activity logs
   };
 
   return (

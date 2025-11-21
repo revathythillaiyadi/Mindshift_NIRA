@@ -111,3 +111,32 @@ export function getBackgroundAudioRef(): HTMLAudioElement | null {
   return backgroundAudioRef;
 }
 
+/**
+ * Pause or significantly reduce audio volume during recording for better microphone pickup
+ */
+export function pauseAudioForRecording(): void {
+  if (!backgroundAudioRef) return;
+  
+  // Pause the audio completely for clearest microphone pickup
+  if (!backgroundAudioRef.paused) {
+    backgroundAudioRef.pause();
+    console.log('🔇 Background audio paused for recording');
+  }
+}
+
+/**
+ * Resume audio after recording stops
+ */
+export function resumeAudioAfterRecording(): void {
+  if (!backgroundAudioRef) return;
+  
+  // Resume audio if it was playing before
+  if (backgroundAudioRef.paused && originalVolume > 0) {
+    backgroundAudioRef.play().catch(error => {
+      console.error('Error resuming audio after recording:', error);
+    });
+    backgroundAudioRef.volume = originalVolume;
+    console.log('🔊 Background audio resumed after recording');
+  }
+}
+
